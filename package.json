@@ -4,12 +4,15 @@
   "description": "Personal website to showcase project and resume",
   "main": "server.js",
   "scripts": {
-    "server-dev" : "nodemon server.js",
+    "server-dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dennisjs0910/personalSite.git"
+  },
+  "_moduleAliases" : {
+    "@routes" : "app/routes"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +26,7 @@
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
     "module-alias": "^2.2.0",
+    "morgan": "^1.9.1",
     "mysql": "^2.17.1"
   },
   "devDependencies": {
