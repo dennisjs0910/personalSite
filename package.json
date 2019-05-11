@@ -11,9 +11,9 @@
     "type": "git",
     "url": "git+https://github.com/dennisjs0910/personalSite.git"
   },
-  "_moduleAliases" : {
+  "_moduleAliases": {
     "@root": "./",
-    "@routes" : "app/routes"
+    "@routes": "app/routes"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "cookie-session": "^1.3.3",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
+    "knex": "^0.16.5",
     "module-alias": "^2.2.0",
     "morgan": "^1.9.1",
     "mysql": "^2.17.1"

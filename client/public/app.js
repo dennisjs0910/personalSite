@@ -6,7 +6,7 @@ CreateUser.addEventListener('submit', (e) => {
   const username = CreateUser.querySelector('.username').value;
   const password = CreateUser.querySelector('.password').value;
   console.log("Username: ", username, " Password: ", password);
-  // post('/createUser', { username, password })
+  post('/api/createUser', { username, password });
 })
 function post (path, data) {
   return window.fetch(path, {
