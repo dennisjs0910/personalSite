@@ -12,6 +12,7 @@
     "url": "git+https://github.com/dennisjs0910/personalSite.git"
   },
   "_moduleAliases" : {
+    "@root": "./",
     "@routes" : "app/routes"
   },
   "author": "",
