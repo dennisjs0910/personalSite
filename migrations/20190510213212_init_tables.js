@@ -1,4 +1,3 @@
-// TODO
 exports.up = (knex) => {
   return knex.schema
   .createTable('User', (user) => {
