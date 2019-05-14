@@ -34,7 +34,6 @@ class App extends Component {
   // }
 
   render() {
-    console.log(Layouts);
     return (
       <Router>
         <div className="App" style={{ height: "100%" }}>
