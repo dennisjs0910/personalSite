@@ -1,12 +1,6 @@
 import { combineReducers } from "redux";
 
 const appReducer = combineReducers({
-  // auth: AuthReducer,
-  // calendar: CalendarReducer,
-  // user: UserReducer,
-  // report: ReportReducer,
-  // createUser: CreateUserReducer,
-  // patientStaffSearch: PatientStaffSearchReducer
 });
 
 export default (state, action) => {
