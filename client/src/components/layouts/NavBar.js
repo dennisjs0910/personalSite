@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import { Menu, Icon, Affix } from 'antd';
+
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
+
 // import { connect } from "react-redux";
 // import { Link, withRouter } from "react-router-dom";
 // import { Menu, Dropdown, Icon } from "semantic-ui-react";
@@ -9,12 +14,13 @@ import React, { Component } from "react";
 
 
 class NavBar extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     activeItem: null
-  //   }
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      current: 'mail',
+      top: 0
+    }
+  }
 
   // static getDerivedStateFromProps(props, state) {
   //   const activeItem = menuItems.find(item => item.path === props.location.pathname);
@@ -125,16 +131,30 @@ class NavBar extends Component {
   //     </Menu>
   //   );
   // }
+  handleClick = e => {
+    console.log("click click");
+    this.setState({ current: e.key });
+  }
 
   render() {
-    // return (
-    //   this.props.auth.hasLoggedIn ? this._renderCustomNavBar() : this._renderEmptyNavBar()
-    // );
     return (
-      <div>
-        NAVBAR YO
-      </div>
-    )
+      <Affix offsetTop={this.state.top}>
+        <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal" theme="dark">
+          <Menu.Item key="blog">
+            <Icon type="layout" />
+            Blog
+          </Menu.Item>
+          <Menu.Item key="about-me">
+            <Icon type="smile" />
+            About me
+          </Menu.Item>
+          <Menu.Item key="login">
+            <Icon type="login"/>
+            Login
+          </Menu.Item>
+        </Menu>
+      </Affix>
+    );
   }
 }
 
