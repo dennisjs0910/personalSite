@@ -1,0 +1,35 @@
+div.homepage-main-img {
+  background-image: url("../../assets/sf.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center; /* Center the image */
+  background-size: cover;
+
+  height: 20%;
+  min-height: 40rem;
+  text-align: center;
+}
+
+h1.homepage-main-h1 {
+  font-size: 3rem;
+}
+
+p.homepage-main-p {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+div.custom-wrapper {
+  margin: 40px 0;
+}
+
+div.margin-row {
+  padding: 0 20px;
+}
+
+.gutter-box {
+  text-align: center;
+  padding: 5px 0;
+  background-color: rgb(66, 134, 244);
+  height: 200px;
+}

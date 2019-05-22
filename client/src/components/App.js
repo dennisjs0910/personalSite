@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import * as Layouts from "components/layouts";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import 'antd/dist/antd.css'; // can move to babel
+import { Layout } from 'antd';
 
+const { Content, Footer } = Layout;
 // import * as Containers from "components/containers";
 // import { isEmpty } from "lodash";
 
@@ -50,17 +52,21 @@ class App extends Component {
     return (
       <Router>
         <div className="App" style={{ height: "100%" }}>
-          <Layouts.NavBar />
-          <div className="app-body" style={{ width: "100%" }}>
-            {this._renderRandomText().map(text => (
-              <p>{ text }</p>
-            ))}
-          </div>
+        <Layouts.NavBar />
+          <Layout>
+
+            <Switch>
+              <Route key="homepage" exact path= "/" component={ Layouts.HomePage } />
+            </Switch>
+
+            {/** <Footer>footer</Footer> */}
+          </Layout>
         </div>
       </Router>
     );
   }
 }
+
 
 // render() {
 //   return (
@@ -70,7 +76,7 @@ class App extends Component {
 //         <div className="app-body" style={{ width: "100%" }}>
 //           <Switch>
 //             <Route key="login" exact path="/login" component={Containers.LoginContainer}/>
-//             <PrivateRoute key="appointment" exact path="/" component={Containers.CalendarContainer} hasLoggedIn={this.props.auth.hasLoggedIn} />
+            // <PrivateRoute key="appointment" exact path="/" component={Containers.CalendarContainer} hasLoggedIn={this.props.auth.hasLoggedIn} />
 //             <PrivateRoute key="appointment" path="/appointment" component={Containers.CalendarContainer} hasLoggedIn={this.props.auth.hasLoggedIn} />
 //             <PrivateRoute key="report" path="/report" component={Containers.ReportContainer} hasLoggedIn={this.props.auth.hasLoggedIn} />
 //             <PrivateRoute key="user" path="/user" component={Containers.UserContainer} hasLoggedIn={this.props.auth.hasLoggedIn} />
