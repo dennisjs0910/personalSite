@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Menu, Icon, Affix } from 'antd';
+import { ReactComponent as Logo } from "assets/logo.svg";
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -11,7 +12,6 @@ const MenuItemGroup = Menu.ItemGroup;
 // import { AuthAction, UserAction } from "actions";
 // import { UserType, MenuTitle } from "enums";
 // import '../../css/navBar.css';
-
 
 class NavBar extends Component {
   constructor(props) {
@@ -139,7 +139,15 @@ class NavBar extends Component {
   render() {
     return (
       <Affix offsetTop={this.state.top}>
-        <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal" theme="dark">
+        <Menu
+          onClick={this.handleClick}
+          selectedKeys={[this.state.current]}
+          mode="horizontal"
+          // theme="dark"
+        >
+          <Menu.Item key="home">
+            <Icon component={Logo} />
+          </Menu.Item>
           <Menu.Item key="blog">
             <Icon type="layout" />
             Blog
