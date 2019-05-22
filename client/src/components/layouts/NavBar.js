@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Menu, Icon, Affix } from 'antd';
 import { ReactComponent as Logo } from "assets/logo.svg";
 
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
+// const SubMenu = Menu.SubMenu;
+// const MenuItemGroup = Menu.ItemGroup;
 
 // import { connect } from "react-redux";
 // import { Link, withRouter } from "react-router-dom";

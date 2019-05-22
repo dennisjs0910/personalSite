@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import * as Layouts from "components/layouts";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+// add back "Redirect" to "react-router-dom"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import 'antd/dist/antd.css'; // can move to babel
 import { Layout } from 'antd';
+// const { Content, Footer } = Layout;
 
-const { Content, Footer } = Layout;
 // import * as Containers from "components/containers";
 // import { isEmpty } from "lodash";
 
