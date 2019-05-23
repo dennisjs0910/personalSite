@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Menu, Icon, Affix } from 'antd';
 import { ReactComponent as Logo } from "assets/logo.svg";
-
+// add back "Redirect" to "react-router-dom"
+import { Link } from "react-router-dom";
 // const SubMenu = Menu.SubMenu;
 // const MenuItemGroup = Menu.ItemGroup;
 
@@ -131,8 +132,8 @@ class NavBar extends Component {
   //     </Menu>
   //   );
   // }
+
   handleClick = e => {
-    console.log("click click");
     this.setState({ current: e.key });
   }
 
@@ -143,19 +144,26 @@ class NavBar extends Component {
           onClick={this.handleClick}
           selectedKeys={[this.state.current]}
           mode="horizontal"
-          // theme="dark"
+          //theme="dark"
         >
           <Menu.Item key="home">
-            <Icon component={Logo} />
+            <Link to="/">
+              <Icon component={Logo} />
+            </Link>
           </Menu.Item>
-          <Menu.Item key="blog">
-            <Icon type="layout" />
-            Blog
+
+          <Menu.Item key="blogs">
+            <Link to="/blogs">
+              <Icon type="layout" />
+              Blog
+            </Link>
           </Menu.Item>
+
           <Menu.Item key="about-me">
             <Icon type="smile" />
             About me
           </Menu.Item>
+
           <Menu.Item key="login">
             <Icon type="login"/>
             Login

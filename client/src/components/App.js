@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import * as Layouts from "components/layouts";
+import { BlogContainer } from "components/blog";
+
 // add back "Redirect" to "react-router-dom"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+// Styling Imports
 import 'antd/dist/antd.css'; // can move to babel
 import { Layout } from 'antd';
 // const { Content, Footer } = Layout;
@@ -32,6 +36,7 @@ class App extends Component {
     // This is to avoid warning message
     this.state = {};
   }
+
   // static getDerivedStateFromProps(props, state) {
   //   if (!props.auth.isFetching && isEmpty(props.auth.err) && !props.auth.hasLoggedIn) {
   //     props.dispatch(AuthAction.checkUser());
@@ -40,14 +45,15 @@ class App extends Component {
   // }
   //
 
-  _renderRandomText = () => {
-    const paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    let text = [];
-    for (let i = 0; i < 50; i++) {
-      text.push(`${paragraph} ${i}`);
-    }
-    return text;
-  }
+  // TODO: CAN REMOVE WHEN NOT IN USE
+  // _renderRandomText = () => {
+  //   const paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+  //   let text = [];
+  //   for (let i = 0; i < 50; i++) {
+  //     text.push(`${paragraph} ${i}`);
+  //   }
+  //   return text;
+  // }
 
   render() {
     return (
@@ -58,6 +64,7 @@ class App extends Component {
 
             <Switch>
               <Route key="homepage" exact path= "/" component={ Layouts.HomePage } />
+              <Route key="blogs" exact path= "/blogs" component={ BlogContainer } />
             </Switch>
 
             {/** <Footer>footer</Footer> */}
