@@ -6,13 +6,9 @@ import { Link } from "react-router-dom";
 // const SubMenu = Menu.SubMenu;
 // const MenuItemGroup = Menu.ItemGroup;
 
-// import { connect } from "react-redux";
 // import { Link, withRouter } from "react-router-dom";
-// import { Menu, Dropdown, Icon } from "semantic-ui-react";
-// import { ReactComponent as Logo } from "assets/logo.svg";
 // import { AuthAction, UserAction } from "actions";
 // import { UserType, MenuTitle } from "enums";
-// import '../../css/navBar.css';
 
 class NavBar extends Component {
   constructor(props) {
@@ -140,11 +136,10 @@ class NavBar extends Component {
   render() {
     return (
       <Affix offsetTop={this.state.top}>
-        <Menu
+        <Menu //theme="dark"
           onClick={this.handleClick}
           selectedKeys={[this.state.current]}
           mode="horizontal"
-          //theme="dark"
         >
           <Menu.Item key="home">
             <Link to="/">
@@ -158,11 +153,16 @@ class NavBar extends Component {
               Blog
             </Link>
           </Menu.Item>
-
-          <Menu.Item key="about-me">
-            <Icon type="smile" />
-            About me
-          </Menu.Item>
+          {
+            /**
+             * Commenting out for now.
+             *
+              <Menu.Item key="about-me">
+                <Icon type="smile" />
+                About me
+              </Menu.Item>
+             */
+          }
 
           <Menu.Item key="login">
             <Icon type="login"/>
