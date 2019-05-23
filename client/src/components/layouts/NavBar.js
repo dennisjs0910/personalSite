@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import { Menu, Icon, Affix } from 'antd';
 import { ReactComponent as Logo } from "assets/logo.svg";
-// add back "Redirect" to "react-router-dom"
 import { Link } from "react-router-dom";
-// const SubMenu = Menu.SubMenu;
-// const MenuItemGroup = Menu.ItemGroup;
 
 // import { Link, withRouter } from "react-router-dom";
 // import { AuthAction, UserAction } from "actions";
@@ -163,7 +160,6 @@ class NavBar extends Component {
               </Menu.Item>
              */
           }
-
           <Menu.Item key="login">
             <Icon type="login"/>
             Login

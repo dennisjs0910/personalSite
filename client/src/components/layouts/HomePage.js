@@ -18,10 +18,10 @@ class HomePage extends Component {
             <div className="gutter-box">Resume 2</div>
           </Col>
           <Col span={6}>
-            <div className="gutter-box">Resume 2</div>
+            <div className="gutter-box">Resume 3</div>
           </Col>
           <Col span={6}>
-            <div className="gutter-box">Resume 2</div>
+            <div className="gutter-box">Resume 4</div>
           </Col>
         </Row>
       </div>
