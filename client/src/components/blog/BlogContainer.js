@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
+import { withRouter } from 'react-router-dom';
+
 import { mockData } from './fixtures';
 import "./BlogContainer.css";
 
@@ -17,6 +19,7 @@ class BlogContainer extends Component {
     }
 
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
+    this.handleBlogCreateForm = this.handleBlogCreateForm.bind(this);
   }
 
   handlePaginationChange(value) {
@@ -33,8 +36,8 @@ class BlogContainer extends Component {
     }
   }
 
-  handleCreateButtonClick() {
-    console.log("create button clicked ");
+  handleBlogCreateForm() {
+    this.props.history.push("/blogForm");
   }
 
   _renderFeaturedBlogs() {
@@ -80,7 +83,7 @@ class BlogContainer extends Component {
 
   _renderCreateBlogPostButton() {
     return(
-      <Button type="primary" onClick={ this.handleCreateButtonClick }>CREATE +</Button>
+      <Button type="primary" onClick={ this.handleBlogCreateForm }>CREATE +</Button>
     )
   }
 

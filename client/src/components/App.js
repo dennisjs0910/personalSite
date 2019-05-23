@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as Layouts from "components/layouts";
-import { BlogContainer } from "components/blog";
+import { BlogContainer, BlogPostForm } from "components/blog";
 
 // add back "Redirect" to "react-router-dom"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -65,8 +65,9 @@ class App extends Component {
             <Switch>
               <Route key="homepage" exact path= "/" component={ Layouts.HomePage } />
               <Route key="blogs" exact path= "/blogs" component={ BlogContainer } />
+              {/** TODO: fix uri for blogForm */}
+              <Route key="blogForm" exact path= "/blogForm" component={ BlogPostForm } />
             </Switch>
-
             {/** <Footer>footer</Footer> */}
           </Layout>
         </div>
