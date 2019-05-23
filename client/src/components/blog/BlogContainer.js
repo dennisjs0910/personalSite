@@ -33,6 +33,10 @@ class BlogContainer extends Component {
     }
   }
 
+  handleCreateButtonClick() {
+    console.log("create button clicked ");
+  }
+
   _renderFeaturedBlogs() {
     return(
       <div className="custom-wrapper">
@@ -59,12 +63,11 @@ class BlogContainer extends Component {
     if (data && data.length > 0) {
       return data.slice(this.state.pageMin, this.state.pageMax).map(blog => {
         return (
-          <Col span={6}>
+          <Col span={6} key={blog.id}>
             <Card className="blog-card"
               title={blog.title}
               extra={<a href="/#">More</a>}
               style={{ width: 300 }}
-              key={blog.id}
             >
               <p>{blog.value}</p>
             </Card>
@@ -75,13 +78,9 @@ class BlogContainer extends Component {
     return null;
   }
 
-  _createButtonClickHandler() {
-    console.log("create button clicked ");
-  }
-
   _renderCreateBlogPostButton() {
     return(
-      <Button type="primary" onClick={ this._createButtonClickHandler }>CREATE +</Button>
+      <Button type="primary" onClick={ this.handleCreateButtonClick }>CREATE +</Button>
     )
   }
 
@@ -104,13 +103,14 @@ class BlogContainer extends Component {
         <Row>
         { this._renderAllBlogs(mockData) }
         </Row>
-
-        <Pagination
-          defaultCurrent={1}
-          defaultPageSize={4}
-          onChange={ this.handlePaginationChange }
-          total={ mockData.length }
-        />
+        <div className="pagination-container">
+          <Pagination
+            defaultCurrent={1}
+            defaultPageSize={4}
+            onChange={ this.handlePaginationChange }
+            total={ mockData.length }
+          />
+        </div>
       </Content>
     );
   }
