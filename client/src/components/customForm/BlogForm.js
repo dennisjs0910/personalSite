@@ -9,7 +9,6 @@ class BpForm extends Component {
       tags: [],
       inputVisible: false,
       inputValue: '',
-      mediaContent: []
     };
 
     this.renderTagForm = this.renderTagForm.bind(this);
@@ -96,7 +95,6 @@ class BpForm extends Component {
 
   renderMediaContentForm() {
     const { getFieldDecorator } = this.props.form;
-    const { mediaContent } = this.state;
 
     return(
       <div>
@@ -123,7 +121,7 @@ class BpForm extends Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { tags, inputVisible, inputValue } = this.state;
+
     return (
       <Form onSubmit={this.handleSubmit} className="bp-form-container">
         <Form.Item label="Blog Title">

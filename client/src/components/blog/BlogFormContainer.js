@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col, Form, Input } from 'antd';
+import { Layout, Row, Col } from 'antd';
 import { BlogForm } from 'components/customForm';
 import './BlogFormContainer.css';
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
-import { withRouter } from 'react-router-dom';
-
 import { mockData } from './fixtures';
 import "./BlogContainer.css";
+
+// import { withRouter } from 'react-router-dom';
 
 const PER_PAGINATION = 4;
 const { Content } = Layout;
