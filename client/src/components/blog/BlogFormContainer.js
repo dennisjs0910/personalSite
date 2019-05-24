@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col } from 'antd';
-import { Link } from "react-router-dom";
+import { Layout, Row, Col, Form, Input } from 'antd';
+import { BlogForm } from 'components/customForm';
+import './BlogFormContainer.css';
 
-const PER_PAGINATION = 4;
 const { Content } = Layout;
 const paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-class BlogPostForm extends Component {
+class BlogFormContainer extends Component {
 
   render() {
     return (
@@ -17,9 +17,10 @@ class BlogPostForm extends Component {
             <p>{ `${paragraph} ${paragraph}` }</p>
           </Col>
         </Row>
+        <BlogForm />
       </Content>
     );
   }
 }
 
-export default BlogPostForm
+export default BlogFormContainer

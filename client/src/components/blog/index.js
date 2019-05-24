@@ -1,7 +1,7 @@
 import BlogContainer from './BlogContainer';
-import BlogPostForm from './BlogPostForm';
+import BlogFormContainer from './BlogFormContainer';
 
 export {
   BlogContainer,
-  BlogPostForm,
+  BlogFormContainer,
 };
