@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col, Form, Input, Button, Tag, Icon } from 'antd';
-
-const { Content } = Layout;
+import { Form, Input, Button, Tag, Icon, Upload } from 'antd';
 
 class BpForm extends Component {
 
@@ -11,9 +9,11 @@ class BpForm extends Component {
       tags: [],
       inputVisible: false,
       inputValue: '',
+      mediaContent: []
     };
 
     this.renderTagForm = this.renderTagForm.bind(this);
+    this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
 
   // Copied Code, revise later if needed
@@ -65,32 +65,59 @@ class BpForm extends Component {
     const { tags, inputVisible, inputValue } = this.state;
     return(
       <Form.Item label="Tags">
-        {
-          inputVisible && (
-          <Input
-            ref={this.saveInputRef}
-            type="text"
-            size="small"
-            style={{ width: 78 }}
-            value={inputValue}
-            onChange={this.handleInputChange}
-            onBlur={this.handleInputConfirm}
-            onPressEnter={this.handleInputConfirm}
-          />)
-        }
-        {
-          !inputVisible && (
-          <Tag onClick={this.showInput} style={{ background: '#fff', borderStyle: 'dashed' }}>
-            <Icon type="plus" /> New Tag
-          </Tag>)
-        }
+        { this._renderTagFormHelper(inputVisible, inputValue) }
         <div>
-          {
-            tags.map(tag => <Tag key={tag}>{tag}</Tag>)
-          }
+          { tags.map(tag => <Tag key={tag}>{tag}</Tag>) }
         </div>
       </Form.Item>
     );
+  }
+
+  _renderTagFormHelper(inputVisible, inputValue) {
+    if (inputVisible) {
+      return(<Input
+        ref={this.saveInputRef}
+        type="text"
+        size="small"
+        style={{ width: 78 }}
+        value={inputValue}
+        onChange={this.handleInputChange}
+        onBlur={this.handleInputConfirm}
+        onPressEnter={this.handleInputConfirm}
+      />);
+    } else {
+      return(<Tag
+        className="bp-form-add-new-tag"
+        onClick={this.showInput} >
+        <Icon type="plus" /> New Tag
+      </Tag>);
+    }
+  }
+
+  renderMediaContentForm() {
+    const { getFieldDecorator } = this.props.form;
+    const { mediaContent } = this.state;
+
+    return(
+      <div>
+        <Form.Item label="Media">
+          <h6>Only able to support one video and one image</h6>
+          <Upload className='upload-list-inline'>
+            <Button>
+              <Icon type="upload" /> Upload
+            </Button>
+          </Upload>
+        </Form.Item>
+
+        <Form.Item label="Image Description">
+          { getFieldDecorator(`img-descprition`, {})(<Input.TextArea />) }
+        </Form.Item>
+
+        <Form.Item label="Video Description">
+          { getFieldDecorator(`video-descprition`, {})(<Input.TextArea />) }
+        </Form.Item>
+      </div>
+    )
   }
   // Copied Code, ends here
 
@@ -104,7 +131,9 @@ class BpForm extends Component {
             rules: [{ required: true, message: 'Please input the title for this blog', }],
           })(<Input />)}
         </Form.Item>
+
         { this.renderTagForm() }
+        { this.renderMediaContentForm() }
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
