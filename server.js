@@ -1,13 +1,19 @@
 require('dotenv');
 require('module-alias/register');
-
+require('@services/cloudinaryConnection');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const morgan = require('morgan');
+const formData = require('express-form-data')
 
+// TEST CODE START =================================
+// TEST CODE END ===================================
+
+// App: Initialization, routes, and configuration
 const app = express();
 app.use(morgan('dev'));
+app.use(formData.parse())
 app.use(
   cookieSession({
     name: "session",
@@ -17,11 +23,9 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-// Initialize all routes
 app.use("/api", require('@routes'));
 
-// Listen to a specific server port
+// SERVER: Listen to a specific server port
 const serverPort = process.env.SERVER_PORT || 5000;
 const server = app.listen(serverPort, () => {
   console.log(`Running server at ${serverPort}`);

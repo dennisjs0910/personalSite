@@ -13,7 +13,8 @@
   },
   "_moduleAliases": {
     "@root": "./",
-    "@routes": "app/routes"
+    "@routes": "app/routes",
+    "@services": "./services"
   },
   "author": "",
   "license": "ISC",
@@ -23,9 +24,11 @@
   "homepage": "https://github.com/dennisjs0910/personalSite#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cloudinary": "^1.14.0",
     "cookie-session": "^1.3.3",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
+    "express-form-data": "^2.0.8",
     "knex": "^0.16.5",
     "module-alias": "^2.2.0",
     "morgan": "^1.9.1",
