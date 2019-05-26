@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Tag, Icon, Upload } from 'antd';
-// import { BlogAction } from 'actions';
-import axios from "axios";
+import { BlogAction } from 'actions';
 
 class BpForm extends Component {
 
@@ -11,13 +10,12 @@ class BpForm extends Component {
       tags: [],
       inputVisible: false,
       inputValue: '',
+      image_url: ''
     };
 
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
-
-  // Copied Code, revise later if needed
 
   /**
    * This function is used to add tags, once user clicks on
@@ -33,7 +31,6 @@ class BpForm extends Component {
    */
   handleClose = removedTag => {
     const tags = this.state.tags.filter(tag => tag !== removedTag);
-    console.log(tags);
     this.setState({ tags });
   };
 
@@ -75,27 +72,30 @@ class BpForm extends Component {
     });
   };
 
-  uploadCustomRequest = (options) => {
+  /**
+   * Custom Request to upload an image to Cloudinary.
+   * It is used to obtain a secure url to pass to the server in the future.
+   * When it is successful
+   * @param  { File } file
+   * @param  { callback fn } onSuccess
+   * @param  { callback fn } onError
+   */
+  uploadCustomRequest = async ({ file, onSuccess, onError }) => {
     let data = new FormData();
-    data.append('file', options.file);
-    const config= {
-      "headers": {
-        "content-type": 'multipart/form-data; boundary=----WebKitFormBoundaryqTqJIxvkWFYqvP5s'
-      }
+    data.append('file', file);
+
+    const res = await BlogAction.postImage(data);
+    if (res && res.data && res.data[0] && res.data[0].secure_url) {
+      this.setState({
+        image_url: res.data[0].secure_url
+      });
+      onSuccess(res.data, file);
+    } else {
+      //TODO: params for onError may not be correct, please check and revise in the future
+      // onError(file);
     }
-
-    // const res = await BlogAction.postImage(data);
-    // options.onSuccess(res.data, options.file);
-
-    axios.post(`/api/image-upload`, data, config).then((res) => {
-      console.log(res);
-      options.onSuccess(res.data, options.file);
-    }).catch((err) => {
-      console.log(err)
-    })
   }
 
-  // TODO: logic refactor
   renderTagForm() {
     const { tags, inputVisible, inputValue } = this.state;
     return(
@@ -154,7 +154,6 @@ class BpForm extends Component {
       </div>
     )
   }
-  // Copied Code, ends here
 
   render() {
     const { getFieldDecorator } = this.props.form;
