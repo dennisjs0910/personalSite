@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
+import BlogReducer from "./BlogReducer";
 
 const appReducer = combineReducers({
+  blog: BlogReducer
 });
 
 export default (state, action) => {

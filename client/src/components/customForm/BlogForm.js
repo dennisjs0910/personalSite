@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Tag, Icon, Upload } from 'antd';
+// import { BlogAction } from 'actions';
+import axios from "axios";
 
 class BpForm extends Component {
 
@@ -16,16 +18,29 @@ class BpForm extends Component {
   }
 
   // Copied Code, revise later if needed
+
+  /**
+   * This function is used to add tags, once user clicks on
+   * "+ New Tag" it will set input to be visible.
+   */
   showInput = () => {
     this.setState({ inputVisible: true }, () => this.input.focus());
   };
 
+  /**
+   * Handle close is used to remove a tag user have added
+   * @param  {String} removedTag [Tag name to be deleted]
+   */
   handleClose = removedTag => {
     const tags = this.state.tags.filter(tag => tag !== removedTag);
     console.log(tags);
     this.setState({ tags });
   };
 
+  /**
+   * This function sets the input value to what the user is typing.
+   * @param  {Event Object} e
+   */
   handleInputChange = e => {
     this.setState({ inputValue: e.target.value });
   };
@@ -46,6 +61,7 @@ class BpForm extends Component {
     });
   };
 
+  // TODO: will need to refactor in the future
   handleSubmit = e => {
     const { tags } = this.state;
     e.preventDefault();
@@ -58,6 +74,26 @@ class BpForm extends Component {
       }
     });
   };
+
+  uploadCustomRequest = (options) => {
+    let data = new FormData();
+    data.append('file', options.file);
+    const config= {
+      "headers": {
+        "content-type": 'multipart/form-data; boundary=----WebKitFormBoundaryqTqJIxvkWFYqvP5s'
+      }
+    }
+
+    // const res = await BlogAction.postImage(data);
+    // options.onSuccess(res.data, options.file);
+
+    axios.post(`/api/image-upload`, data, config).then((res) => {
+      console.log(res);
+      options.onSuccess(res.data, options.file);
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
   // TODO: logic refactor
   renderTagForm() {
@@ -95,12 +131,13 @@ class BpForm extends Component {
 
   renderMediaContentForm() {
     const { getFieldDecorator } = this.props.form;
-
     return(
       <div>
         <Form.Item label="Media">
           <h6>Only able to support one video and one image</h6>
-          <Upload className='upload-list-inline'>
+          <Upload className='upload-list-inline'
+            customRequest={ this.uploadCustomRequest }
+          >
             <Button>
               <Icon type="upload" /> Upload
             </Button>
