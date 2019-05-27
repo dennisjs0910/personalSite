@@ -39,10 +39,19 @@ let _parseTags = (tags) => {
 
 //================= ROUTER API ====================
 
-routes.get('/', (req, res) => {
-  console.log("hello this is a test");
-  res.status(200);
-  res.send({ success: "/api/blog sent you this message" });
+routes.get('/', async (req, res) => {
+
+  try{
+    const blogData = await knex.select('*').from(BLOG_POST)
+      .leftJoin(BLOG_CONTENT, `${BLOG_POST}.id`, `${BLOG_CONTENT}.blogPost_id`)
+      .options({ nestTables: true, rowMode: 'array' });
+
+    res.status(200);
+    res.json({ success: "GET /api/blog", data: blogData });
+  } catch(err) {
+    res.status(404);
+    res.json({ err });
+  }
 });
 
 routes.post('/', async (req, res) => {
@@ -60,7 +69,7 @@ routes.post('/', async (req, res) => {
     });
 
     res.status(200);
-    res.send({
+    res.json({
       msg: "success -post /api/blog",
       data: blogPostData
     });
