@@ -42,4 +42,23 @@ export default class BlogAction {
        }
      }
   };
+
+
+  static getBlogs = () => {
+    return async (dispatch) => {
+      try{
+        let res = await axios.get(`/api/blog`);
+        console.log(`got back from /api/blog`, res);
+        dispatch({
+          type: BLOG_ACTION.FETCH_BLOG_SUCCESS,
+          payload: res.data
+        });
+      } catch (err) {
+        dispatch({
+          type: BLOG_ACTION.FETCH_BLOG_FAILURE,
+          error: err
+        });
+      }
+    }
+  }
 }
