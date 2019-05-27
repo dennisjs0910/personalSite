@@ -19,11 +19,17 @@ export default class BlogAction {
     }
   };
 
-
+  /**
+   * This static function is used to send data to `/api/blog` server api endpoint to store
+   * information about the blog that is being created
+   * @param  {Object} data [keys: tags, image_url, img-descprition, title]
+   * @return {Function}    [async function to dispatch results to reducers]
+   */
   static createBlog = (data) => {
      return async (dispatch) => {
        try {
          let res = await axios.post(`/api/blog`, data);
+         console.log("after axios.post('/api/blog'): ", res);
          dispatch({
            type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
            payload: res.data

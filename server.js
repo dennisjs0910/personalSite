@@ -5,7 +5,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const morgan = require('morgan');
-const formData = require('express-form-data')
+const formData = require('express-form-data');
+const knexOptions = require('@root/knexfile');
+const knex = require('knex')(knexOptions);
 
 // TEST CODE START =================================
 // TEST CODE END ===================================
@@ -32,15 +34,16 @@ const server = app.listen(serverPort, () => {
   console.log("Ctrl + c to close server");
 });
 
-process.on('SIGINT', () => {
-  console.log('\nReceived kill signal, shutting down gracefully');
-  server.close(() => {
-      console.log('Closed out remaining connections');
-      process.exit(0);
-  });
+process.on('SIGINT', async () => {
+  console.log('\n-Received kill signal, shutting down gracefully');
+  await knex.destroy();
+  console.log('-Knex instance destroyed');
+  await server.close();
+  console.log('-Closed out remaining connections');
+  process.exit(0);
 
   setTimeout(() => {
-      console.error('Could not close connections in time, forcefully shutting down');
+      console.error('-Could not close connections in time, forcefully shutting down');
       process.exit(1);
   }, 10000);
 });

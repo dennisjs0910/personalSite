@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Tag, Icon, Upload } from 'antd';
 import { BlogAction } from 'actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class BpForm extends Component {
 
@@ -15,6 +17,7 @@ class BpForm extends Component {
 
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
@@ -67,7 +70,9 @@ class BpForm extends Component {
     const { tags, image_url } = this.state;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        BlogAction.createBlog(Object.assign(values, { tags, image_url }));
+        this.props.createBlog(Object.assign(values, { tags, image_url }));
+        // TODO: this.props.history is currently undefined fix the issue please
+        // this.props.history.push("/blog");
       } else {
         console.log(err);
       }
@@ -147,7 +152,7 @@ class BpForm extends Component {
         </Form.Item>
 
         <Form.Item label="Image Description">
-          { getFieldDecorator(`img-descprition`, {})(<Input.TextArea />) }
+          { getFieldDecorator(`img_descprition`, {})(<Input.TextArea />) }
         </Form.Item>
 
         {/** Currently video upload is not supported.
@@ -183,5 +188,7 @@ class BpForm extends Component {
   }
 }
 
+const mapDispatchToProps = dispatch => bindActionCreators({ createBlog: BlogAction.createBlog }, dispatch);
+
 const BlogForm = Form.create()(BpForm)
-export default BlogForm;
+export default connect(null, mapDispatchToProps)(BlogForm);
