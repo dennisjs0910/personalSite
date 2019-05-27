@@ -12,7 +12,7 @@ Currently in development for version 1.0.0
 
 **1.0.0**
 ``` markdown
-Release will include functionality such as:
+Release will include functionalities such as:
 1. Create, Read, Update, Delete a blog with an image and description. (Admin only)
 2. User functionality is not included in this version.
 3. Dockerized container to use on digital ocean.
@@ -20,7 +20,7 @@ Release will include functionality such as:
 
 **1.0.1**
 ``` markdown
-Release will include functionality such as:
+Release will include functionalities such as:
 1. User sign up and login
 2. Blogs will belong to a specific user which means update and deleting blogs can only be done by that specific user.
 ```
