@@ -6,8 +6,8 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case BLOG_ACTION.POST_IMAGE : {
-      console.log("inside BLOG_ACTION", action.type);
+    case BLOG_ACTION.CREATE_BLOG_SUCCESS : {
+      console.log("inside", BLOG_ACTION.CREATE_BLOG_SUCCESS, action.payload);
       return state;
     }
     default:

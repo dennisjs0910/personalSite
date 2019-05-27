@@ -152,7 +152,7 @@ class BpForm extends Component {
         </Form.Item>
 
         <Form.Item label="Image Description">
-          { getFieldDecorator(`img_descprition`, {})(<Input.TextArea />) }
+          { getFieldDecorator(`img_text`, {})(<Input.TextArea />) }
         </Form.Item>
 
         {/** Currently video upload is not supported.
