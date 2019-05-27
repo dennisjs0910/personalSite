@@ -44,6 +44,10 @@ class BpForm extends Component {
 
   saveInputRef = input => (this.input = input);
 
+  /**
+   * This function adds a new tag to the list of tags.
+   * Also we reset the inputValue and unfocus the input.
+   */
   handleInputConfirm = () => {
     const { inputValue } = this.state;
     let { tags } = this.state;
@@ -58,14 +62,12 @@ class BpForm extends Component {
     });
   };
 
-  // TODO: will need to refactor in the future
   handleSubmit = e => {
-    const { tags } = this.state;
     e.preventDefault();
+    const { tags, image_url } = this.state;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
-        console.log('Received tags: ', tags);
+        BlogAction.createBlog(Object.assign(values, { tags, image_url }));
       } else {
         console.log(err);
       }
@@ -148,9 +150,11 @@ class BpForm extends Component {
           { getFieldDecorator(`img-descprition`, {})(<Input.TextArea />) }
         </Form.Item>
 
-        <Form.Item label="Video Description">
-          { getFieldDecorator(`video-descprition`, {})(<Input.TextArea />) }
-        </Form.Item>
+        {/** Currently video upload is not supported.
+          <Form.Item label="Video Description">
+            { getFieldDecorator(`video-descprition`, {})(<Input.TextArea />) }
+          </Form.Item>
+        */}
       </div>
     )
   }

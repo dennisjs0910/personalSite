@@ -1,5 +1,5 @@
 import axios from "axios";
-// import { BLOG_ACTION } from "actions/ActionTypes";
+import { BLOG_ACTION } from "actions/ActionTypes";
 
 export default class BlogAction {
   /**
@@ -17,5 +17,23 @@ export default class BlogAction {
     } catch(err) {
       console.log("somthing went wrong", err);
     }
+  };
+
+
+  static createBlog = (data) => {
+     return async (dispatch) => {
+       try {
+         let res = await axios.post(`/api/blog`, data);
+         dispatch({
+           type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
+           payload: res.data
+         });
+       } catch (err) {
+         dispatch({
+           type: BLOG_ACTION.CREATE_BLOG_FAILURE,
+           error: err
+         });
+       }
+     }
   };
 }
