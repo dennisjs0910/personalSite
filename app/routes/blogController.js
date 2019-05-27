@@ -53,6 +53,7 @@ routes.post('/', async (req, res) => {
 
     let blogContentData = generateBlogContentObject(blogPostIds[0], image_url, img_text);
     const blogContentIds = await knex(BLOG_CONTENT).insert(blogContentData);
+
     blogContentData = Object.assign(blogContentData, { id: blogContentIds[0] });
     blogPostData = Object.assign(blogPostData, { id : blogPostIds[0],
       content: blogContentData
