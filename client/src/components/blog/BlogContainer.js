@@ -7,7 +7,6 @@ import "./BlogContainer.css";
 
 const PER_PAGINATION = 4;
 const { Content } = Layout;
-const paragraph = "Search through exisiting projects people have accomplished. Also you have the ability showcase your skillsets to people who are intereseted. Just click on the 'CREATE +' Button."
 
 class BlogContainer extends Component {
 
@@ -20,6 +19,7 @@ class BlogContainer extends Component {
 
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
     this.handleBlogCreateForm = this.handleBlogCreateForm.bind(this);
+    this.renderHeaderRow = this.renderHeaderRow.bind(this);
   }
 
   componentDidMount() {
@@ -44,29 +44,12 @@ class BlogContainer extends Component {
     this.props.history.push("/blogForm");
   }
 
+  //TODO: implement feature in the future
   _renderFeaturedBlogs() {
-    return(
-      <div className="custom-wrapper">
-        <h2>Featured Blog Posts</h2>
-        <Row className="margin-row" gutter={16} >
-          <Col span={6}>
-            <div className="gutter-box">Blog 1</div>
-          </Col>
-          <Col span={6}>
-            <div className="gutter-box">Blog 2</div>
-          </Col>
-          <Col span={6}>
-            <div className="gutter-box">Blog 3</div>
-          </Col>
-          <Col span={6}>
-            <div className="gutter-box">Blog 4</div>
-          </Col>
-        </Row>
-      </div>
-    );
+    return null;
   }
 
-  _renderAllBlogs(blogs) {
+  _renderBlogsToCard(blogs) {
     if (blogs && blogs.length > 0) {
       return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => {
         const blogItem = blog["BlogPost"];
@@ -90,6 +73,24 @@ class BlogContainer extends Component {
     return null;
   }
 
+  renderAllBlogs(blogs) {
+    return(<Content className="wrapperMargin">
+      <h2>View All Blogs</h2>
+      <Row gutter={16}>
+        { this._renderBlogsToCard(blogs) }
+      </Row>
+
+      <div className="pagination-container">
+        <Pagination
+          defaultCurrent={1}
+          defaultPageSize={4}
+          onChange={ this.handlePaginationChange }
+          total={ blogs.length }
+        />
+      </div>
+    </Content>);
+  }
+
   _shortenImageDescription(text) {
     const end = Math.min(text.length, 147);
     return text.substring(0, end) + "...";
@@ -101,36 +102,27 @@ class BlogContainer extends Component {
     )
   }
 
+  renderHeaderRow() {
+    const paragraph = "Search through exisiting projects people have accomplished. Also you have the ability showcase your skillsets to people who are intereseted. Just click on the 'CREATE +' Button."
+
+    return(<Row>
+      <Col span={24}>
+        <div className="wrapperContainer">
+          <h1 className="title-header">Blog Currently Under Construction</h1>
+          <p className="p-header">{ `${paragraph}` }</p>
+          { this._renderCreateBlogPostButton() }
+        </div>
+      </Col>
+    </Row>);
+  }
+
   render() {
     const { blogs } = this.props || [];
     return (
       <Content >
-        <Row>
-          <Col span={24}>
-            <div className="wrapperContainer">
-              <h1 className="title-header">Blog Currently Under Construction</h1>
-              <p className="p-header">{ `${paragraph}` }</p>
-              { this._renderCreateBlogPostButton() }
-            </div>
-          </Col>
-        </Row>
-
+        { this.renderHeaderRow() }
         { /**this._renderFeaturedBlogs() */}
-        <Content className="wrapperMargin">
-          <h2>View All Blogs</h2>
-          <Row gutter={16}>
-            { this._renderAllBlogs(blogs) }
-          </Row>
-        </Content>
-
-        <div className="pagination-container">
-          <Pagination
-            defaultCurrent={1}
-            defaultPageSize={4}
-            onChange={ this.handlePaginationChange }
-            total={ blogs.length }
-          />
-        </div>
+        { this.renderAllBlogs(blogs) }
       </Content>
     );
   }

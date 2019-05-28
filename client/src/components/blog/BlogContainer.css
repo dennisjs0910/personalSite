@@ -14,7 +14,7 @@ img.blog-img {
 }
 
 .wrapperContainer {
-  height: 40rem;
+  min-height: 48rem;
   text-align: center;
   background-image: url("../../assets/newyorkSkyline.jpg");
   background-repeat: no-repeat;
