@@ -76,7 +76,6 @@ class BlogContainer extends Component {
             <Card className="blog-card"
               title={blogItem.title}
               extra={<a href="/#">More</a>}
-              style={{ width: 300 }}
             >
               <img className="blog-img"
                 src={content.image_url}
@@ -117,10 +116,12 @@ class BlogContainer extends Component {
         </Row>
 
         { /**this._renderFeaturedBlogs() */}
-
-        <Row>
-          { this._renderAllBlogs(blogs) }
-        </Row>
+        <Content className="wrapperMargin">
+          <h2>View All Blogs</h2>
+          <Row gutter={16}>
+            { this._renderAllBlogs(blogs) }
+          </Row>
+        </Content>
 
         <div className="pagination-container">
           <Pagination
