@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
-import { mockData } from './fixtures';
+import { BlogAction } from 'actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import "./BlogContainer.css";
 
 // import { withRouter } from 'react-router-dom';
@@ -22,6 +25,10 @@ class BlogContainer extends Component {
     this.handleBlogCreateForm = this.handleBlogCreateForm.bind(this);
   }
 
+  componentDidMount() {
+    this.props.getBlogs();
+  }
+
   handlePaginationChange(value) {
     if (value <= 1) {
       this.setState({
@@ -31,7 +38,7 @@ class BlogContainer extends Component {
     } else {
       this.setState({
         pageMin: Math.max(1, value - 1) * PER_PAGINATION,
-        pageMax: Math.min(Math.max(1, value) * PER_PAGINATION, mockData.length)
+        pageMax: Math.min(Math.max(1, value) * PER_PAGINATION, this.props.blogs.length)
       });
     }
   }
@@ -62,17 +69,20 @@ class BlogContainer extends Component {
     );
   }
 
-  _renderAllBlogs(data) {
-    if (data && data.length > 0) {
-      return data.slice(this.state.pageMin, this.state.pageMax).map(blog => {
+  _renderAllBlogs(blogs) {
+    if (blogs && blogs.length > 0) {
+      return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => {
+        const blogItem = blog["BlogPost"];
+        const content = blog["BlogContent"];
         return (
-          <Col span={6} key={blog.id}>
+          <Col span={6} key={blogItem.id}>
             <Card className="blog-card"
-              title={blog.title}
+              title={blogItem.title}
               extra={<a href="/#">More</a>}
               style={{ width: 300 }}
             >
-              <p>{blog.value}</p>
+              <img src={content.image_url} alt="" />
+              <p>{content.image_text}</p>
             </Card>
           </Col>
         );
@@ -88,6 +98,7 @@ class BlogContainer extends Component {
   }
 
   render() {
+    const { blogs } = this.props || [];
     return (
       <Content >
         <Row>
@@ -104,14 +115,14 @@ class BlogContainer extends Component {
         { this._renderFeaturedBlogs() }
 
         <Row>
-        { this._renderAllBlogs(mockData) }
+        { this._renderAllBlogs(blogs) }
         </Row>
         <div className="pagination-container">
           <Pagination
             defaultCurrent={1}
             defaultPageSize={4}
             onChange={ this.handlePaginationChange }
-            total={ mockData.length }
+            total={ blogs.length }
           />
         </div>
       </Content>
@@ -119,4 +130,16 @@ class BlogContainer extends Component {
   }
 }
 
-export default BlogContainer
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ getBlogs: BlogAction.getBlogs }, dispatch);
+}
+
+const mapStateToProps = state => {
+  if (state && state.blog && state.blog.items) {
+    return { blogs: state.blog.items };
+  }
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BlogContainer);

@@ -1,14 +1,19 @@
 import { BLOG_ACTION } from "actions/ActionTypes";
 
 const initialState = {
-  images: [],
+  items: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case BLOG_ACTION.CREATE_BLOG_SUCCESS : {
-      console.log("inside", BLOG_ACTION.CREATE_BLOG_SUCCESS, action.payload);
+      // console.log("inside", BLOG_ACTION.CREATE_BLOG_SUCCESS, action.payload);
       return state;
+    }
+
+    case BLOG_ACTION.FETCH_BLOG_SUCCESS : {
+      // console.log("inside", BLOG_ACTION.FETCH_BLOG_SUCCESS, action.payload.data);
+      return Object.assign({...state}, { items: action.payload.data });
     }
     default:
       return state;

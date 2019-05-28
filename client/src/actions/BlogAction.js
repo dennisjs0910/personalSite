@@ -29,7 +29,6 @@ export default class BlogAction {
      return async (dispatch) => {
        try {
          let res = await axios.post(`/api/blog`, data);
-         console.log("after axios.post('/api/blog'): ", res);
          dispatch({
            type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
            payload: res.data
@@ -48,7 +47,6 @@ export default class BlogAction {
     return async (dispatch) => {
       try{
         let res = await axios.get(`/api/blog`);
-        console.log(`got back from /api/blog`, res);
         dispatch({
           type: BLOG_ACTION.FETCH_BLOG_SUCCESS,
           payload: res.data
