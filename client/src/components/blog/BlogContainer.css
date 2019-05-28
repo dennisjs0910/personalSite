@@ -12,3 +12,25 @@ img.blog-img {
   height: 250px;
   object-fit: cover;
 }
+
+.wrapperContainer {
+  height: 40rem;
+  text-align: center;
+  background-image: url("../../assets/newyorkSkyline.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center bottom; /* Center the image */
+  background-size: cover;
+
+  margin-bottom: 4rem;
+}
+
+h1.title-header {
+  font-size: 3rem;
+  color: white;
+}
+
+p.p-header {
+  font-size: 1.25rem;
+  color: white;
+}

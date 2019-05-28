@@ -7,7 +7,7 @@ import "./BlogContainer.css";
 
 const PER_PAGINATION = 4;
 const { Content } = Layout;
-const paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+const paragraph = "Search through exisiting projects people have accomplished. Also you have the ability showcase your skillsets to people who are intereseted. Just click on the 'CREATE +' Button."
 
 class BlogContainer extends Component {
 
@@ -107,21 +107,21 @@ class BlogContainer extends Component {
     return (
       <Content >
         <Row>
-          <Col span={21}>
-            <h1>BLOG CONTAINER Currently Under Construction</h1>
-            <p>{ `${paragraph} ${paragraph}` }</p>
-          </Col>
-
-          <Col span={3}>
-            { this._renderCreateBlogPostButton() }
+          <Col span={24}>
+            <div className="wrapperContainer">
+              <h1 className="title-header">Blog Currently Under Construction</h1>
+              <p className="p-header">{ `${paragraph}` }</p>
+              { this._renderCreateBlogPostButton() }
+            </div>
           </Col>
         </Row>
 
         { /**this._renderFeaturedBlogs() */}
 
         <Row>
-        { this._renderAllBlogs(blogs) }
+          { this._renderAllBlogs(blogs) }
         </Row>
+
         <div className="pagination-container">
           <Pagination
             defaultCurrent={1}
@@ -134,7 +134,6 @@ class BlogContainer extends Component {
     );
   }
 }
-
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({ getBlogs: BlogAction.getBlogs }, dispatch);
