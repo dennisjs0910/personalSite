@@ -6,3 +6,9 @@ div.pagination-container {
   text-align: center;
   margin: 2rem;
 }
+
+img.blog-img {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+}

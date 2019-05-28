@@ -3,10 +3,7 @@ import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
 import { BlogAction } from 'actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import "./BlogContainer.css";
-
-// import { withRouter } from 'react-router-dom';
 
 const PER_PAGINATION = 4;
 const { Content } = Layout;
@@ -81,14 +78,22 @@ class BlogContainer extends Component {
               extra={<a href="/#">More</a>}
               style={{ width: 300 }}
             >
-              <img src={content.image_url} alt="" />
-              <p>{content.image_text}</p>
+              <img className="blog-img"
+                src={content.image_url}
+                alt=""
+              />
+              <p>{this._shortenImageDescription(content.image_text)}</p>
             </Card>
           </Col>
         );
       });
     }
     return null;
+  }
+
+  _shortenImageDescription(text) {
+    const end = Math.min(text.length, 147);
+    return text.substring(0, end) + "...";
   }
 
   _renderCreateBlogPostButton() {
@@ -112,7 +117,7 @@ class BlogContainer extends Component {
           </Col>
         </Row>
 
-        { this._renderFeaturedBlogs() }
+        { /**this._renderFeaturedBlogs() */}
 
         <Row>
         { this._renderAllBlogs(blogs) }
