@@ -3,6 +3,7 @@ import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
 import { BlogAction } from 'actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { BlogFormModal } from 'components/modal';
 import "./BlogContainer.css";
 
 const PER_PAGINATION = 4;
@@ -13,12 +14,13 @@ class BlogContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isModalFormVisible: false,
       pageMin: 0,
       pageMax: PER_PAGINATION
     }
 
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
-    this.handleBlogCreateForm = this.handleBlogCreateForm.bind(this);
+    this.handleFormModalVisibility = this.handleFormModalVisibility.bind(this);
     this.renderHeaderRow = this.renderHeaderRow.bind(this);
   }
 
@@ -40,13 +42,60 @@ class BlogContainer extends Component {
     }
   }
 
-  handleBlogCreateForm() {
-    this.props.history.push("/blogForm");
+  handleFormModalVisibility() {
+    this.setState({ isModalFormVisible: !this.state.isModalFormVisible });
+  }
+
+  _shortenImageDescription(text) {
+    const end = Math.min(text.length, 147);
+    return text.substring(0, end) + "...";
+  }
+
+  _renderCreateBlogPostButton() {
+    return(
+      <Button type="primary" onClick={ this.handleFormModalVisibility }>CREATE +</Button>
+    )
   }
 
   //TODO: implement feature in the future
   _renderFeaturedBlogs() {
     return null;
+  }
+
+  renderHeaderRow() {
+    const paragraph = "Search through exisiting projects people have accomplished. Also you have the ability showcase your skillsets to people who are intereseted. Just click on the 'CREATE +' Button."
+
+    return(<Row>
+      <Col span={24}>
+        <div id='blogHeaderContainer' className="main-img">
+          <h1 className="title-header">Blog Currently Under Construction</h1>
+          <p className="p-header">{ `${paragraph}` }</p>
+          { this._renderCreateBlogPostButton() }
+        </div>
+      </Col>
+    </Row>);
+  }
+
+  renderAllBlogs(blogs) {
+    return(
+      <Content>
+        <div className="wrapper-content-margin">
+          <h2>View All Blogs</h2>
+          <Row gutter={16}>
+            { this._renderBlogsToCard(blogs) }
+          </Row>
+
+          <div className="pagination-container">
+            <Pagination
+              defaultCurrent={1}
+              defaultPageSize={4}
+              onChange={ this.handlePaginationChange }
+              total={ blogs.length }
+            />
+          </div>
+        </div>
+      </Content>
+    );
   }
 
   _renderBlogsToCard(blogs) {
@@ -73,60 +122,18 @@ class BlogContainer extends Component {
     return null;
   }
 
-  renderAllBlogs(blogs) {
-    return(
-      <Content>
-        <div className="wrapper-content-margin">
-          <h2>View All Blogs</h2>
-          <Row gutter={16}>
-            { this._renderBlogsToCard(blogs) }
-          </Row>
-
-          <div className="pagination-container">
-            <Pagination
-              defaultCurrent={1}
-              defaultPageSize={4}
-              onChange={ this.handlePaginationChange }
-              total={ blogs.length }
-            />
-          </div>
-        </div>
-      </Content>
-    );
-  }
-
-  _shortenImageDescription(text) {
-    const end = Math.min(text.length, 147);
-    return text.substring(0, end) + "...";
-  }
-
-  _renderCreateBlogPostButton() {
-    return(
-      <Button type="primary" onClick={ this.handleBlogCreateForm }>CREATE +</Button>
-    )
-  }
-
-  renderHeaderRow() {
-    const paragraph = "Search through exisiting projects people have accomplished. Also you have the ability showcase your skillsets to people who are intereseted. Just click on the 'CREATE +' Button."
-
-    return(<Row>
-      <Col span={24}>
-        <div id='blogHeaderContainer' className="main-img">
-          <h1 className="title-header">Blog Currently Under Construction</h1>
-          <p className="p-header">{ `${paragraph}` }</p>
-          { this._renderCreateBlogPostButton() }
-        </div>
-      </Col>
-    </Row>);
-  }
-
   render() {
+    const { isModalFormVisible } = this.state;
     const { blogs } = this.props || [];
     return (
       <Content >
         { this.renderHeaderRow() }
         { /**this._renderFeaturedBlogs() */}
         { this.renderAllBlogs(blogs) }
+        <BlogFormModal
+          isVisible={ isModalFormVisible }
+          handleClose={ this.handleFormModalVisibility }
+        />
       </Content>
     );
   }
