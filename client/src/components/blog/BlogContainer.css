@@ -13,21 +13,9 @@ img.blog-img {
   object-fit: cover;
 }
 
-.wrapperContainer {
-  min-height: 48rem;
-  text-align: center;
+#blogHeaderContainer {
   background-image: url("../../assets/newyorkSkyline.jpg");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center bottom; /* Center the image */
-  background-size: cover;
-
   margin-bottom: 2rem;
-}
-
-.wrapperMargin {
-  margin: 2rem;
-  padding: 0 16px;
 }
 
 h1.title-header {

@@ -74,21 +74,25 @@ class BlogContainer extends Component {
   }
 
   renderAllBlogs(blogs) {
-    return(<Content className="wrapperMargin">
-      <h2>View All Blogs</h2>
-      <Row gutter={16}>
-        { this._renderBlogsToCard(blogs) }
-      </Row>
+    return(
+      <Content>
+        <div className="wrapper-content-margin">
+          <h2>View All Blogs</h2>
+          <Row gutter={16}>
+            { this._renderBlogsToCard(blogs) }
+          </Row>
 
-      <div className="pagination-container">
-        <Pagination
-          defaultCurrent={1}
-          defaultPageSize={4}
-          onChange={ this.handlePaginationChange }
-          total={ blogs.length }
-        />
-      </div>
-    </Content>);
+          <div className="pagination-container">
+            <Pagination
+              defaultCurrent={1}
+              defaultPageSize={4}
+              onChange={ this.handlePaginationChange }
+              total={ blogs.length }
+            />
+          </div>
+        </div>
+      </Content>
+    );
   }
 
   _shortenImageDescription(text) {
@@ -107,7 +111,7 @@ class BlogContainer extends Component {
 
     return(<Row>
       <Col span={24}>
-        <div className="wrapperContainer">
+        <div id='blogHeaderContainer' className="main-img">
           <h1 className="title-header">Blog Currently Under Construction</h1>
           <p className="p-header">{ `${paragraph}` }</p>
           { this._renderCreateBlogPostButton() }

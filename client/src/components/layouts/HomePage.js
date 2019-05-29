@@ -8,7 +8,7 @@ const paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed 
 class HomePage extends Component {
   _renderFeaturedResumes() {
     return(
-      <div className="custom-wrapper">
+      <div className="wrapper-content-margin">
         <h2>Featured Resume</h2>
         <Row className="margin-row" gutter={16} >
           <Col span={6}>
@@ -32,9 +32,11 @@ class HomePage extends Component {
     return (
       <Content >
         <Row>
-          <Col className="homepage-main-img" span={24}>
-            <h1 className="homepage-main-h1">Currently Under Construction</h1>
-            <p className="homepage-main-p">{ `${paragraph} ${paragraph}` }</p>
+          <Col span={24}>
+            <div id ="homepage-header" className="main-img">
+              <h1 className="homepage-main-h1">Currently Under Construction</h1>
+              <p className="homepage-main-p">{ `${paragraph} ${paragraph}` }</p>
+            </div>
           </Col>
         </Row>
         { this._renderFeaturedResumes() }
