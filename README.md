@@ -1,6 +1,8 @@
 ## Joonsuk Dennis Yi's Personal Website
 Personal website to showcase project and resume </br>
 
+Pull request is currently managed through Trello.
+
 ### Environment
 - Back end: Node.js + Express.js
 - Front end: React + Redux

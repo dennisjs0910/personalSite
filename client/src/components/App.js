@@ -67,6 +67,7 @@ class App extends Component {
               <Route key="blogs" exact path= "/blogs" component={ BlogContainer } />
               {/** TODO: fix uri for blogForm */}
               <Route key="blogForm" exact path= "/blogForm" component={ BlogFormContainer } />
+              <Route key="page404" path="/*" component={Layouts.Page404} />
             </Switch>
             {/** <Footer>footer</Footer> */}
           </Layout>
