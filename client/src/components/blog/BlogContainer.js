@@ -29,6 +29,7 @@ class BlogContainer extends Component {
   }
 
   handlePaginationChange(value) {
+    console.log("handlePaginationChange", this.props.blogs);
     if (value <= 1) {
       this.setState({
         pageMin: 0,

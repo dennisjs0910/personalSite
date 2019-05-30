@@ -57,14 +57,11 @@ routes.get('/', async (req, res) => {
 routes.post('/', async (req, res) => {
   const { title, tags, image_url, img_text} = req.body;
   try{
-    let blogPostData = generateBlogObject(title, tags);
+    const blogPostData = generateBlogObject(title, tags);
     const blogPostIds = await knex(BLOG_POST).insert(blogPostData);
 
-    let blogContentData = generateBlogContentObject(blogPostIds[0], image_url, img_text);
+    const blogContentData = generateBlogContentObject(blogPostIds[0], image_url, img_text);
     const blogContentIds = await knex(BLOG_CONTENT).insert(blogContentData);
-
-    // blogContentData = Object.assign(blogContentData, { id: blogContentIds[0] });
-    // blogPostData = Object.assign(blogPostData, { id : blogPostIds[0] });
 
     let whereClause = {};
     whereClause[`${BLOG_POST}.id`] = blogPostIds[0];
@@ -72,11 +69,6 @@ routes.post('/', async (req, res) => {
       .leftJoin(BLOG_CONTENT, `${BLOG_POST}.id`, `${BLOG_CONTENT}.blogPost_id`)
       .where(whereClause)
       .options({ nestTables: true, rowMode: 'array' });
-
-    // const blogData = {
-    //   "BlogPost": blogPostData,
-    //   "BlogContent": blogContentData
-    // };
 
     res.status(200);
     res.json({ data: blogData });

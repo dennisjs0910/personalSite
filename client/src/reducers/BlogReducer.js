@@ -10,7 +10,7 @@ export default (state = initialState, action) => {
       const { items } = state;
       console.log("data", action.payload.data);
 
-      return Object.assign({...state}, { items: [...items, action.payload.data] });
+      return Object.assign({...state}, { items: [...items, action.payload.data[0]] });
     }
 
     case BLOG_ACTION.FETCH_BLOG_SUCCESS : {

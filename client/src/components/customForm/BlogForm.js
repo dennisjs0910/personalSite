@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Tag, Icon, Upload } from 'antd';
 import { BlogAction } from 'actions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 class BpForm extends Component {
 
@@ -185,10 +183,4 @@ class BpForm extends Component {
   }
 }
 
-// const mapDispatchToProps = dispatch => bindActionCreators({ createBlog: BlogAction.createBlog }, dispatch);
-
-// const BlogForm = Form.create()(BpForm)
-// export default connect(null, mapDispatchToProps)(BlogForm);
-//
-//
 export default BpForm;
