@@ -47,7 +47,7 @@ routes.get('/', async (req, res) => {
       .options({ nestTables: true, rowMode: 'array' });
 
     res.status(200);
-    res.json({ success: "GET /api/blog", data: blogData });
+    res.json({ data: blogData });
   } catch(err) {
     res.status(404);
     res.json({ err });
@@ -63,16 +63,23 @@ routes.post('/', async (req, res) => {
     let blogContentData = generateBlogContentObject(blogPostIds[0], image_url, img_text);
     const blogContentIds = await knex(BLOG_CONTENT).insert(blogContentData);
 
-    blogContentData = Object.assign(blogContentData, { id: blogContentIds[0] });
-    blogPostData = Object.assign(blogPostData, { id : blogPostIds[0],
-      content: blogContentData
-    });
+    // blogContentData = Object.assign(blogContentData, { id: blogContentIds[0] });
+    // blogPostData = Object.assign(blogPostData, { id : blogPostIds[0] });
+
+    let whereClause = {};
+    whereClause[`${BLOG_POST}.id`] = blogPostIds[0];
+    const blogData = await knex.select('*').from(BLOG_POST)
+      .leftJoin(BLOG_CONTENT, `${BLOG_POST}.id`, `${BLOG_CONTENT}.blogPost_id`)
+      .where(whereClause)
+      .options({ nestTables: true, rowMode: 'array' });
+
+    // const blogData = {
+    //   "BlogPost": blogPostData,
+    //   "BlogContent": blogContentData
+    // };
 
     res.status(200);
-    res.json({
-      msg: "success -post /api/blog",
-      data: blogPostData
-    });
+    res.json({ data: blogData });
   } catch(err) {
     console.log(err);
     res.status(404);
