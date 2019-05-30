@@ -124,7 +124,7 @@ class BlogContainer extends Component {
 
   render() {
     const { isModalFormVisible } = this.state;
-    const { blogs } = this.props || [];
+    const { blogs, createBlog } = this.props;
     return (
       <Content >
         { this.renderHeaderRow() }
@@ -133,6 +133,7 @@ class BlogContainer extends Component {
         <BlogFormModal
           isVisible={ isModalFormVisible }
           handleClose={ this.handleFormModalVisibility }
+          createBlog={ createBlog }
         />
       </Content>
     );
@@ -140,7 +141,13 @@ class BlogContainer extends Component {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ getBlogs: BlogAction.getBlogs }, dispatch);
+  return bindActionCreators(
+    {
+      getBlogs: BlogAction.getBlogs,
+      createBlog: BlogAction.createBlog
+    },
+    dispatch
+  );
 }
 
 const mapStateToProps = state => {

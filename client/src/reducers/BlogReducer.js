@@ -7,7 +7,9 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case BLOG_ACTION.CREATE_BLOG_SUCCESS : {
+      console.log(action.payload);
       // console.log("inside", BLOG_ACTION.CREATE_BLOG_SUCCESS, action.payload);
+      // return Object.assign({...state}, { items: action.payload.data });
       return state;
     }
 

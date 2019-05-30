@@ -15,24 +15,41 @@ class BpForm extends Component {
       image_url: ''
     };
 
+    this.renderTitleForm = this.renderTitleForm.bind(this);
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputConfirm = this.handleInputConfirm.bind(this);
+    this.uploadImageToCloudinary = this.uploadImageToCloudinary.bind(this);
   }
 
   /**
    * This function is used to add tags, once user clicks on
    * "+ New Tag" it will set input to be visible.
    */
-  showInput = () => {
+  showTagInput = () => {
     this.setState({ inputVisible: true }, () => this.input.focus());
   };
 
   /**
+   * This function adds a new tag to the list of tags.
+   * Also we reset the inputValue and unfocus the input.
+   */
+  handleInputConfirm = () => {
+    const { inputValue } = this.state;
+    this.props.handleTagInputConfirm(inputValue);
+
+    this.setState({
+      inputVisible: false,
+      inputValue: '',
+    });
+  };
+
+   /**
    * Handle close is used to remove a tag user have added
    * @param  {String} removedTag [Tag name to be deleted]
    */
-  handleClose = removedTag => {
+  handleTagClose = removedTag => {
     const tags = this.state.tags.filter(tag => tag !== removedTag);
     this.setState({ tags });
   };
@@ -46,24 +63,6 @@ class BpForm extends Component {
   };
 
   saveInputRef = input => (this.input = input);
-
-  /**
-   * This function adds a new tag to the list of tags.
-   * Also we reset the inputValue and unfocus the input.
-   */
-  handleInputConfirm = () => {
-    const { inputValue } = this.state;
-    let { tags } = this.state;
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      tags = [...tags, inputValue];
-    }
-
-    this.setState({
-      tags,
-      inputVisible: false,
-      inputValue: '',
-    });
-  };
 
   handleSubmit = e => {
     e.preventDefault();
@@ -85,26 +84,25 @@ class BpForm extends Component {
    * When it is successful
    * @param  { File } file
    * @param  { callback fn } onSuccess
-   * @param  { callback fn } onError
+   * @param  { callback fn } onError (currently removed)
    */
-  uploadCustomRequest = async ({ file, onSuccess, onError }) => {
+  uploadImageToCloudinary = async ({ file, onSuccess }) => {
     let data = new FormData();
     data.append('file', file);
-
-    const res = await BlogAction.postImage(data);
-    if (res && res.data && res.data[0] && res.data[0].secure_url) {
-      this.setState({
-        image_url: res.data[0].secure_url
-      });
-      onSuccess(res.data, file);
-    } else {
-      //TODO: params for onError may not be correct, please check and revise in the future
-      // onError(file);
+    try {
+      const res = await BlogAction.postImage(data);
+      if (res && res.data && res.data[0] && res.data[0].secure_url) {
+        this.props.handleUploadedImage(res.data[0].secure_url);
+        onSuccess(res.data, file);
+      }
+    } catch(err) {
+      console.log(err);
     }
   }
 
   renderTagForm() {
-    const { tags, inputVisible, inputValue } = this.state;
+    const { inputVisible, inputValue } = this.state;
+    const { tags } = this.props || [];
     return(
       <Form.Item label="Tags">
         { this._renderTagFormHelper(inputVisible, inputValue) }
@@ -118,32 +116,32 @@ class BpForm extends Component {
   _renderTagFormHelper(inputVisible, inputValue) {
     if (inputVisible) {
       return(<Input
-        ref={this.saveInputRef}
+        ref={ this.saveInputRef }
         type="text"
         size="small"
-        style={{ width: 78 }}
-        value={inputValue}
-        onChange={this.handleInputChange}
-        onBlur={this.handleInputConfirm}
-        onPressEnter={this.handleInputConfirm}
+        value={ inputValue }
+        onChange={ this.handleInputChange }
+        onBlur={ this.handleInputConfirm }
+        onPressEnter={ this.handleInputConfirm }
       />);
     } else {
-      return(<Tag
-        className="bp-form-add-new-tag"
-        onClick={this.showInput} >
-        <Icon type="plus" /> New Tag
-      </Tag>);
+      return(
+        <Tag
+          className="bp-form-add-new-tag"
+          onClick={ this.showTagInput } >
+          <Icon type="plus" /> New Tag
+        </Tag>
+      );
     }
   }
 
-  renderMediaContentForm() {
-    const { getFieldDecorator } = this.props.form;
+  renderMediaContentForm(getFieldDecorator) {
     return(
       <div>
         <Form.Item label="Media">
           <h6>Only able to support one video and one image</h6>
           <Upload className='upload-list-inline'
-            customRequest={ this.uploadCustomRequest }
+            customRequest={ this.uploadImageToCloudinary }
           >
             <Button>
               <Icon type="upload" /> Upload
@@ -164,31 +162,33 @@ class BpForm extends Component {
     )
   }
 
+  renderTitleForm(getFieldDecorator) {
+    return(
+      <Form.Item label="Blog Title">
+        {getFieldDecorator('title', {
+          rules: [{ required: true, message: 'Please input the title for this blog', }],
+        })(<Input />)}
+      </Form.Item>
+    );
+  }
+
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator } = this.props;
 
     return (
-      <Form onSubmit={this.handleSubmit} className="bp-form-container">
-        <Form.Item label="Blog Title">
-          {getFieldDecorator('title', {
-            rules: [{ required: true, message: 'Please input the title for this blog', }],
-          })(<Input />)}
-        </Form.Item>
-
+      <div>
+        { this.renderTitleForm(getFieldDecorator)}
         { this.renderTagForm() }
-        { this.renderMediaContentForm() }
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Post Blog Content
-          </Button>
-        </Form.Item>
-      </Form>
+        { this.renderMediaContentForm(getFieldDecorator) }
+      </div>
     );
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ createBlog: BlogAction.createBlog }, dispatch);
+// const mapDispatchToProps = dispatch => bindActionCreators({ createBlog: BlogAction.createBlog }, dispatch);
 
-const BlogForm = Form.create()(BpForm)
-export default connect(null, mapDispatchToProps)(BlogForm);
+// const BlogForm = Form.create()(BpForm)
+// export default connect(null, mapDispatchToProps)(BlogForm);
+//
+//
+export default BpForm;
