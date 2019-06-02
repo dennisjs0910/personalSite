@@ -10,3 +10,12 @@ services:
       - /app/client/node_modules
       - ./client/src:/app/client/src
       - ./client/public:/app/client/public
+  tests:
+    build:
+      context: client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/client/node_modules
+      - ./client/src:/app/client/src
+      - ./client/public:/app/client/public
+    command: ["npm", "run", "test"]
