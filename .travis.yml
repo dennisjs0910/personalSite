@@ -4,3 +4,6 @@ services:
 
 before_install:
   - docker build -t dennisjs/personalsite -f client/Dockerfile.dev client/
+
+script:
+  - docker run dennisjs/personalsite npm run test -- --coverage
