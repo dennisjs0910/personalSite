@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import * as Layouts from "components/layouts";
-import { BlogContainer } from "components/blog";
+import * as Layouts from "./layouts";
+import { BlogContainer } from "./blog";
 
 // add back "Redirect" to "react-router-dom"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form } from 'antd';
-import { BlogForm } from 'components/customForm';
+import { BlogForm } from '../customForm';
 // import './BlogFormContainer.css';
 
 class BlogFormContainer extends Component {

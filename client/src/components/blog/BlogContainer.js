@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
-import { BlogAction } from 'actions';
+import { BlogAction } from '../../actions';
+import { BlogFormModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { BlogFormModal } from 'components/modal';
 import "./BlogContainer.css";
 
 const PER_PAGINATION = 4;

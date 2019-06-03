@@ -6,4 +6,4 @@ before_install:
   - docker build -t dennisjs/personalsite -f client/Dockerfile.dev client/
 
 script:
-  - docker run -e CI=true dennisjs/personalsite npm run ci_test -- --coverage
+  - docker run dennisjs/personalsite npm run ci_test -- --coverage

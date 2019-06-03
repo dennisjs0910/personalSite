@@ -1,4 +1,4 @@
-import BlogAction from "actions/BlogAction";
+import BlogAction from "./BlogAction";
 
 export {
   BlogAction

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BLOG_ACTION } from "actions/ActionTypes";
+import { BLOG_ACTION } from "./ActionTypes";
 
 export default class BlogAction {
   /**

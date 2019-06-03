@@ -1,4 +1,4 @@
-import { BLOG_ACTION } from "actions/ActionTypes";
+import { BLOG_ACTION } from "../actions/ActionTypes";
 
 const initialState = {
   items: [],

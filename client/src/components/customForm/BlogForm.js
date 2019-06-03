@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Tag, Icon, Upload } from 'antd';
-import { BlogAction } from 'actions';
+import { BlogAction } from '../../actions';
 
 class BpForm extends Component {
 

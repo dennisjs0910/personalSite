@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Menu, Icon, Affix } from 'antd';
-import { ReactComponent as Logo } from "assets/logo.svg";
+import { ReactComponent as Logo } from "../../assets/logo.svg";
 import { Link } from "react-router-dom";
 
 // import { Link, withRouter } from "react-router-dom";
