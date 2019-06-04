@@ -161,8 +161,10 @@ class NavBar extends Component {
              */
           }
           <Menu.Item key="login">
-            <Icon type="login"/>
-            Login
+            <Link to="/login">
+              <Icon type="login"/>
+              Login
+            </Link>
           </Menu.Item>
         </Menu>
       </Affix>
