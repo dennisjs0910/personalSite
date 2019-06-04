@@ -8,7 +8,6 @@ before_install:
 script:
   - docker run dennisjs/personalsite npm run ci_test -- --coverage
 
-# watch from video 90
 deploy:
   provider: elasticbeanstalk
   region: "TODO:us-west-2"
