@@ -40,7 +40,7 @@ let _parseTags = (tags) => {
 //================= ROUTER API ====================
 
 routes.get('/', async (req, res) => {
-
+  console.log("hello i have been successully reached from client\n\n\n");
   try{
     const blogData = await knex.select('*').from(BLOG_POST)
       .leftJoin(BLOG_CONTENT, `${BLOG_POST}.id`, `${BLOG_CONTENT}.blogPost_id`)
@@ -49,6 +49,7 @@ routes.get('/', async (req, res) => {
     res.status(200);
     res.json({ data: blogData });
   } catch(err) {
+    console.log(err);
     res.status(404);
     res.json({ err });
   }

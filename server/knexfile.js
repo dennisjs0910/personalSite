@@ -1,14 +1,10 @@
-require('dotenv').config();
-
-let getDatabase = () => {
-  return `${process.env.DB_NAME}_${process.env.NODE_ENV}`;
-}
-
 module.exports = {
   client: 'mysql',
   connection: {
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: getDatabase()
+    host:'mysql-db',
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_ROOT_PASSWORD,
+    port: '',
+    database: process.env.MYSQL_DATABASE
   }
 };
