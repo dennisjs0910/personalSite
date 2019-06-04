@@ -2,6 +2,14 @@ version: '3'
 services:
   mysql:
     image: 'mysql:8.0.16'
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    # ports:
+    #   - '3306:3306'
+    # expose:
+    #   - '3306'
   server:
     build:
       context: ./server
@@ -9,22 +17,18 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
-  # web:
-  #   build:
-  #     context: client
-  #     dockerfile: Dockerfile.dev
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - /app/client/node_modules
-  #     - ./client/src:/app/client/src
-  #     - ./client/public:/app/client/public
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./client:/app
   # tests:
   #   build:
   #     context: client
   #     dockerfile: Dockerfile.dev
   #   volumes:
-  #     - /app/client/node_modules
-  #     - ./client/src:/app/client/src
-  #     - ./client/public:/app/client/public
+  #       - /app/node_modules
+  #       - ./client:/app
   #   command: ["npm", "run", "test"]
