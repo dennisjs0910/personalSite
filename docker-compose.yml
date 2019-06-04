@@ -1,5 +1,13 @@
 version: '3'
 services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - '4000:80'
+
   mysql:
     image: 'mysql:8.0.16'
     command: --default-authentication-plugin=mysql_native_password
@@ -10,6 +18,7 @@ services:
     #   - '3306:3306'
     # expose:
     #   - '3306'
+
   api:
     build:
       context: ./server
@@ -17,6 +26,7 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
+
   client:
     build:
       context: ./client
@@ -24,6 +34,7 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
+
   # tests:
   #   build:
   #     context: client
