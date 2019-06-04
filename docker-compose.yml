@@ -7,14 +7,14 @@ services:
     restart: always
     ports:
       - '4000:80'
-
-  mysql-db:
-    image: 'mysql:8.0.16'
-    restart: always
+  db:
+    image: 'postgres:latest'
     environment:
-      MYSQL_ROOT_PASSWORD: mysqlrootpassword
-      MYSQL_DATABASE: personal_blog
-      MYSQL_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: dennisjs
+      POSTGRES_DB: personal_blog
+    ports:
+      - '5432:5432'
 
   api:
     build:
@@ -23,6 +23,15 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
+    depends_on:
+      - db
+    environment:
+      DB_HOST: 'db'
+      DB_PORT: '5432'
+      DB_USER: 'dennisjs'
+      DB_PASSWORD: 'password'
+      DB_DATABASE: 'personal_blog'
+      WAIT_HOSTS: 'db:5432'
 
   client:
     build:
@@ -39,6 +48,14 @@ services:
   #     - mysql
   #   depends_on:
   #     - mysql
+
+  # mysql-db:
+  #   image: 'mysql:8.0.16'
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: mysqlrootpassword
+  #     MYSQL_DATABASE: personal_blog
+  #     MYSQL_USER: user
 
   # tests:
   #   build:
