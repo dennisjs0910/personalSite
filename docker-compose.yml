@@ -1,21 +1,30 @@
 version: '3'
 services:
-  web:
+  mysql:
+    image: 'mysql:8.0.16'
+  server:
     build:
-      context: client
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - /app/client/node_modules
-      - ./client/src:/app/client/src
-      - ./client/public:/app/client/public
-  tests:
-    build:
-      context: client
+      context: ./server
       dockerfile: Dockerfile.dev
     volumes:
-      - /app/client/node_modules
-      - ./client/src:/app/client/src
-      - ./client/public:/app/client/public
-    command: ["npm", "run", "test"]
+      - /app/node_modules
+      - ./server:/app
+  # web:
+  #   build:
+  #     context: client
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - /app/client/node_modules
+  #     - ./client/src:/app/client/src
+  #     - ./client/public:/app/client/public
+  # tests:
+  #   build:
+  #     context: client
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - /app/client/node_modules
+  #     - ./client/src:/app/client/src
+  #     - ./client/public:/app/client/public
+  #   command: ["npm", "run", "test"]
