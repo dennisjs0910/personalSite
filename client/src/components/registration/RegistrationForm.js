@@ -2,14 +2,8 @@ import React, { Component } from 'react';
 import {
   Form,
   Input,
-  Tooltip,
-  Icon,
   Select,
-  Row,
-  Col,
-  Checkbox,
   Button,
-  AutoComplete,
 } from 'antd';
 
 const { Option } = Select;
@@ -17,7 +11,6 @@ const { Option } = Select;
 class RegistrationFormTemplate extends Component {
   state = {
     confirmDirty: false,
-    autoCompleteResult: [],
   };
 
   handleSubmit = e => {
@@ -53,7 +46,6 @@ class RegistrationFormTemplate extends Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
 
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: '1',

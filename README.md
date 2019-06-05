@@ -4,10 +4,11 @@ Personal website to showcase project and resume </br>
 Pull request is currently managed through Trello.
 
 ### Environment
+- Docker
 - Back end: Node.js + Express.js
 - Front end: React + Redux
-- Build Automation: Jenkins (will be released in the future)
-- Server host: Digital ocean
+- Build Automation: (Partial Completion) Travis CI (will be released in the future)
+- Server host: (Under Construction) AWS
 
 ### Release Version
 Currently in development for version 1.0.0
