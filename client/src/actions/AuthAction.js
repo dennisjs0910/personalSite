@@ -3,7 +3,7 @@ import { AUTH_ACTION } from "./ActionTypes";
 
 // TODO: change uri /api/user to /api/user/session
 export default class AuthAction {
-  static loginUser = ({ email, password }) => {
+  static loginUser = ({ email, password }, history) => {
     return async (dispatch) => {
       try {
         const res = await axios.post("/api/user", { email, password });
@@ -15,6 +15,7 @@ export default class AuthAction {
             error: null
           }
         });
+        history.push("/");
       } catch (err) {
         dispatch({
           type: AUTH_ACTION.LOGIN_FAILURE,

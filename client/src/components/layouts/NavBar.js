@@ -19,8 +19,9 @@ class NavBar extends Component {
   }
 
   handleClick = e => {
+    const { logoutUser, history } = this.props;
     if (e.key === LOGOUT) {
-      this.props.logoutUser(this.props.history);
+      logoutUser(history);
     }
     this.setState({ current: e.key });
   }

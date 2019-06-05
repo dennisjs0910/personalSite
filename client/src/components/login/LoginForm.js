@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router-dom";
 import { Form, Icon, Input, Button } from 'antd';
 
 class LoginFormTemplate extends Component {
@@ -6,10 +7,10 @@ class LoginFormTemplate extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { validateFields } = this.props.form;
-    const { loginUser } = this.props;
+    const { loginUser, history } = this.props;
     validateFields((err, values) => {
       if (!err) {
-        loginUser(values);
+        loginUser(values, history);
       }
     });
   };
@@ -50,23 +51,10 @@ class LoginFormTemplate extends Component {
             Log in
           </Button>
         </Form.Item>
-        {/**<Form.Item>
-                  {getFieldDecorator('remember', {
-                    valuePropName: 'checked',
-                    initialValue: true,
-                  })(<Checkbox>Remember me</Checkbox>)}
-                  <a className="login-form-forgot" href="">
-                    Forgot password
-                  </a>
-                  <Button type="primary" htmlType="submit" className="login-form-button">
-                    Log in
-                  </Button>
-                  Or <a href="">register now!</a>
-                </Form.Item> */}
       </Form>
     );
   }
 }
 
 const LoginForm = Form.create()(LoginFormTemplate);
-export default LoginForm;
+export default withRouter(LoginForm);
