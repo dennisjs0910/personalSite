@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 
 class LoginFormTemplate extends Component {
+
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    const { validateFields } = this.props.form;
+    const { loginUser } = this.props;
+    validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        loginUser(values);
       }
     });
   };

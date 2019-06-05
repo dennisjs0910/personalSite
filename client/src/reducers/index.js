@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import BlogReducer from "./BlogReducer";
+import AuthReducer from "./AuthReducer";
 
 const appReducer = combineReducers({
-  blog: BlogReducer
+  blog: BlogReducer,
+  auth: AuthReducer,
 });
 
 export default (state, action) => {
