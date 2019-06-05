@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 routes.use("/image-upload", require('@routes/imageUpload'));
 routes.use("/blog", require('@routes/blogController'));
-routes.use("/user", require('@routes/authController'));
+routes.use("/user/session", require('@routes/authController'));
+routes.use("/user", require('@routes/userController'));
 
 module.exports = routes;
