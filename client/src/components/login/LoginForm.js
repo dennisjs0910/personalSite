@@ -15,7 +15,6 @@ class LoginFormTemplate extends Component {
     });
   };
 
-  // TODO: validate email is proper format
   render() {
     const { getFieldDecorator } = this.props.form;
     return (

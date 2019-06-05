@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import RegistrationForm from "./RegistrationForm";
-export default class RegistrationContainer extends Component {
+import { UserAction } from '../../actions';
 
+class RegistrationContainer extends Component {
   render() {
+    const { registerUser } = this.props;
     return (
-      <RegistrationForm />
+      <RegistrationForm registerUser={registerUser}/>
     );
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ registerUser: UserAction.registerUser }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(RegistrationContainer);
