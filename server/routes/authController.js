@@ -7,8 +7,8 @@ const VISIBLE_COLUMNS = ["id", "first_name", "last_name", "email", "permission"]
 // TODO: restructure after passport is integrated
 // TODO: remove console.log in the future
 
-
-routes.post('/register/', async (req, res) => {
+// TODO: /register may move to registrationContoller or delete that file if this is going to exist here.
+routes.post('/register', async (req, res) => {
   try {
     const { first_name, last_name, email, password} = req.body;
     const users = await knex(USER_TABLE)
@@ -17,7 +17,7 @@ routes.post('/register/', async (req, res) => {
     if (!users || users.length === 0) {
       console.log("TODO users.length is empty");
     }
-
+    //TODO: sending user info on registration does not make sense, please fix in task-24
     res.status(200);
     res.json({ user : users[0] });
   } catch(err) {
