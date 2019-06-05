@@ -32,7 +32,8 @@ export default class AuthAction {
           type: AUTH_ACTION.LOGOUT_SUCCESS,
           payload: {
             current_user: null,
-            hasLoggedIn: false
+            hasLoggedIn: false,
+            error: null
           }
         });
         history.push("/login");
