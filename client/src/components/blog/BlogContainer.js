@@ -28,7 +28,22 @@ class BlogContainer extends Component {
     this.props.getBlogs();
   }
 
-  handlePaginationChange(value) {
+  /**
+   * Shortens image_text of blog that is to be displayed.
+   * @param  {String} text
+   * @return {String}    first 147 chars of image_text appended with ...;
+   */
+  _shortenImageDescription = (text) => {
+    if (text && text.length <= 150) return text;
+    const end = Math.min(text.length, 147);
+    return text.substring(0, end) + "...";
+  }
+
+  /**
+   * When user clicks on < or > it will recalculate indexes that are to be shown.
+   * @param  {int} value [page number]
+   */
+  handlePaginationChange = value => {
     console.log("handlePaginationChange", this.props.blogs);
     if (value <= 1) {
       this.setState({
@@ -43,24 +58,14 @@ class BlogContainer extends Component {
     }
   }
 
-  handleFormModalVisibility() {
+  handleFormModalVisibility = () => {
     this.setState({ isModalFormVisible: !this.state.isModalFormVisible });
   }
 
-  _shortenImageDescription(text) {
-    const end = Math.min(text.length, 147);
-    return text.substring(0, end) + "...";
-  }
-
-  _renderCreateBlogPostButton() {
+  renderCreateBlogPostButton() {
     return(
       <Button type="primary" onClick={ this.handleFormModalVisibility }>CREATE +</Button>
     )
-  }
-
-  //TODO: implement feature in the future
-  _renderFeaturedBlogs() {
-    return null;
   }
 
   renderHeaderRow() {
@@ -71,7 +76,7 @@ class BlogContainer extends Component {
         <div id='blogHeaderContainer' className="main-img">
           <h1 className="title-header">Blog Currently Under Construction</h1>
           <p className="p-header">{ `${paragraph}` }</p>
-          { this._renderCreateBlogPostButton() }
+          { this.renderCreateBlogPostButton() }
         </div>
       </Col>
     </Row>);
@@ -129,7 +134,6 @@ class BlogContainer extends Component {
     return (
       <Content >
         { this.renderHeaderRow() }
-        { /**this._renderFeaturedBlogs() */}
         { this.renderAllBlogs(blogs) }
         <BlogFormModal
           isVisible={ isModalFormVisible }

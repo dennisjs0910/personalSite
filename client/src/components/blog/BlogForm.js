@@ -103,7 +103,7 @@ class BpForm extends Component {
     const { tags } = this.props || [];
     return(
       <Form.Item label="Tags">
-        { this._renderTagFormHelper(inputVisible, inputValue) }
+        { this.renderTagInput(inputVisible, inputValue) }
         <div>
           { tags.map(tag => <Tag key={tag}>{tag}</Tag>) }
         </div>
@@ -111,7 +111,7 @@ class BpForm extends Component {
     );
   }
 
-  _renderTagFormHelper(inputVisible, inputValue) {
+  renderTagInput(inputVisible, inputValue) {
     if (inputVisible) {
       return(<Input
         ref={ this.saveInputRef }
@@ -150,12 +150,6 @@ class BpForm extends Component {
         <Form.Item label="Image Description">
           { getFieldDecorator(`img_text`, {})(<Input.TextArea />) }
         </Form.Item>
-
-        {/** Currently video upload is not supported.
-          <Form.Item label="Video Description">
-            { getFieldDecorator(`video-descprition`, {})(<Input.TextArea />) }
-          </Form.Item>
-        */}
       </div>
     )
   }

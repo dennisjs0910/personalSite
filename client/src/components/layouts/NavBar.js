@@ -69,14 +69,6 @@ class NavBar extends Component {
               Blog
             </Link>
           </Menu.Item>
-          { /**
-             * Commenting out for now.
-             *
-              <Menu.Item key="about-me">
-                <Icon type="smile" />
-                About me
-              </Menu.Item>
-             */ }
           { this.renderAuthMenuItem() }
         </Menu>
       </Affix>

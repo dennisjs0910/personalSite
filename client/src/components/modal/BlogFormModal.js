@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form } from 'antd';
-import { BlogForm } from '../customForm';
-// import './BlogFormContainer.css';
+import { BlogForm } from '../blog';
 
 class BlogFormContainer extends Component {
   constructor(props) {
     super(props);
-    // TODO: connect tags and image_url to BlogFormContainer and disconnect from BlogForm
     this.state = {
       tags: [],
       inputValue: '',
