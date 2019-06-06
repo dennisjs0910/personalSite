@@ -30,8 +30,6 @@ class NavBar extends Component {
 
   renderAuthMenuItem () {
     const { current_user, hasLoggedIn } = this.props;
-    console.log("current_user in nav", !!!current_user, current_user);
-    console.log("hasLoggedIn in nav", hasLoggedIn);
     if (!!!current_user && !hasLoggedIn) {
       return(
         <Menu.Item key="login">
