@@ -4,13 +4,11 @@ require('@services/cloudinaryConnection');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
+const passport = require('passport');
 const morgan = require('morgan');
 const formData = require('express-form-data');
 const knexOptions = require('@root/knexfile');
 const knex = require('knex')(knexOptions);
-
-// TEST CODE START =================================
-// TEST CODE END ===================================
 
 // App: Initialization, routes, and configuration
 const app = express();
@@ -25,6 +23,9 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use("/api", require('@routes'));
 
 // SERVER: Listen to a specific server port
@@ -37,9 +38,9 @@ const server = app.listen(serverPort, () => {
 process.on('SIGINT', async () => {
   console.log('\n-Received kill signal, shutting down gracefully');
   await knex.destroy();
-  console.log('-Knex instance destroyed');
+  console.log('==========Knex instance destroyed===========');
   await server.close();
-  console.log('-Closed out remaining connections');
+  console.log('======Closed out remaining connections======');
   process.exit(0);
 
   setTimeout(() => {

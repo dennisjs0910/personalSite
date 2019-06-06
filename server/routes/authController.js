@@ -1,42 +1,51 @@
 const routes = require('express').Router();
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 const knexOptions = require('@root/knexfile');
 const knex = require('knex')(knexOptions);
 const USER_TABLE = "User";
 const VISIBLE_COLUMNS = ["id", "first_name", "last_name", "email", "permission"];
 
-// TODO: restructure after passport is integrated
-// TODO: remove console.log in the future
+passport.serializeUser(({ email }, done) => done(null, email));
 
-// TODO: /register may move to registrationContoller or delete that file if this is going to exist here.
-routes.post('/register', async (req, res) => {
+passport.deserializeUser(async (email, done) => {
   try {
-    const { first_name, last_name, email, password} = req.body;
-    const users = await knex(USER_TABLE)
-      .insert({ first_name, last_name, email, password, permission: "admin" })
-      .returning(VISIBLE_COLUMNS);
-    if (!users || users.length === 0) {
-      console.log("TODO users.length is empty");
+    const users = await knex(USER_TABLE).select(VISIBLE_COLUMNS).where({ email });
+    if (!users || users.length == 0) {
+      return done(null, false, { message: `User with email ${email} does not exist.`})
+    } else {
+      return done(null, users[0]);
     }
-    //TODO: sending user info on registration does not make sense, please fix in task-24
-    res.status(200);
-    res.json({ user : users[0] });
-  } catch(err) {
-    console.log(err);
-    res.status(404);
-    res.json({ error : err });
+  } catch (err) {
+    return done(null, false, { message: `User with email ${email} does not exist.`});
   }
 });
 
+passport.use(new LocalStrategy(async (email, password, done) => {
+  try {
+    const users = await knex(USER_TABLE).select([...VISIBLE_COLUMNS, "password"]).where({ email });
+    if (!users || users.length === 0) {
+      return done(null, false, { field: "email", message: "The email you’ve entered doesn’t match any account."})
+    }
+    // TODO: need to do one way hashing for production.
+    if (password == users[0].password) {
+      return done(null, users[0]);
+    } else {
+      return done(null, false, { field: "password", message: "The password you’ve entered is incorrect."})
+    }
+  } catch (err) {
+    return done(null, false, { field: "email", message: "The email you’ve entered doesn’t match any account."})
+  }
+}));
+
 // TODO: this is for testing purpose, later on only check req.user after passport is integrated
 routes.get('/', async (req, res) => {
-  try{
-    const user = await knex(USER_TABLE).where('id', 1);
+  console.log("req.user", req.user);
+  if (!req.user) {
+    res.sendStatus(404);
+  } else {
     res.status(200);
-    res.json({ user });
-  } catch (err) {
-    console.log(err);
-    res.status(404);
-    res.json({ error : err });
+    res.json({user: req.user});
   }
 });
 
@@ -54,7 +63,6 @@ routes.post('/', async (req, res) => {
     res.status(200);
     res.json({ user : users[0] });
   } catch (err) {
-    console.log(err);
     res.status(404);
     res.json({ error : err });
   }
@@ -62,10 +70,12 @@ routes.post('/', async (req, res) => {
 
 routes.delete("/", (req, res) => {
   try {
+    req.session = null;
+    req.logout();
     res.sendStatus(204);
-  } catch (err) {
+  } catch (e) {
     res.status(500);
-    res.json({ error : err });
+    res.send(e);
   }
 });
 
