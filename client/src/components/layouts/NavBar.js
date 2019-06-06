@@ -12,7 +12,7 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 'mail',
+      current: 'home',
       top: 0
     }
     this.renderAuthMenuItem = this.renderAuthMenuItem.bind(this);
@@ -22,13 +22,17 @@ class NavBar extends Component {
     const { logoutUser, history } = this.props;
     if (e.key === LOGOUT) {
       logoutUser(history);
+      this.setState({ current: 'login'});
+      return;
     }
     this.setState({ current: e.key });
   }
 
   renderAuthMenuItem () {
     const { current_user, hasLoggedIn } = this.props;
-    if (!!!current_user && hasLoggedIn) {
+    console.log("current_user in nav", !!!current_user, current_user);
+    console.log("hasLoggedIn in nav", hasLoggedIn);
+    if (!!!current_user && !hasLoggedIn) {
       return(
         <Menu.Item key="login">
           <Link to="/login">
