@@ -42,7 +42,6 @@ export default class BlogAction {
      }
   };
 
-
   static getBlogs = () => {
     return async (dispatch) => {
       try{

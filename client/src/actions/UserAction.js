@@ -1,7 +1,6 @@
 import axios from "axios";
 import { USER_ACTION } from "./ActionTypes";
 
-// TODO: change uri /api/user/register to /api/user
 export default class UserAction {
   static registerUser = (data, history) => {
     return async (dispatch) => {
