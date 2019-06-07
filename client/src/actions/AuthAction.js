@@ -2,6 +2,27 @@ import axios from "axios";
 import { AUTH_ACTION } from "./ActionTypes";
 
 export default class AuthAction {
+
+  static checkUser = () => {
+    return async (dispatch) => {
+      try {
+        const res = await axios.get("/api/user/session");
+        dispatch({
+          type: AUTH_ACTION.LOGIN_SUCCESS,
+          payload: {
+            currentUser: res.data && res.data.user,
+            hasLoggedIn: true
+          }
+        });
+      } catch (err) {
+        dispatch({
+          type: AUTH_ACTION.LOGIN_FAILURE,
+          payload: { error: err.response.data }
+        });
+      }
+    };
+  };
+
   static loginUser = ({ email, password }, history) => {
     return async (dispatch) => {
       try {
@@ -18,7 +39,7 @@ export default class AuthAction {
       } catch (err) {
         dispatch({
           type: AUTH_ACTION.LOGIN_FAILURE,
-          payload: { err: err.response.data }
+          payload: { error: err.response.data }
         });
       }
     };
@@ -40,7 +61,7 @@ export default class AuthAction {
       } catch (err) {
         dispatch({
           type: AUTH_ACTION.LOGOUT_FAILURE,
-          payload: { err: err.response.data }
+          payload: { error: err.response.data }
         });
       }
     };

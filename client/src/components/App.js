@@ -1,10 +1,14 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { connect } from 'react-redux';
+import { isEmpty } from "lodash";
+
 import * as Layouts from "./layouts";
 import { BlogContainer } from "./blog";
 import { LoginContainer } from "./login";
 import { RegistrationContainer } from "./registration";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+import { AuthAction } from "../actions";
 // Styling Imports
 import 'antd/dist/antd.css'; // can move to babel
 import { Layout } from 'antd';
@@ -22,6 +26,17 @@ import { Layout } from 'antd';
 // }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state={};
+  }
+  static getDerivedStateFromProps(props, state) {
+    if (isEmpty(props.error) && !props.hasLoggedIn) {
+      props.dispatch(AuthAction.checkUser());
+    }
+    return null;
+  }
+
   render() {
     return (
       <Router>
@@ -43,5 +58,6 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => state.auth;
+export default connect(mapStateToProps)(App);
 
