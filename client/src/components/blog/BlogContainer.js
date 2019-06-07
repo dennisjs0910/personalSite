@@ -22,6 +22,7 @@ class BlogContainer extends Component {
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
     this.handleFormModalVisibility = this.handleFormModalVisibility.bind(this);
     this.renderHeaderRow = this.renderHeaderRow.bind(this);
+    this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
   }
 
   componentDidMount() {
@@ -62,9 +63,14 @@ class BlogContainer extends Component {
   }
 
   renderCreateBlogPostButton() {
-    return(
-      <Button type="primary" onClick={ this.handleFormModalVisibility }>CREATE +</Button>
-    )
+    const { currentUser } = this.props;
+    if (!!currentUser) {
+      return(
+        <Button type="primary" onClick={ this.handleFormModalVisibility }>CREATE +</Button>
+      )
+    } else {
+      return null;
+    }
   }
 
   renderHeaderRow() {

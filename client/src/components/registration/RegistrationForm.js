@@ -66,6 +66,7 @@ class RegistrationFormTemplate extends Component {
               required: true,
               message: 'Please input your E-mail!',
             }],
+            validateTrigger: "onSubmit",
           })(<Input />)}
         </Form.Item>
 
