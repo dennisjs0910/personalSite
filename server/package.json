@@ -16,7 +16,8 @@
   "_moduleAliases": {
     "@root": "./",
     "@routes": "./routes",
-    "@services": "./services"
+    "@services": "./services",
+    "@qm": "./query_manager"
   },
   "author": "",
   "license": "ISC",
