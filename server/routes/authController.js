@@ -47,7 +47,8 @@ routes.post('/', async (req, res, next) => {
     if (!user) return res.status(401).json({ field: info.field, message: info.message });
     req.login(user, err => {
       if (err) return res.status(500).json(err);
-      res.status(200).json({ user });
+      res.status(200);
+      res.json({ user });
     });
   })(req, res, next);
 });
@@ -59,9 +60,8 @@ routes.delete("/", (req, res) => {
     res.sendStatus(204);
   } catch (e) {
     res.status(500);
-    res.send(e);
+    res.json({ err });
   }
 });
-
 
 module.exports = routes;

@@ -107,19 +107,17 @@ class BlogContainer extends Component {
   _renderBlogsToCard(blogs) {
     if (blogs && blogs.length > 0) {
       return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => {
-        const blogItem = blog["BlogPost"];
-        const content = blog["BlogContent"];
         return (
-          <Col span={6} key={blogItem.id}>
+          <Col span={6} key={blog.id}>
             <Card className="blog-card"
-              title={blogItem.title}
+              title={blog.title}
               extra={<a href="/#">More</a>}
             >
               <img className="blog-img"
-                src={content.image_url}
+                src={blog.image_url || ""}
                 alt=""
               />
-              <p>{this._shortenImageDescription(content.image_text)}</p>
+              <p>{this._shortenImageDescription(blog.image_text || "")}</p>
             </Card>
           </Col>
         );

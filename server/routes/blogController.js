@@ -1,4 +1,6 @@
 const routes = require('express').Router();
+const { blogManager } = require('@qm/index');
+
 const knexOptions = require('@root/knexfile');
 const knex = require('knex')(knexOptions);
 const BLOG_POST = "BlogPost";
@@ -8,6 +10,7 @@ const BLOG_CONTENT = "BlogContent";
 const BLOG_CONTENT_COL = ['id', 'blogPost_id', 'video_url', 'video_text',
   'image_url', 'image_text', 'sequence', 'created_at', 'updated_at'];
 
+// TODO: helper functions can move into blogManager.js
 //================= Helper Functions ====================
 let generateBlogObject = (title, tags) => {
   return {
@@ -40,19 +43,14 @@ let _parseTags = (tags) => {
 //================= ROUTER API ====================
 
 routes.get('/', async (req, res) => {
-  console.log("hello i have been successully reached from client\n\n\n");
-  try{
-    const blogData = await knex.select('*').from(BLOG_POST)
-      .leftJoin(BLOG_CONTENT, `${BLOG_POST}.id`, `${BLOG_CONTENT}.blogPost_id`)
-      .options({ nestTables: true, rowMode: 'array' });
-
-    res.status(200);
-    res.json({ data: blogData });
-  } catch(err) {
-    console.log(err);
-    res.status(404);
-    res.json({ err });
+  const data = await blogManager.getBlogs();
+  if (!!!data) {
+    res.sendStatus(404);
+    return;
   }
+
+  res.status(200);
+  res.json({ data });
 });
 
 routes.post('/', async (req, res) => {
