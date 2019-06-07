@@ -15,7 +15,9 @@ class NavBar extends Component {
       current: 'home',
       top: 0
     }
+
     this.renderAuthMenuItem = this.renderAuthMenuItem.bind(this);
+    this.renderSignUpGreetingMenutItem = this.renderSignUpGreetingMenutItem.bind(this);
   }
 
   handleClick = e => {
@@ -28,9 +30,9 @@ class NavBar extends Component {
     this.setState({ current: e.key });
   }
 
-  renderAuthMenuItem () {
-    const { current_user, hasLoggedIn } = this.props;
-    if (!!!current_user && !hasLoggedIn) {
+  renderAuthMenuItem() {
+    const { currentUser, hasLoggedIn } = this.props;
+    if (!!!currentUser && !hasLoggedIn) {
       return(
         <Menu.Item key="login">
           <Link to="/login">
@@ -44,6 +46,27 @@ class NavBar extends Component {
         <Menu.Item key="logout">
           <Icon type="logout"/>
           Logout
+        </Menu.Item>
+      )
+    }
+  }
+
+  renderSignUpGreetingMenutItem() {
+    const { currentUser, hasLoggedIn } = this.props;
+    if (!!!currentUser && !hasLoggedIn) {
+      return(
+        <Menu.Item key="signup">
+          <Link to="/signup">
+            <Icon type="user-add"/>
+            Sign Up
+          </Link>
+        </Menu.Item>
+      )
+    } else {
+      return(
+        <Menu.Item key="greeting">
+          <Icon type="user"/>
+          {`${currentUser.first_name} ${currentUser.last_name}`}
         </Menu.Item>
       )
     }
@@ -70,6 +93,7 @@ class NavBar extends Component {
             </Link>
           </Menu.Item>
           { this.renderAuthMenuItem() }
+          { this.renderSignUpGreetingMenutItem() }
         </Menu>
       </Affix>
     );
