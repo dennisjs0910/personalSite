@@ -9,7 +9,7 @@ export default class AuthAction {
         dispatch({
           type: AUTH_ACTION.LOGIN_SUCCESS,
           payload: {
-            current_user: res.data && res.data.user,
+            currentUser: res.data && res.data.user,
             hasLoggedIn: true,
             error: null
           }
@@ -31,7 +31,7 @@ export default class AuthAction {
         dispatch({
           type: AUTH_ACTION.LOGOUT_SUCCESS,
           payload: {
-            current_user: null,
+            currentUser: null,
             hasLoggedIn: false,
             error: null
           }

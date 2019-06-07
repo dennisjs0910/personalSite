@@ -5,8 +5,7 @@ export default class UserAction {
   static registerUser = (data, history) => {
     return async (dispatch) => {
       try {
-        const res = await axios.post("/api/user", data);
-        console.log(res);
+        await axios.post("/api/user", data);
         dispatch({
           type: USER_ACTION.REGISTER_SUCCESS,
         });

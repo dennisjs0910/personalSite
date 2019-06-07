@@ -8,7 +8,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case BLOG_ACTION.CREATE_BLOG_SUCCESS : {
       const { items } = state;
-      return Object.assign({...state}, { items: [...items, action.payload.data[0]] });
+      return Object.assign({...state}, { items: [ action.payload.data,  ...items ] });
     }
     case BLOG_ACTION.FETCH_BLOG_SUCCESS:
       return Object.assign({...state}, { items: action.payload.data });

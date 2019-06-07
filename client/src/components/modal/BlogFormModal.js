@@ -37,10 +37,11 @@ class BlogFormContainer extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { tags, image_url } = this.state;
+    const { currentUser, handleClose, createBlog } = this.props;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.props.handleClose();
-        this.props.createBlog(Object.assign(values, { tags, image_url }));
+        handleClose();
+        createBlog(Object.assign(values, { tags, image_url, user_id: currentUser.id }));
       } else {
         console.log(err);
       }

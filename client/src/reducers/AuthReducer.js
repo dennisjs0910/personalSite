@@ -1,7 +1,7 @@
 import { AUTH_ACTION } from "../actions/ActionTypes";
 
 const initialState = {
-  current_user: null,
+  currentUser: null,
   hasLoggedIn: false,
   error: null
 }

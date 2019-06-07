@@ -127,7 +127,7 @@ class BlogContainer extends Component {
 
   render() {
     const { isModalFormVisible } = this.state;
-    const { blogs, createBlog } = this.props;
+    const { blogs, currentUser, createBlog } = this.props;
     return (
       <Content >
         { this.renderHeaderRow() }
@@ -136,6 +136,7 @@ class BlogContainer extends Component {
           isVisible={ isModalFormVisible }
           handleClose={ this.handleFormModalVisibility }
           createBlog={ createBlog }
+          currentUser={ currentUser }
         />
       </Content>
     );
@@ -153,10 +154,9 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mapStateToProps = state => {
-  if (state && state.blog && state.blog.items) {
-    return { blogs: state.blog.items };
-  }
-  return {};
+  const { items } = state.blog;
+  const { currentUser } = state.auth;
+  return { blogs: items, currentUser };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlogContainer);
