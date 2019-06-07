@@ -27,6 +27,7 @@ class LoginFormTemplate extends Component {
             },{
               required: true, message: 'Please input your E-mail!'
             }],
+            validateTrigger: "onSubmit",
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
