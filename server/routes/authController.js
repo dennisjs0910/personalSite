@@ -3,6 +3,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { userManager } = require('@qm/index');
 
+//TODO: maybe passport should not be initialized here and can be moved to services.
 passport.serializeUser(({ email }, done) => done(null, email));
 
 passport.deserializeUser(async (email, done) => {
@@ -20,6 +21,7 @@ passport.use(new LocalStrategy({
     if (!!!user) {
       return done(null, false, { field: "email", message: "The email you’ve entered doesn’t match any account."})
     }
+
     // TODO: need to do one way hashing for production.
 
     if (password == user.password) {

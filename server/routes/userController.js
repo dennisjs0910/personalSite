@@ -1,25 +1,18 @@
 const routes = require('express').Router();
-const knexOptions = require('@root/knexfile');
-const knex = require('knex')(knexOptions);
-const USER_TABLE = "User";
+const { userManager } = require('@qm/index');
 
 /**
  * Creates a new user
  */
 routes.post('/', async (req, res) => {
-  try {
-    const { first_name, last_name, email, password} = req.body;
-    const users = await knex(USER_TABLE).insert({
-      first_name, last_name, email, password, permission: "admin"
-    });
-
-    res.status(200);
-    res.json({});
-  } catch(err) {
-    console.log(err);
-    res.status(404);
-    res.json({ error : err });
+  const { first_name, last_name, email, password } = req.body;
+  const result = await userManager.createUser({ first_name, last_name, email, password });
+  if (!!!result) {
+    res.status(404).json({ error : err });
+    return;
   }
+
+  res.status(200);
 });
 
 module.exports = routes;

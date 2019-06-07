@@ -19,5 +19,19 @@ module.exports = {
     } catch (err) {
       return null;
     }
+  },
+
+  /**
+   * Inserts row into "User" Table
+   * @param  {Object} fields [fields that need to be inserted into the row]
+   * @return {Object}        [Returns result object on success and null on failure]
+   */
+  createUser: async (fields) => {
+    try {
+      const result = await knex(USER_TABLE).insert(Object.assign({ ...fields }, { permission: "admin"}) );
+      return result;
+    } catch (err) {
+      return null;
+    }
   }
 }
