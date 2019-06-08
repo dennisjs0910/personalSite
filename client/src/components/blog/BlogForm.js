@@ -7,10 +7,12 @@ class BpForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: "",
       tags: [],
       inputVisible: false,
-      inputValue: '',
-      image_url: ''
+      tagInputValue: '',
+      media_url: [],
+      mediaText: [""]
     };
 
     this.renderTitleForm = this.renderTitleForm.bind(this);
@@ -21,62 +23,7 @@ class BpForm extends Component {
     this.uploadImageToCloudinary = this.uploadImageToCloudinary.bind(this);
   }
 
-  /**
-   * This function is used to add tags, once user clicks on
-   * "+ New Tag" it will set input to be visible.
-   */
-  showTagInput = () => {
-    this.setState({ inputVisible: true }, () => this.input.focus());
-  };
-
-  /**
-   * This function adds a new tag to the list of tags.
-   * Also we reset the inputValue and unfocus the input.
-   */
-  handleInputConfirm = () => {
-    const { inputValue } = this.state;
-    this.props.handleTagInputConfirm(inputValue);
-
-    this.setState({
-      inputVisible: false,
-      inputValue: '',
-    });
-  };
-
-   /**
-   * Handle close is used to remove a tag user have added
-   * @param  {String} removedTag [Tag name to be deleted]
-   */
-  handleTagClose = removedTag => {
-    const tags = this.state.tags.filter(tag => tag !== removedTag);
-    this.setState({ tags });
-  };
-
-  /**
-   * This function sets the input value to what the user is typing.
-   * @param  {Event Object} e
-   */
-  handleInputChange = e => {
-    this.setState({ inputValue: e.target.value });
-  };
-
-  saveInputRef = input => (this.input = input);
-
-  handleSubmit = e => {
-    e.preventDefault();
-    const { tags, image_url } = this.state;
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        this.props.createBlog(Object.assign(values, { tags, image_url }));
-        // TODO: this.props.history is currently undefined fix the issue please
-        // this.props.history.push("/blog");
-      } else {
-        console.log(err);
-      }
-    });
-  };
-
-  /**
+    /**
    * Custom Request to upload an image to Cloudinary.
    * It is used to obtain a secure url to pass to the server in the future.
    * When it is successful
@@ -98,12 +45,81 @@ class BpForm extends Component {
     }
   }
 
+  saveInputRef = input => (this.input = input);
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const { tags, image_url } = this.state;
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        this.props.createBlog(Object.assign(values, { tags, image_url }));
+        // TODO: this.props.history is currently undefined fix the issue please
+        // this.props.history.push("/blog");
+      } else {
+        console.log(err);
+      }
+    });
+  };
+
+  /**
+   * This function is used to add tags, once user clicks on
+   * "+ New Tag" it will set input to be visible.
+   */
+  showTagInput = () => {
+    this.setState({ inputVisible: true }, () => this.input.focus());
+  };
+
+  /**
+   * This function adds a new tag to the list of tags.
+   * Also we reset the inputValue and unfocus the input.
+   */
+  handleInputConfirm = () => {
+    const { tagInputValue, tags } = this.state;
+    // this.props.handleTagInputConfirm(tagInputValue);
+
+    this.setState({
+      tags: [...tags, tagInputValue],
+      inputVisible: false,
+      tagInputValue: '',
+    });
+  };
+
+   /**
+   * Handle close is used to remove a tag user have added
+   * @param  {String} removedTag [Tag name to be deleted]
+   */
+  handleTagClose = removedTag => {
+    const tags = this.state.tags.filter(tag => tag !== removedTag);
+    this.setState({ tags });
+  };
+
+  //========== combine later on =================
+  /**
+   * This function sets the input value to what the user is typing.
+   * @param  {Event Object} e
+   */
+  handleInputChange = ({ target }) => {
+    this.setState({ tagInputValue: target.value });
+  };
+
+  handleTitleChange = ({ target }) => {
+    this.setState({ title: target.value });
+  }
+  //=============================================
+
+
+  addTextBox = e => {
+    const { mediaText } = this.state;
+    this.setState({
+      mediaText: [...mediaText, ""]
+    });
+  }
+
   renderTagForm() {
-    const { inputVisible, inputValue } = this.state;
-    const { tags } = this.props || [];
+    const { inputVisible, tagInputValue, tags } = this.state;
     return(
       <Form.Item label="Tags">
-        { this.renderTagInput(inputVisible, inputValue) }
+        { this.renderTagInput(inputVisible, tagInputValue) }
         <div>
           { tags.map(tag => <Tag key={tag}>{tag}</Tag>) }
         </div>
@@ -111,13 +127,13 @@ class BpForm extends Component {
     );
   }
 
-  renderTagInput(inputVisible, inputValue) {
+  renderTagInput(inputVisible, tagInputValue) {
     if (inputVisible) {
       return(<Input
         ref={ this.saveInputRef }
         type="text"
         size="small"
-        value={ inputValue }
+        value={ tagInputValue }
         onChange={ this.handleInputChange }
         onBlur={ this.handleInputConfirm }
         onPressEnter={ this.handleInputConfirm }
@@ -154,24 +170,45 @@ class BpForm extends Component {
     )
   }
 
-  renderTitleForm(getFieldDecorator) {
+  renderTitleForm() {
     return(
       <Form.Item label="Blog Title">
-        {getFieldDecorator('title', {
-          rules: [{ required: true, message: 'Please input the title for this blog', }],
-        })(<Input />)}
+        <Input onChange={ this.handleTitleChange.bind(this) }>
+        </Input>
       </Form.Item>
+    );
+  }
+
+  renderInputTextBoxes() {
+    const { mediaText } = this.state;
+    return mediaText.map((val, idx) => {
+      return(
+        <Form.Item label={`Media Description ${idx + 1}`} key={idx}>
+          <Input.TextArea defaultValue={ val }>
+          </Input.TextArea>
+        </Form.Item>
+      )
+    });
+  }
+
+  renderAddMoreTextButton() {
+    return(
+      <Button type="primary" onClick={ this.addTextBox } >
+        Add More Content
+      </Button>
     );
   }
 
   render() {
     const { getFieldDecorator } = this.props;
-
+    console.log("BLOG FORM STATE: ", this.state);
     return (
       <div>
-        { this.renderTitleForm(getFieldDecorator)}
+        { this.renderTitleForm()}
         { this.renderTagForm() }
-        { this.renderMediaContentForm(getFieldDecorator) }
+        { this.renderInputTextBoxes() }
+        { this.renderAddMoreTextButton() }
+        { /**this.renderMediaContentForm(getFieldDecorator) */ }
       </div>
     );
   }
