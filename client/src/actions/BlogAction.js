@@ -25,7 +25,7 @@ export default class BlogAction {
    * @return {Function}    [async function to dispatch results to reducers]
    */
   static createBlog = (data) => {
-     console.log(data);
+     console.log("createBlog", data);
      return {
         type: BLOG_ACTION.CREATE_BLOG_FAILURE,
         error: { message: "nothing~~" }

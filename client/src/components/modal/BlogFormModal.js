@@ -5,8 +5,10 @@ import { BlogAction } from '../../actions';
 class BlogFormModal extends Component {
   constructor(props) {
     super(props);
+    this.tagSet = new Set();
     this.state = {
-      title: "",
+      title: "", //required
+      summary: "", //required
       tags: [],
       inputVisible: false,
       tagInputValue: '',
@@ -14,15 +16,11 @@ class BlogFormModal extends Component {
       mediaText: [""]
     };
 
-    this.renderTitleForm = this.renderTitleForm.bind(this);
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInputConfirm = this.handleInputConfirm.bind(this);
-    this.uploadImageToCloudinary = this.uploadImageToCloudinary.bind(this);
   }
 
-    /**
+  /**
    * Custom Request to upload an image to Cloudinary.
    * It is used to obtain a secure url to pass to the server in the future.
    * When it is successful
@@ -39,7 +37,7 @@ class BlogFormModal extends Component {
     } catch(err) {
       onError(err);
     }
-  }
+  };
 
   saveInputRef = input => (this.input = input);
 
@@ -52,24 +50,34 @@ class BlogFormModal extends Component {
   };
 
   /**
-   * This function adds a new tag to the list of tags.
+   * This function adds a new tag to the list of tags if tagInput is unique.
    * Also we reset the inputValue and unfocus the input.
    */
   handleInputConfirm = () => {
     const { tagInputValue, tags } = this.state;
-    this.setState({
-      tags: [...tags, tagInputValue],
-      inputVisible: false,
-      tagInputValue: '',
-    });
+
+    if (!this.tagSet.has(tagInputValue)) {
+      this.tagSet.add(tagInputValue);
+      this.setState({
+        tags: [...tags, tagInputValue],
+        inputVisible: false,
+        tagInputValue: '',
+      });
+    } else {
+      this.setState({
+        inputVisible: false,
+        tagInputValue: '',
+      });
+    }
   };
 
-   /**
+  /**
    * Handle close is used to remove a tag user have added
    * @param  {String} removedTag [Tag name to be deleted]
    */
   handleTagClose = removedTag => {
-    const tags = this.state.tags.filter(tag => tag !== removedTag);
+    const tags = this.state.tags.filter(tag =>  tag !== removedTag );
+    this.tagSet.delete(removedTag);
     this.setState({ tags });
   };
 
@@ -85,29 +93,23 @@ class BlogFormModal extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { title, tags, fileList, mediaText } = this.state;
+    const { title, summary, tags, fileList, mediaText } = this.state;
     const { currentUser, handleClose, createBlog } = this.props;
     handleClose();
     createBlog(Object.assign({
-      title, tags, fileList, mediaText, user_id: currentUser.id
+      title, summary, tags, fileList, mediaText, user_id: currentUser.id
     }));
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
-  //========== combine later on =================
+
   /**
    * This function sets the input value to what the user is typing.
    * @param  {Event Object} e
    */
-  handleInputChange = ({ target }) => {
-    this.setState({ tagInputValue: target.value });
+  handleTextInputChange = ({target}, key) => {
+    this.setState({ [key]: target.value });
   };
-
-  handleTitleChange = ({ target }) => {
-    this.setState({ title: target.value });
-  };
-  //=============================================
-
 
   addTextBox = e => {
     const { mediaText } = this.state;
@@ -122,7 +124,15 @@ class BlogFormModal extends Component {
       <Form.Item label="Tags">
         { this.renderTagInput(inputVisible, tagInputValue) }
         <div>
-          { tags.map(tag => <Tag key={tag}>{tag}</Tag>) }
+          { tags.map(tag =>
+            <Tag
+              closable
+              onClose={() => this.handleTagClose(tag) }
+              key={tag}
+            >
+              {tag}
+            </Tag>
+          )}
         </div>
       </Form.Item>
     );
@@ -130,20 +140,22 @@ class BlogFormModal extends Component {
 
   renderTagInput(inputVisible, tagInputValue) {
     if (inputVisible) {
-      return(<Input
-        ref={ this.saveInputRef }
-        type="text"
-        size="small"
-        value={ tagInputValue }
-        onChange={ this.handleInputChange }
-        onBlur={ this.handleInputConfirm }
-        onPressEnter={ this.handleInputConfirm }
-      />);
+      return(
+        <Input
+          ref={ this.saveInputRef }
+          type="text"
+          size="small"
+          value={ tagInputValue }
+          onChange={(e) => this.handleTextInputChange(e, "tagInputValue") }
+          onBlur={ this.handleInputConfirm }
+          onPressEnter={ this.handleInputConfirm }
+        />);
     } else {
       return(
         <Tag
           className="bp-form-add-new-tag"
-          onClick={ this.showTagInput } >
+          onClick={ this.showTagInput }
+        >
           <Icon type="plus" /> New Tag
         </Tag>
       );
@@ -172,11 +184,20 @@ class BlogFormModal extends Component {
   renderTitleForm() {
     return(
       <Form.Item label="Blog Title">
-        <Input onChange={ this.handleTitleChange.bind(this) }>
+        <Input onChange={(e) => this.handleTextInputChange(e, "title") }>
         </Input>
       </Form.Item>
     );
   };
+
+  renderBlogSummaryForm() {
+    return(
+      <Form.Item label="Summary">
+        <Input.TextArea onChange={(e) => this.handleTextInputChange(e, "summary") }>
+        </Input.TextArea>
+      </Form.Item>
+    );
+  }
 
   renderInputTextBoxes() {
     const { mediaText } = this.state;
@@ -202,26 +223,35 @@ class BlogFormModal extends Component {
     );
   };
 
+  isSubmitDisabled = (title, summary) => {
+    return title === "" || summary === "";
+  };
+
   /**
-   * TODO:
    * This function returns the footor of a main mondal component
    * @param  {Function} handleClose [function that closes modal]
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
   getFooterElements = (handleClose) => {
+    const { title, summary } = this.state;
     return [
       <Button key="back" onClick={ handleClose }>
         Close
       </Button>,
-      <Button key="submit" type="primary" htmlType="submit" onClick={this.handleSubmit}>
+      <Button
+        key="submit"
+        type="primary"
+        htmlType="submit"
+        onClick={this.handleSubmit}
+        disabled= {this.isSubmitDisabled(title, summary)}
+      >
         Submit
       </Button>,
     ];
-  }
+  };
 
   render() {
     const { isVisible, handleClose } = this.props;
-
     return (
       <div>
         <Modal
@@ -233,6 +263,7 @@ class BlogFormModal extends Component {
         >
           <Form onSubmit={this.handleSubmit} className="bp-form-container">
             { this.renderTitleForm()}
+            { this.renderBlogSummaryForm()}
             { this.renderTagForm() }
             { this.renderMediaContentForm() }
             { this.renderInputTextBoxes() }
