@@ -10,7 +10,7 @@ class BlogFormModal extends Component {
       tags: [],
       inputVisible: false,
       tagInputValue: '',
-      media_url: [],
+      fileList: [],
       mediaText: [""]
     };
 
@@ -34,16 +34,8 @@ class BlogFormModal extends Component {
     try {
       let data = new FormData();
       data.append('file', file);
-
-      const image = await BlogAction.postImage(data);
-      console.log(file.name);
-      const secureUrl = image && image.data && image.data[0] && image.data[0].secure_url;
-      if (!!secureUrl) {
-        this.setState({
-          media_url: [...this.state.media_url, secureUrl]
-        });
-        onSuccess(image.data, file);
-      }
+      const imageRes = await BlogAction.postImage(data);
+      onSuccess(imageRes.data, file);
     } catch(err) {
       onError(err);
     }
@@ -93,14 +85,15 @@ class BlogFormModal extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { title, tags, media_url, mediaText } = this.state;
+    const { title, tags, fileList, mediaText } = this.state;
     const { currentUser, handleClose, createBlog } = this.props;
     handleClose();
     createBlog(Object.assign({
-      title, tags, media_url, mediaText, user_id: currentUser.id
+      title, tags, fileList, mediaText, user_id: currentUser.id
     }));
   };
 
+  handleMediaChange = ({ fileList }) => this.setState({ fileList });
   //========== combine later on =================
   /**
    * This function sets the input value to what the user is typing.
@@ -158,11 +151,15 @@ class BlogFormModal extends Component {
   };
 
   renderMediaContentForm() {
+    const { fileList } = this.state;
     return(
       <Form.Item label="Media">
         <h6>Only able to support one video and one image</h6>
-        <Upload className='upload-list-inline'
+        <Upload
+          className='upload-list-inline'
           customRequest={ this.uploadImageToCloudinary }
+          onChange={ this.handleMediaChange }
+          fileList={ fileList }
         >
           <Button>
             <Icon type="upload" /> Upload
@@ -224,7 +221,7 @@ class BlogFormModal extends Component {
 
   render() {
     const { isVisible, handleClose } = this.props;
-
+    console.log(this.state);
     return (
       <div>
         <Modal
