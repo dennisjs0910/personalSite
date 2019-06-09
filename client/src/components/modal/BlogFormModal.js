@@ -221,7 +221,7 @@ class BlogFormModal extends Component {
 
   render() {
     const { isVisible, handleClose } = this.props;
-    console.log(this.state);
+
     return (
       <div>
         <Modal
