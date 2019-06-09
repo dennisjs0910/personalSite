@@ -10,12 +10,11 @@ export default class BlogAction {
    */
   static postImage = async (file) => {
     const config= { "headers": { "content-type": 'multipart/form-data; boundary=----WebKitFormBoundaryqTqJIxvkWFYqvP5s' } };
-
     try {
       const res = await axios.post(`/api/image-upload`, file, config);
       return res;
     } catch(err) {
-      console.log("somthing went wrong", err);
+      throw err;
     }
   };
 
@@ -26,20 +25,25 @@ export default class BlogAction {
    * @return {Function}    [async function to dispatch results to reducers]
    */
   static createBlog = (data) => {
-     return async (dispatch) => {
-       try {
-         let res = await axios.post(`/api/blog`, data);
-         dispatch({
-           type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
-           payload: res.data
-         });
-       } catch (err) {
-         dispatch({
-           type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-           error: err
-         });
-       }
-     }
+     console.log(data);
+     return {
+        type: BLOG_ACTION.CREATE_BLOG_FAILURE,
+        error: { message: "nothing~~" }
+     };
+     // return async (dispatch) => {
+     //   try {
+     //     let res = await axios.post(`/api/blog`, data);
+     //     dispatch({
+     //       type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
+     //       payload: res.data
+     //     });
+     //   } catch (err) {
+     //     dispatch({
+     //       type: BLOG_ACTION.CREATE_BLOG_FAILURE,
+     //       error: err
+     //     });
+     //   }
+     // }
   };
 
   static getBlogs = () => {

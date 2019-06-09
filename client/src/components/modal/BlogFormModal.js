@@ -1,58 +1,215 @@
 import React, { Component } from 'react';
-import { Modal, Button, Form } from 'antd';
-import { BlogForm } from '../blog';
+import { Modal, Button, Form, Input, Tag, Icon, Upload  } from 'antd';
+import { BlogAction } from '../../actions';
 
-class BlogFormContainer extends Component {
+class BlogFormModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: "",
       tags: [],
-      inputValue: '',
-      image_url: ''
-    }
-    this.handleTagInputConfirm = this.handleTagInputConfirm.bind(this);
+      inputVisible: false,
+      tagInputValue: '',
+      media_url: [],
+      mediaText: [""]
+    };
+
+    this.renderTitleForm = this.renderTitleForm.bind(this);
+    this.renderTagForm = this.renderTagForm.bind(this);
+    this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputConfirm = this.handleInputConfirm.bind(this);
+    this.uploadImageToCloudinary = this.uploadImageToCloudinary.bind(this);
   }
+
+    /**
+   * Custom Request to upload an image to Cloudinary.
+   * It is used to obtain a secure url to pass to the server in the future.
+   * When it is successful
+   * @param  { File } file
+   * @param  { callback fn } onSuccess
+   * @param  { callback fn } onError (currently removed)
+   */
+  uploadImageToCloudinary = async ({ file, onSuccess, onError }) => {
+    try {
+      let data = new FormData();
+      data.append('file', file);
+
+      const image = await BlogAction.postImage(data);
+      console.log(file.name);
+      const secureUrl = image && image.data && image.data[0] && image.data[0].secure_url;
+      if (!!secureUrl) {
+        this.setState({
+          media_url: [...this.state.media_url, secureUrl]
+        });
+        onSuccess(image.data, file);
+      }
+    } catch(err) {
+      onError(err);
+    }
+  }
+
+  saveInputRef = input => (this.input = input);
+
+  /**
+   * This function is used to add tags, once user clicks on
+   * "+ New Tag" it will set input to be visible.
+   */
+  showTagInput = () => {
+    this.setState({ inputVisible: true }, () => this.input.focus());
+  };
 
   /**
    * This function adds a new tag to the list of tags.
    * Also we reset the inputValue and unfocus the input.
    */
-  handleTagInputConfirm = (inputValue) => {
-    let { tags } = this.state;
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      tags = [...tags, inputValue];
-    }
-
+  handleInputConfirm = () => {
+    const { tagInputValue, tags } = this.state;
     this.setState({
-      tags,
-      inputValue: '',
+      tags: [...tags, tagInputValue],
+      inputVisible: false,
+      tagInputValue: '',
     });
   };
 
-  handleUploadedImage = (image_url) => {
-    this.setState({ image_url });
-  }
+   /**
+   * Handle close is used to remove a tag user have added
+   * @param  {String} removedTag [Tag name to be deleted]
+   */
+  handleTagClose = removedTag => {
+    const tags = this.state.tags.filter(tag => tag !== removedTag);
+    this.setState({ tags });
+  };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const { tags, image_url } = this.state;
+  handleMediaTextChange = ({ target }) => {
+    const idx = (target.dataset && target.dataset.id) || -1;
+    const { value } = target;
+    if (idx >= 0) {
+      let mediaText = [...this.state.mediaText];
+      mediaText[idx] = value;
+      this.setState({ mediaText });
+    }
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const { title, tags, media_url, mediaText } = this.state;
     const { currentUser, handleClose, createBlog } = this.props;
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        handleClose();
-        createBlog(Object.assign(values, { tags, image_url, user_id: currentUser.id }));
-      } else {
-        console.log(err);
-      }
+    handleClose();
+    createBlog(Object.assign({
+      title, tags, media_url, mediaText, user_id: currentUser.id
+    }));
+  };
+
+  //========== combine later on =================
+  /**
+   * This function sets the input value to what the user is typing.
+   * @param  {Event Object} e
+   */
+  handleInputChange = ({ target }) => {
+    this.setState({ tagInputValue: target.value });
+  };
+
+  handleTitleChange = ({ target }) => {
+    this.setState({ title: target.value });
+  };
+  //=============================================
+
+
+  addTextBox = e => {
+    const { mediaText } = this.state;
+    this.setState({
+      mediaText: [...mediaText, ""]
     });
+  };
+
+  renderTagForm() {
+    const { inputVisible, tagInputValue, tags } = this.state;
+    return(
+      <Form.Item label="Tags">
+        { this.renderTagInput(inputVisible, tagInputValue) }
+        <div>
+          { tags.map(tag => <Tag key={tag}>{tag}</Tag>) }
+        </div>
+      </Form.Item>
+    );
+  };
+
+  renderTagInput(inputVisible, tagInputValue) {
+    if (inputVisible) {
+      return(<Input
+        ref={ this.saveInputRef }
+        type="text"
+        size="small"
+        value={ tagInputValue }
+        onChange={ this.handleInputChange }
+        onBlur={ this.handleInputConfirm }
+        onPressEnter={ this.handleInputConfirm }
+      />);
+    } else {
+      return(
+        <Tag
+          className="bp-form-add-new-tag"
+          onClick={ this.showTagInput } >
+          <Icon type="plus" /> New Tag
+        </Tag>
+      );
+    }
+  };
+
+  renderMediaContentForm() {
+    return(
+      <Form.Item label="Media">
+        <h6>Only able to support one video and one image</h6>
+        <Upload className='upload-list-inline'
+          customRequest={ this.uploadImageToCloudinary }
+        >
+          <Button>
+            <Icon type="upload" /> Upload
+          </Button>
+        </Upload>
+      </Form.Item>
+    )
+  };
+
+  renderTitleForm() {
+    return(
+      <Form.Item label="Blog Title">
+        <Input onChange={ this.handleTitleChange.bind(this) }>
+        </Input>
+      </Form.Item>
+    );
+  };
+
+  renderInputTextBoxes() {
+    const { mediaText } = this.state;
+    return mediaText.map((val, idx) => {
+      return(
+        <Form.Item label={`Media Description ${idx + 1}`} key={idx} >
+          <Input.TextArea
+            data-id={idx}
+            defaultValue={ val }
+            onChange={ this.handleMediaTextChange }
+          >
+          </Input.TextArea>
+        </Form.Item>
+      )
+    });
+  };
+
+  renderAddMoreTextButton() {
+    return(
+      <Button type="primary" onClick={ this.addTextBox } >
+        Add More Content
+      </Button>
+    );
   };
 
   /**
    * TODO:
    * This function returns the footor of a main mondal component
    * @param  {Function} handleClose [function that closes modal]
-   * @return {ReactComponent[]}             [List of ReactComponent buttons]
+   * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
   getFooterElements = (handleClose) => {
     return [
@@ -67,8 +224,7 @@ class BlogFormContainer extends Component {
 
   render() {
     const { isVisible, handleClose } = this.props;
-    const { getFieldDecorator } = this.props.form;
-    const { tags } = this.state;
+
     return (
       <div>
         <Modal
@@ -79,12 +235,11 @@ class BlogFormContainer extends Component {
           footer={ this.getFooterElements(handleClose) }
         >
           <Form onSubmit={this.handleSubmit} className="bp-form-container">
-            <BlogForm
-              getFieldDecorator={ getFieldDecorator }
-              handleTagInputConfirm={ this.handleTagInputConfirm }
-              handleUploadedImage={ this.handleUploadedImage }
-              tags={ tags }
-            />
+            { this.renderTitleForm()}
+            { this.renderTagForm() }
+            { this.renderMediaContentForm() }
+            { this.renderInputTextBoxes() }
+            { this.renderAddMoreTextButton() }
           </Form>
         </Modal>
       </div>
@@ -92,5 +247,4 @@ class BlogFormContainer extends Component {
   }
 }
 
-const BlogFormModal = Form.create()(BlogFormContainer);
 export default BlogFormModal
