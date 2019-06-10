@@ -4,7 +4,7 @@ exports.up = (knex) => {
     user.increments('id').primary();
     user.string('first_name', 50).notNullable();
     user.string('last_name', 50).notNullable();
-    user.string('email', 50).notNullable(); //unique
+    user.string('email', 50).unique().notNullable();
     user.string('password', 50).notNullable();
     user.enu('permission', ['admin', 'basic']).notNullable();
     user.timestamps(false, true);
@@ -13,16 +13,16 @@ exports.up = (knex) => {
     blogPost.increments('id').primary();
     blogPost.integer('user_id').unsigned().references('id').inTable('User').notNull().onDelete('cascade');
     blogPost.string('title').notNullable();
+    blogPost.text('summary', 'longtext').notNullable();
     blogPost.string('category', 50);
     blogPost.timestamps(false, true);
   })
   .createTable('BlogContent', (blogContent) => {
     blogContent.increments('id').primary();
     blogContent.integer('blogPost_id').unsigned().references('id').inTable('BlogPost').notNull().onDelete('cascade');
-    blogContent.string('video_url');
-    blogContent.text('video_text', 'longtext');
-    blogContent.string('image_url');
-    blogContent.text('image_text', 'longtext');
+    blogContent.boolean('is_video');
+    blogContent.string('media_url');
+    blogContent.text('summary', 'longtext');
     blogContent.integer('sequence').notNullable();
     blogContent.timestamps(false, true);
   })

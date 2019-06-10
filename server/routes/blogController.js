@@ -13,8 +13,8 @@ routes.get('/', async (req, res) => {
 });
 
 routes.post('/', async (req, res) => {
-  const { user_id, title, tags, image_url, img_text } = req.body;
-  const data = await blogManager.createBlog(user_id, title, tags, image_url, img_text);
+  const { title, summary, tags, user_id, fileList, mediaText } = req.body;
+  const data = await blogManager.createBlog(title, summary, tags, user_id, fileList, mediaText);
   if (!!!data) {
     res.sendStatus(404);
   }

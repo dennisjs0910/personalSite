@@ -26,24 +26,20 @@ export default class BlogAction {
    */
   static createBlog = (data) => {
      console.log("createBlog", data);
-     return {
-        type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-        error: { message: "nothing~~" }
-     };
-     // return async (dispatch) => {
-     //   try {
-     //     let res = await axios.post(`/api/blog`, data);
-     //     dispatch({
-     //       type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
-     //       payload: res.data
-     //     });
-     //   } catch (err) {
-     //     dispatch({
-     //       type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-     //       error: err
-     //     });
-     //   }
-     // }
+     return async (dispatch) => {
+       try {
+         let res = await axios.post(`/api/blog`, data);
+         dispatch({
+           type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
+           payload: res.data
+         });
+       } catch (err) {
+         dispatch({
+           type: BLOG_ACTION.CREATE_BLOG_FAILURE,
+           error: err
+         });
+       }
+     }
   };
 
   static getBlogs = () => {
