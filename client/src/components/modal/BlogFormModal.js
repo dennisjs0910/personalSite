@@ -275,4 +275,4 @@ class BlogFormModal extends Component {
   }
 }
 
-export default BlogFormModal
+export default BlogFormModal;

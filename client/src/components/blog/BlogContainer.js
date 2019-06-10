@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
 import { BlogAction } from '../../actions';
-import { BlogFormModal } from '../modal';
+import { BlogFormModal, BlogModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import "./BlogContainer.css";
@@ -10,35 +10,37 @@ const PER_PAGINATION = 4;
 const { Content } = Layout;
 
 class BlogContainer extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       isModalFormVisible: false,
       pageMin: 0,
-      pageMax: PER_PAGINATION
+      pageMax: PER_PAGINATION,
+      selectedBlog: null,
+      isBlogPostModalVisible: false,
     }
 
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
     this.handleFormModalVisibility = this.handleFormModalVisibility.bind(this);
+    this.handleBlogModalVisibility = this.handleBlogModalVisibility.bind(this);
     this.renderHeaderRow = this.renderHeaderRow.bind(this);
     this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
-  }
+  };
 
   componentDidMount() {
     this.props.getBlogs();
-  }
+  };
 
   /**
    * Shortens image_text of blog that is to be displayed.
    * @param  {String} text
-   * @return {String}    first 147 chars of image_text appended with ...;
+   * @return {String}    first 197 chars of image_text appended with ...;
    */
   _shortenImageDescription = (text) => {
-    if (text && text.length <= 150) return text;
-    const end = Math.min(text.length, 147);
+    if (text && text.length <= 250) return text;
+    const end = Math.min(text.length, 247);
     return text.substring(0, end) + "...";
-  }
+  };
 
   /**
    * When user clicks on < or > it will recalculate indexes that are to be shown.
@@ -56,11 +58,26 @@ class BlogContainer extends Component {
         pageMax: Math.min(Math.max(1, value) * PER_PAGINATION, this.props.blogs.length)
       });
     }
-  }
+  };
 
+  /**
+   * This is used to open and close blog Create Form.
+   */
   handleFormModalVisibility = () => {
     this.setState({ isModalFormVisible: !this.state.isModalFormVisible });
-  }
+  };
+
+  /**
+   * This is used to open and close Blog Modal, when it is used to open blog will not be null,
+   * and onClose blog param will be passed a null value
+   * @param  {Object} blog [blogObject]
+   */
+  handleBlogModalVisibility = (blog) => {
+    this.setState({
+      isBlogPostModalVisible: !this.state.isBlogPostModalVisible,
+      selectedBlog: blog,
+    });
+  };
 
   renderCreateBlogPostButton() {
     const { currentUser } = this.props;
@@ -87,6 +104,8 @@ class BlogContainer extends Component {
     </Row>);
   }
 
+  //TODO: this can be of a component on its own.
+  //REFACTOR TOGETHER START==============================================
   renderAllBlogs(blogs) {
     return(
       <Content>
@@ -116,13 +135,13 @@ class BlogContainer extends Component {
           <Col span={6} key={blog.id}>
             <Card className="blog-card"
               title={blog.title}
-              extra={<a href="/#">More</a>}
+              extra={
+                <Button onClick={ () => this.handleBlogModalVisibility(blog) } >
+                  More
+                </Button>
+              }
             >
-              <img className="blog-img"
-                src={blog.image_url || ""}
-                alt=""
-              />
-              <p>{this._shortenImageDescription(blog.image_text || "")}</p>
+              <p>{this._shortenImageDescription(blog.summary)}</p>
             </Card>
           </Col>
         );
@@ -130,10 +149,12 @@ class BlogContainer extends Component {
     }
     return null;
   }
+  //REFACTOR TOGETHER END================================================
 
   render() {
-    const { isModalFormVisible } = this.state;
+    const { isModalFormVisible, isBlogPostModalVisible, selectedBlog } = this.state;
     const { blogs, currentUser, createBlog } = this.props;
+
     return (
       <Content >
         { this.renderHeaderRow() }
@@ -144,6 +165,16 @@ class BlogContainer extends Component {
           createBlog={ createBlog }
           currentUser={ currentUser }
         />
+        {
+          selectedBlog !== null ?
+          <BlogModal
+            isVisible={ isBlogPostModalVisible }
+            handleClose={ this.handleBlogModalVisibility }
+            currentUser={ currentUser }
+            blog={ selectedBlog }
+          /> :
+          null
+        }
       </Content>
     );
   }

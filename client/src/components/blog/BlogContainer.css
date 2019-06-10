@@ -7,11 +7,11 @@ div.pagination-container {
   margin: 2rem;
 }
 
-img.blog-img {
+/*img.blog-img {
   width: 100%;
   height: 15rem;
   object-fit: cover;
-}
+}*/
 
 #blogHeaderContainer {
   background-image: url("../../assets/newyorkSkyline.jpg");
