@@ -18,7 +18,6 @@ let _createBlogPostData = (title, summary, tags, user_id) => {
 };
 
 let _createContentData = (blogPost_id, fileList=[], mediaText=[]) => {
-  // if (fileList.length != mediaText.length || fileList.length == 0) return [];
   let res = [];
   for (let idx = 0; idx < fileList.length; idx++) {
     const media_url = fileList[idx].response[0].secure_url;
@@ -53,13 +52,23 @@ let _parseTagsArrayToString = (tags=[]) => {
 let _parseStringTagsToArray = (tagString="") => {
   const res = tagString.split("x,-x");
   return res.slice(0, res.length - 1);
-}
+};
 
+/**
+ * This function generates blog Objects that are to be returned to GET, POST /api/blog.
+ * BlogContents are inserted into appropriate blogPost data and it keeps the ordering of
+ * how blogData came in since it is sorted by updated_at column when it comes through
+ * the parameter.
+ *
+ * @param  {BlogPost[]}    blogData     [Sorted by updated_at columns]
+ * @param  {BlogContent[]} blogContents [Sorted by blogPost_id and sequence column]
+ * @return {BlogPost[]}                 [contains BlogContent inside content array]
+ */
 let _generateBlogObjects = (blogData, blogContents) => {
   let map = {};
   let res = [];
 
-  blogData.forEach((blogPost) => {
+  blogData.forEach(blogPost => {
     blogPost.contents = [];
     blogPost.category = _parseStringTagsToArray(blogPost.category);
     map[blogPost.id] = blogPost;
@@ -72,12 +81,26 @@ let _generateBlogObjects = (blogData, blogContents) => {
     }
   });
 
-  Object.entries(map).forEach(entry => {
-    res.push(entry[1]);
+  blogData.forEach(blogPost => {
+    res.push(blogPost);
   });
 
   return res;
-}
+};
+
+/**
+ * Returns only the ids of blogData
+ * @param  {BlogPost[]} blogData
+ * @return {Integer[]}         [list of blogPost ids]
+ */
+let _getBlogIds = blogData => {
+  let res = [];
+  blogData.forEach(blog => {
+    res.push(blog.id);
+  });
+  return res;
+};
+
 // TODO: ERROR HANDLING
 /**
  * Retrives all blogs
@@ -85,10 +108,20 @@ let _generateBlogObjects = (blogData, blogContents) => {
  */
 let getBlogs = async () => {
   try {
-    const blogData = await knex.select('*').from(BLOG_POST)
-      .leftJoin(BLOG_CONTENT, `${BLOG_POST}.id`, `${BLOG_CONTENT}.blogPost_id`);
+    let blogData = await knex(BLOG_POST).select('*')
+      .orderBy('updated_at', 'desc')
+      .limit(5);
+
+    const blogPostIds = _getBlogIds(blogData);
+
+    let blogContents = await knex(BLOG_CONTENT).select('*')
+      .whereIn('blogPost_id', blogPostIds)
+      .orderBy(['blogPost_id', 'sequence']);
+
+    const resData = _generateBlogObjects(blogData, blogContents);
     return blogData;
   } catch (err) {
+    console.log(err);
     return null;
   }
 };
@@ -124,7 +157,7 @@ let createBlog = async (title, summary, tags, user_id, fileList, mediaText) => {
       .insert(_createContentData(blogPostId, fileList, mediaText));
 
     const data = await getBlogWithId(blogPostId);
-    return data;
+    return data[0];
   } catch (err) {
     return null;
   }
