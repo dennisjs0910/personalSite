@@ -2,6 +2,33 @@ div.blog-modal-container {
   width: 50rem;
 }
 
+div.blog-modal-container .ant-modal-content .ant-modal-body> div.blog-content-container {
+  border-top: 2px solid #D3D3D3;
+  border-bottom: unset;
+}
+
+div.blog-content-container {
+  border-bottom: 2px solid #D3D3D3;
+  padding: 10px 0;
+}
+
 div.blog-content-container img.blog-content-img {
   width: 100%;
+}
+
+.blog-category-label {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.ant-tag.blog-tag {
+  display: inline-block;
+  height: 2rem;
+  font-size: 1rem;
+  line-height: unset;
+  font-weight: 500;
+}
+
+.blog-summary-container {
+  margin-bottom: 1rem;
 }

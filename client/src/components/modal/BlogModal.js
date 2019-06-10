@@ -18,7 +18,7 @@ class BlogModal extends Component {
 
   renderCategoryElements = ({ category=[] }) => {
     return category.map((element, idx) => (
-      <Tag key={idx} >
+      <Tag key={idx} className="blog-tag">
         {element}
       </Tag>
     ));
@@ -44,9 +44,15 @@ class BlogModal extends Component {
         onCancel={() => handleClose(null) }
         footer={ this.getFooterElements(handleClose) }
       >
-        <div>{`${blog.summary}`}</div>
-        <div>{ this.renderCategoryElements(blog) }</div>
-        <div>{ this.renderContents(blog) }</div>
+        <div className="blog-summary-container">
+          <h3>Summary:</h3>
+          <p>{`${blog.summary}`}</p>
+        </div>
+        { this.renderContents(blog) }
+        <div className="blog-categories">
+          <h3 className="blog-category-label">Tags:</h3>
+          { this.renderCategoryElements(blog) }
+        </div>
       </Modal>
     );
   };
