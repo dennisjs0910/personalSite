@@ -3,12 +3,12 @@ div.blog-modal-container {
 }
 
 div.blog-modal-container .ant-modal-content .ant-modal-body> div.blog-content-container {
-  border-top: 2px solid #D3D3D3;
+  border-top: 1px solid #e8e8e8;
   border-bottom: unset;
 }
 
 div.blog-content-container {
-  border-bottom: 2px solid #D3D3D3;
+  border-bottom: 1px solid #e8e8e8;
   padding: 10px 0;
 }
 
@@ -23,8 +23,8 @@ div.blog-content-container img.blog-content-img {
 
 .ant-tag.blog-tag {
   display: inline-block;
-  height: 2rem;
-  font-size: 1rem;
+  height: 1.25rem;
+  font-size: 0.75rem;
   line-height: unset;
   font-weight: 500;
 }

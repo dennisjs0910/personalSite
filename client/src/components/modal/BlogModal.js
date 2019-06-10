@@ -50,7 +50,7 @@ class BlogModal extends Component {
         </div>
         { this.renderContents(blog) }
         <div className="blog-categories">
-          <h3 className="blog-category-label">Tags:</h3>
+          <h4 className="blog-category-label">Tags:</h4>
           { this.renderCategoryElements(blog) }
         </div>
       </Modal>
