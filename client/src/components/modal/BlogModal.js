@@ -10,6 +10,11 @@ class BlogModal extends Component {
     handleClose();
   };
 
+  handleUpdateOnClick = () => {
+    const { handleUpdateModal, blog } = this.props;
+    handleUpdateModal(blog);
+  };
+
   /**
    * This function returns the footor of a main mondal component.
    * If blog belongs to current_user, it will also show Update and Delete Buttons.
@@ -27,6 +32,7 @@ class BlogModal extends Component {
           Delete
         </Button>),
         (<Button
+          onClick={ this.handleUpdateOnClick }
           className="warning-button"
           key="update">
           Update

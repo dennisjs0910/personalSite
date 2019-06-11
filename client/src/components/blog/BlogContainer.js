@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
 import { BlogAction } from '../../actions';
-import { BlogFormModal, BlogModal } from '../modal';
+import { BlogCreateModal, BlogModal, BlogUpdateFormModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import "./BlogContainer.css";
@@ -13,16 +13,18 @@ class BlogContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalFormVisible: false,
+      isCreateVisible: false,
+      isUpdateVisible: false,
+      isReadVisible: false,
+      selectedBlog: null,
       pageMin: 0,
       pageMax: PER_PAGINATION,
-      selectedBlog: null,
-      isBlogPostModalVisible: false,
-    }
+    };
 
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
-    this.handleFormModalVisibility = this.handleFormModalVisibility.bind(this);
-    this.handleBlogModalVisibility = this.handleBlogModalVisibility.bind(this);
+    this.handleCreateModal = this.handleCreateModal.bind(this);
+    this.handleReadModal = this.handleReadModal.bind(this);
+    this.handleUpdateModal = this.handleUpdateModal.bind(this);
     this.renderHeaderRow = this.renderHeaderRow.bind(this);
     this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
   };
@@ -63,8 +65,13 @@ class BlogContainer extends Component {
   /**
    * This is used to open and close blog Create Form.
    */
-  handleFormModalVisibility = () => {
-    this.setState({ isModalFormVisible: !this.state.isModalFormVisible });
+  handleCreateModal = () => {
+    this.setState({
+      isCreateVisible: !this.state.isCreateVisible,
+      isReadVisible: false,
+      isUpdateVisible: false,
+      selectedBlog: null,
+    });
   };
 
   /**
@@ -72,9 +79,20 @@ class BlogContainer extends Component {
    * and onClose blog param will be passed a null value
    * @param  {Object} blog [blogObject]
    */
-  handleBlogModalVisibility = (blog) => {
+  handleReadModal = (blog) => {
     this.setState({
-      isBlogPostModalVisible: !this.state.isBlogPostModalVisible,
+      isCreateVisible: false,
+      isReadVisible: !this.state.isReadVisible,
+      isUpdateVisible: false,
+      selectedBlog: blog,
+    });
+  };
+
+  handleUpdateModal = (blog) => {
+    this.setState({
+      isCreateVisible: false,
+      isReadVisible: false,
+      isUpdateVisible: !this.state.isUpdateVisible,
       selectedBlog: blog,
     });
   };
@@ -83,7 +101,7 @@ class BlogContainer extends Component {
     const { currentUser } = this.props;
     if (!!currentUser) {
       return(
-        <Button type="primary" onClick={ this.handleFormModalVisibility }>CREATE +</Button>
+        <Button type="primary" onClick={ this.handleCreateModal }>CREATE +</Button>
       )
     } else {
       return null;
@@ -136,7 +154,7 @@ class BlogContainer extends Component {
             <Card className="blog-card"
               title={blog.title}
               extra={
-                <Button onClick={ () => this.handleBlogModalVisibility(blog) } >
+                <Button onClick={ () => this.handleReadModal(blog) } >
                   More
                 </Button>
               }
@@ -152,27 +170,40 @@ class BlogContainer extends Component {
   //REFACTOR TOGETHER END================================================
 
   render() {
-    const { isModalFormVisible, isBlogPostModalVisible, selectedBlog } = this.state;
-    const { blogs, currentUser, createBlog, deleteBlog } = this.props;
+    const { isCreateVisible, isReadVisible, isUpdateVisible, selectedBlog } = this.state;
+    const { blogs, currentUser, createBlog, deleteBlog, updateBlog } = this.props;
 
     return (
       <Content >
         { this.renderHeaderRow() }
         { this.renderAllBlogs(blogs) }
-        <BlogFormModal
-          isVisible={ isModalFormVisible }
-          handleClose={ this.handleFormModalVisibility }
-          createBlog={ createBlog }
-          currentUser={ currentUser }
-        />
-        {
-          selectedBlog !== null ?
-          <BlogModal
-            isVisible={ isBlogPostModalVisible }
-            handleClose={ this.handleBlogModalVisibility }
+        { isCreateVisible ?
+          <BlogCreateModal
+            isVisible={ isCreateVisible }
+            handleClose={ this.handleCreateModal }
+            createBlog={ createBlog }
+            currentUser={ currentUser }
+          /> : null
+        }
+        { isUpdateVisible ?
+          <BlogUpdateFormModal
+            isVisible={ isUpdateVisible }
+            handleClose={ this.handleUpdateModal }
             currentUser={ currentUser }
             blog={ selectedBlog }
-            deleteBlog = { deleteBlog }
+            updateBlog={ updateBlog }
+          /> :
+          null
+        }
+        {
+          isReadVisible && selectedBlog !== null ?
+          <BlogModal
+            isVisible={ isReadVisible }
+            handleClose={ this.handleReadModal }
+            currentUser={ currentUser }
+            blog={ selectedBlog }
+            deleteBlog={ deleteBlog }
+            handleUpdateModal={ this.handleUpdateModal }
           /> :
           null
         }
@@ -187,6 +218,7 @@ const mapDispatchToProps = dispatch => {
       getBlogs: BlogAction.getBlogs,
       createBlog: BlogAction.createBlog,
       deleteBlog: BlogAction.deleteBlog,
+      updateBlog: BlogAction.updateBlog,
     },
     dispatch
   );

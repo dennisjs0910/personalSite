@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Tag, Icon, Upload  } from 'antd';
 import { BlogAction } from '../../actions';
+import { isEqual } from 'lodash';
+import "./BlogModal.css";
 
 const INITIAL_STATE = {
   title: "", //required
@@ -12,14 +14,46 @@ const INITIAL_STATE = {
   mediaText: []
 };
 
-class BlogFormModal extends Component {
+class BlogUpdateFormModal extends Component {
   constructor(props) {
     super(props);
-    this.tagSet = new Set();
-    this.state = INITIAL_STATE;
+
+    const { blog, isVisible } = props;
+    if (!!blog && isVisible) {
+      const mediaFilesAndText = this._getFilesAndText(blog);
+      this.tagSet = new Set(blog.category);
+      this.state = {
+        title: blog.title,
+        summary: blog.summary,
+        tags: [...blog.category],
+        inputVisible: false,
+        tagInputValue: '',
+        fileList: mediaFilesAndText.files,
+        mediaText: mediaFilesAndText.texts
+      };
+    } else {
+      this.tagSet = new Set();
+      this.state = INITIAL_STATE;
+    }
+
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
+
+  _getFilesAndText = ({contents=[]}) => {
+    let res = { files: [], texts: []};
+    contents.forEach((content, idx) => {
+      res.files.push({
+        uid: `${idx}`,
+        name: `${idx}_image`,
+        status: 'done',
+        url: content.media_url
+      });
+      res.texts.push(content.summary);
+    });
+
+    return res;
+  };
 
   /**
    * Custom Request to upload an image to Cloudinary.
@@ -58,6 +92,15 @@ class BlogFormModal extends Component {
     return title === "" || summary === "";
   };
 
+  handleModalClose = (e) => {
+    e.preventDefault();
+    const { handleClose } = this.props;
+    this.setState(INITIAL_STATE);
+    delete this.input;
+    delete this.tagSet;
+    handleClose(e);
+  };
+
   /**
    * This function adds a new tag to the list of tags if tagInput is unique.
    * Also we reset the inputValue and unfocus the input.
@@ -80,10 +123,6 @@ class BlogFormModal extends Component {
     }
   };
 
-  handleStateReset = (e) => {
-    e.preventDefault();
-    this.setState(INITIAL_STATE);
-  };
   /**
    * Handle close is used to remove a tag user have added
    * @param  {String} removedTag [Tag name to be deleted]
@@ -104,15 +143,39 @@ class BlogFormModal extends Component {
     }
   };
 
+  /**
+   * This function removes file from fileList as well as mediaText located in the same index
+   * @param  {Object} file [file to be removed]
+   */
+  handleMediaRemove = (file) => {
+    const { fileList, mediaText } = this.state;
+    let idx = -1;
+    let modifiedFileList = fileList.filter((f, i) => {
+      if (isEqual(file, f)) {
+        idx = i;
+        return false;
+      }
+      return true;
+    });
+
+    const removalText = idx === -1 ? "" : mediaText[idx];
+    let modifiedTexts = mediaText.filter(text => text !== removalText);
+
+    this.setState({
+      fileList: modifiedFileList,
+      mediaText: modifiedTexts
+    });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, createBlog, handleClose } = this.props;
-    createBlog(Object.assign({
+    const { currentUser, updateBlog } = this.props;
+    updateBlog(Object.assign({
       title, summary, tags, fileList, mediaText, user_id: currentUser.id
     }));
-    handleClose(e);
-    this.handleStateReset(e);
+
+    this.handleModalClose(e);
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
@@ -186,6 +249,7 @@ class BlogFormModal extends Component {
           customRequest={ this.uploadImageToCloudinary }
           onChange={ this.handleMediaChange }
           fileList={ fileList }
+          onRemove={ this.handleMediaRemove }
         >
           <Button>
             <Icon type="upload" /> Upload
@@ -220,7 +284,7 @@ class BlogFormModal extends Component {
         <Form.Item label={`Media Description ${idx + 1}`} key={idx} >
           <Input.TextArea
             data-id={idx}
-            defaultValue={ val }
+            value={ val }
             onChange={ this.handleMediaTextChange }
           >
           </Input.TextArea>
@@ -233,43 +297,44 @@ class BlogFormModal extends Component {
    * This function returns the footor of a main mondal component
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
-  getFooterElements = (handleClose) => {
+  getFooterElements = () => {
     const { title, summary } = this.state;
     return [
       <Button
         key="clear"
-        onClick={ this.handleStateReset }
+        onClick={ this.handleModalClose }
         type="danger"
       >
         Clear
       </Button>,
-      <Button key="back" onClick={ handleClose }>
+      <Button key="back" onClick={ this.handleModalClose }>
         Close
       </Button>,
       <Button
-        key="submit"
-        type="primary"
+        key="update"
+        className="warning-button"
         htmlType="submit"
         onClick={this.handleSubmit}
         disabled= {this.isSubmitDisabled(title, summary)}
       >
-        Submit
+        Update
       </Button>,
     ];
   };
 
   render() {
-    const { isVisible, handleClose } = this.props;
+    const { isVisible, blog } = this.props;
     const { title, summary } = this.state;
 
     return (
       <div>
         <Modal
+          width="50rem"
           visible={ isVisible }
-          title="Blog Creation Form"
+          title={ blog.title }
           onOk={ this.handleSubmit }
-          onCancel={ handleClose }
-          footer={ this.getFooterElements(handleClose) }
+          onCancel={ this.handleModalClose }
+          footer={ this.getFooterElements() }
         >
           <Form onSubmit={this.handleSubmit} className="bp-form-container">
             { this.renderTitleForm(title)}
@@ -284,4 +349,4 @@ class BlogFormModal extends Component {
   }
 }
 
-export default BlogFormModal;
+export default BlogUpdateFormModal;
