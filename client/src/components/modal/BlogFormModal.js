@@ -80,6 +80,10 @@ class BlogFormModal extends Component {
     }
   };
 
+  handleStateReset = (e) => {
+    e.preventDefault();
+    this.setState(INITIAL_STATE);
+  };
   /**
    * Handle close is used to remove a tag user have added
    * @param  {String} removedTag [Tag name to be deleted]
@@ -108,7 +112,7 @@ class BlogFormModal extends Component {
       title, summary, tags, fileList, mediaText, user_id: currentUser.id
     }));
     handleClose(e);
-    this.setState(INITIAL_STATE);
+    this.handleStateReset();
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
@@ -232,6 +236,13 @@ class BlogFormModal extends Component {
   getFooterElements = (handleClose) => {
     const { title, summary } = this.state;
     return [
+      <Button
+        key="clear"
+        onClick={ this.handleStateReset }
+        type="danger"
+      >
+        Clear
+      </Button>,
       <Button key="back" onClick={ handleClose }>
         Close
       </Button>,
