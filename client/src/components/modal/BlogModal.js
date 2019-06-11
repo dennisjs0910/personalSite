@@ -11,9 +11,9 @@ class BlogModal extends Component {
   };
 
   handleUpdateOnClick = () => {
-    const { handleBlogUpdateButtonOnClick } = this.props;
-    handleBlogUpdateButtonOnClick();
-  }
+    const { handleUpdateModal, blog } = this.props;
+    handleUpdateModal(blog);
+  };
 
   /**
    * This function returns the footor of a main mondal component.

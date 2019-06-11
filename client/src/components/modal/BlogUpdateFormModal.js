@@ -12,14 +12,48 @@ const INITIAL_STATE = {
   mediaText: []
 };
 
-class BlogFormModal extends Component {
+class BlogUpdateFormModal extends Component {
   constructor(props) {
     super(props);
-    this.tagSet = new Set();
-    this.state = INITIAL_STATE;
+
+    const { blog, isVisible } = props;
+    if (!!blog && isVisible) {
+      const mediaFilesAndText = this._getFilesAndText(blog);
+      console.log(mediaFilesAndText);
+      this.tagSet = new Set(blog.category);
+      this.state = {
+        title: blog.title,
+        summary: blog.summary,
+        tags: [...blog.category],
+        inputVisible: false,
+        tagInputValue: '',
+        fileList: mediaFilesAndText.files,
+        mediaText: mediaFilesAndText.texts
+      };
+    } else {
+      this.tagSet = new Set();
+      this.state = INITIAL_STATE;
+    }
+
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
+
+  _getFilesAndText = ({contents=[]}) => {
+    let res = { files: [], texts: []};
+    contents.forEach((content, idx) => {
+      console.log(res);
+      res.files.push({
+        uid: `${idx}`,
+        name: `${idx}_image`,
+        status: 'done',
+        url: content.media_url
+      });
+      res.texts.push(content.summary);
+    });
+
+    return res;
+  };
 
   /**
    * Custom Request to upload an image to Cloudinary.
@@ -57,6 +91,15 @@ class BlogFormModal extends Component {
   isSubmitDisabled = (title, summary) => {
     return title === "" || summary === "";
   };
+
+  handleModalClose = (e) => {
+    e.preventDefault();
+    const { handleClose } = this.props;
+    this.setState(INITIAL_STATE);
+    delete this.input;
+    delete this.tagSet;
+    handleClose(e);
+  }
 
   /**
    * This function adds a new tag to the list of tags if tagInput is unique.
@@ -107,11 +150,11 @@ class BlogFormModal extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, createBlog, handleClose } = this.props;
+    const { currentUser, createBlog } = this.props;
     createBlog(Object.assign({
       title, summary, tags, fileList, mediaText, user_id: currentUser.id
     }));
-    handleClose(e);
+
     this.handleStateReset(e);
   };
 
@@ -259,14 +302,14 @@ class BlogFormModal extends Component {
   };
 
   render() {
-    const { isVisible, handleClose } = this.props;
-    const { title, summary } = this.state;
-
+    const { isVisible, blog } = this.props;
+    const { title, summary, handleClose } = this.state;
     return (
       <div>
         <Modal
+          width="50rem"
           visible={ isVisible }
-          title="Blog Creation Form"
+          title={ blog.title }
           onOk={ this.handleSubmit }
           onCancel={ handleClose }
           footer={ this.getFooterElements(handleClose) }
@@ -284,4 +327,4 @@ class BlogFormModal extends Component {
   }
 }
 
-export default BlogFormModal;
+export default BlogUpdateFormModal;
