@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   mediaText: []
 };
 
+
 class BlogUpdateFormModal extends Component {
   constructor(props) {
     super(props);
