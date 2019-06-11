@@ -69,7 +69,7 @@ export default class BlogAction {
       } catch (err) {
         dispatch({
           type: BLOG_ACTION.DELETE_BLOG_FAILURE,
-          payload: err.response.data
+          payload: err
         });
       }
     }

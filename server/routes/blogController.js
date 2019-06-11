@@ -22,4 +22,14 @@ routes.post('/', async (req, res) => {
   res.json({ data });
 });
 
+routes.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const data = await blogManager.deleteBlog(id);
+  if (!!!data) {
+    res.sendStatus(404);
+  }
+
+  res.sendStatus(204);
+});
+
 module.exports = routes;

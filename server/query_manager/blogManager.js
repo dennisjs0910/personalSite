@@ -163,11 +163,22 @@ let createBlog = async (title, summary, tags, user_id, fileList, mediaText) => {
   }
 };
 
+let deleteBlog = async (id) => {
+  try {
+    const res = await knex(BLOG_POST).where('id', id).del();
+    return res;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
 
 // TODO: getBlogsFromUserId, createBlog need to be connected with a user.
 module.exports = {
   getBlogs,
   getBlogsFromUserId,
   getBlogWithId,
-  createBlog
+  createBlog,
+  deleteBlog,
 };
