@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Tag, Icon, Upload  } from 'antd';
 import { BlogAction } from '../../actions';
+import { isEqual } from 'lodash';
 
 const INITIAL_STATE = {
   title: "", //required
@@ -19,7 +20,6 @@ class BlogUpdateFormModal extends Component {
     const { blog, isVisible } = props;
     if (!!blog && isVisible) {
       const mediaFilesAndText = this._getFilesAndText(blog);
-      console.log(mediaFilesAndText);
       this.tagSet = new Set(blog.category);
       this.state = {
         title: blog.title,
@@ -42,7 +42,6 @@ class BlogUpdateFormModal extends Component {
   _getFilesAndText = ({contents=[]}) => {
     let res = { files: [], texts: []};
     contents.forEach((content, idx) => {
-      console.log(res);
       res.files.push({
         uid: `${idx}`,
         name: `${idx}_image`,
@@ -99,7 +98,7 @@ class BlogUpdateFormModal extends Component {
     delete this.input;
     delete this.tagSet;
     handleClose(e);
-  }
+  };
 
   /**
    * This function adds a new tag to the list of tags if tagInput is unique.
@@ -123,10 +122,6 @@ class BlogUpdateFormModal extends Component {
     }
   };
 
-  handleStateReset = (e) => {
-    e.preventDefault();
-    this.setState(INITIAL_STATE);
-  };
   /**
    * Handle close is used to remove a tag user have added
    * @param  {String} removedTag [Tag name to be deleted]
@@ -147,15 +142,35 @@ class BlogUpdateFormModal extends Component {
     }
   };
 
+  handleMediaRemove = (file) => {
+    const { fileList, mediaText } = this.state;
+    let idx = -1;
+    let modifiedFileList = fileList.filter((f, i) => {
+      if (isEqual(file, f)) {
+        idx = i;
+        return false;
+      }
+      return true;
+    });
+
+    const removalText = idx === -1 ? "" : mediaText[idx];
+    let modifiedTexts = mediaText.filter(text => text !== removalText);
+
+    this.setState({
+      fileList: modifiedFileList,
+      mediaText: modifiedTexts
+    });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
-    const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, createBlog } = this.props;
-    createBlog(Object.assign({
-      title, summary, tags, fileList, mediaText, user_id: currentUser.id
-    }));
+    // const { title, summary, tags, fileList, mediaText } = this.state;
+    // const { currentUser, createBlog } = this.props;
+    // createBlog(Object.assign({
+    //   title, summary, tags, fileList, mediaText, user_id: currentUser.id
+    // }));
 
-    this.handleStateReset(e);
+    this.handleModalClose(e);
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
@@ -229,6 +244,7 @@ class BlogUpdateFormModal extends Component {
           customRequest={ this.uploadImageToCloudinary }
           onChange={ this.handleMediaChange }
           fileList={ fileList }
+          onRemove={ this.handleMediaRemove }
         >
           <Button>
             <Icon type="upload" /> Upload
@@ -263,7 +279,7 @@ class BlogUpdateFormModal extends Component {
         <Form.Item label={`Media Description ${idx + 1}`} key={idx} >
           <Input.TextArea
             data-id={idx}
-            defaultValue={ val }
+            value={ val }
             onChange={ this.handleMediaTextChange }
           >
           </Input.TextArea>
@@ -276,17 +292,17 @@ class BlogUpdateFormModal extends Component {
    * This function returns the footor of a main mondal component
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
-  getFooterElements = (handleClose) => {
+  getFooterElements = () => {
     const { title, summary } = this.state;
     return [
       <Button
         key="clear"
-        onClick={ this.handleStateReset }
+        onClick={ this.handleModalClose }
         type="danger"
       >
         Clear
       </Button>,
-      <Button key="back" onClick={ handleClose }>
+      <Button key="back" onClick={ this.handleModalClose }>
         Close
       </Button>,
       <Button
@@ -303,7 +319,8 @@ class BlogUpdateFormModal extends Component {
 
   render() {
     const { isVisible, blog } = this.props;
-    const { title, summary, handleClose } = this.state;
+    const { title, summary } = this.state;
+
     return (
       <div>
         <Modal
@@ -311,8 +328,8 @@ class BlogUpdateFormModal extends Component {
           visible={ isVisible }
           title={ blog.title }
           onOk={ this.handleSubmit }
-          onCancel={ handleClose }
-          footer={ this.getFooterElements(handleClose) }
+          onCancel={ this.handleModalClose }
+          footer={ this.getFooterElements() }
         >
           <Form onSubmit={this.handleSubmit} className="bp-form-container">
             { this.renderTitleForm(title)}
