@@ -13,7 +13,8 @@ class BlogContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalFormVisible: false,
+      isModalFormVisible: false, //used for create and update
+      isUpdate: false,
       pageMin: 0,
       pageMax: PER_PAGINATION,
       selectedBlog: null,
@@ -23,6 +24,7 @@ class BlogContainer extends Component {
     this.handlePaginationChange = this.handlePaginationChange.bind(this);
     this.handleFormModalVisibility = this.handleFormModalVisibility.bind(this);
     this.handleBlogModalVisibility = this.handleBlogModalVisibility.bind(this);
+    this.handleBlogUpdateButtonOnClick = this.handleBlogUpdateButtonOnClick.bind(this);
     this.renderHeaderRow = this.renderHeaderRow.bind(this);
     this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
   };
@@ -64,7 +66,12 @@ class BlogContainer extends Component {
    * This is used to open and close blog Create Form.
    */
   handleFormModalVisibility = () => {
-    this.setState({ isModalFormVisible: !this.state.isModalFormVisible });
+    this.setState({
+      selectedBlog: null,
+      isUpdate: false,
+      isModalFormVisible: !this.state.isModalFormVisible,
+      isBlogPostModalVisible: false
+    });
   };
 
   /**
@@ -74,8 +81,18 @@ class BlogContainer extends Component {
    */
   handleBlogModalVisibility = (blog) => {
     this.setState({
+      isUpdate: false,
+      isModalFormVisible: false,
       isBlogPostModalVisible: !this.state.isBlogPostModalVisible,
       selectedBlog: blog,
+    });
+  };
+
+  handleBlogUpdateButtonOnClick = () => {
+    this.setState({
+      isBlogPostModalVisible: false,
+      isModalFormVisible: true,
+      isUpdate: true
     });
   };
 
@@ -152,7 +169,7 @@ class BlogContainer extends Component {
   //REFACTOR TOGETHER END================================================
 
   render() {
-    const { isModalFormVisible, isBlogPostModalVisible, selectedBlog } = this.state;
+    const { isModalFormVisible, isBlogPostModalVisible, selectedBlog, isUpdate } = this.state;
     const { blogs, currentUser, createBlog, deleteBlog } = this.props;
 
     return (
@@ -163,6 +180,8 @@ class BlogContainer extends Component {
           isVisible={ isModalFormVisible }
           handleClose={ this.handleFormModalVisibility }
           createBlog={ createBlog }
+          blog={ selectedBlog }
+          isUpdate={ isUpdate }
           currentUser={ currentUser }
         />
         {
@@ -172,7 +191,8 @@ class BlogContainer extends Component {
             handleClose={ this.handleBlogModalVisibility }
             currentUser={ currentUser }
             blog={ selectedBlog }
-            deleteBlog = { deleteBlog }
+            deleteBlog={ deleteBlog }
+            handleBlogUpdateButtonOnClick={ this.handleBlogUpdateButtonOnClick }
           /> :
           null
         }
