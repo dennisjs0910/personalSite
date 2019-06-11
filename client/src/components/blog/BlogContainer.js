@@ -153,7 +153,7 @@ class BlogContainer extends Component {
 
   render() {
     const { isModalFormVisible, isBlogPostModalVisible, selectedBlog } = this.state;
-    const { blogs, currentUser, createBlog } = this.props;
+    const { blogs, currentUser, createBlog, deleteBlog } = this.props;
 
     return (
       <Content >
@@ -172,6 +172,7 @@ class BlogContainer extends Component {
             handleClose={ this.handleBlogModalVisibility }
             currentUser={ currentUser }
             blog={ selectedBlog }
+            deleteBlog = { deleteBlog }
           /> :
           null
         }
@@ -184,7 +185,8 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       getBlogs: BlogAction.getBlogs,
-      createBlog: BlogAction.createBlog
+      createBlog: BlogAction.createBlog,
+      deleteBlog: BlogAction.deleteBlog,
     },
     dispatch
   );

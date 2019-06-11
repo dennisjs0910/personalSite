@@ -56,5 +56,32 @@ export default class BlogAction {
         });
       }
     }
-  }
+  };
+
+  static deleteBlog = ({id}) => {
+    return async (dispatch) => {
+      try{
+        await axios.delete(`/api/blog/${id}`);
+        dispatch({
+          type: BLOG_ACTION.DELETE_BLOG_SUCCESS,
+          payload: { id }
+        });
+      } catch (err) {
+        dispatch({
+          type: BLOG_ACTION.DELETE_BLOG_FAILURE,
+          payload: err.response.data
+        });
+      }
+    }
+  };
+
+  static updateBlog = (data) => {
+    return async (dispatch) => {
+      try{
+        dispatch(null);
+      } catch (err) {
+
+      }
+    }
+  };
 }
