@@ -76,23 +76,19 @@ export default class BlogAction {
   };
 
   static updateBlog = (data) => {
-    return {
-      type: BLOG_ACTION.UPDATE_BLOG_SUCCESS,
-      data
+    return async (dispatch) => {
+       try {
+         let res = await axios.put(`/api/blog`, data);
+         dispatch({
+           type: BLOG_ACTION.UPDATE_BLOG_SUCCESS,
+           payload: res.data
+         });
+       } catch (err) {
+         dispatch({
+           type: BLOG_ACTION.UPDATE_BLOG_FAILURE,
+           error: err
+         });
+       }
     }
-    // return async (dispatch) => {
-    //    try {
-    //      let res = await axios.put(`/api/blog`, data);
-    //      dispatch({
-    //        type: BLOG_ACTION.UPDATE_BLOG_SUCCESS,
-    //        payload: res.data
-    //      });
-    //    } catch (err) {
-    //      dispatch({
-    //        type: BLOG_ACTION.UPDATE_BLOG_FAILURE,
-    //        error: err
-    //      });
-    //    }
-    // }
   };
 }

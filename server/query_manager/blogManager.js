@@ -17,7 +17,7 @@ let _createBlogPostData = (title, summary, tags, user_id) => {
   };
 };
 
-let _createContentData = (blogPost_id, fileList=[], mediaText=[]) => {
+let _createContentData = (blogPost_id, fileList=[], mediaText=[], contentIds=[]) => {
   let res = [];
   for (let idx = 0; idx < fileList.length; idx++) {
     const media_url = fileList[idx].response[0].secure_url;
@@ -29,6 +29,10 @@ let _createContentData = (blogPost_id, fileList=[], mediaText=[]) => {
       summary,
       sequence: idx
     });
+
+    if (idx >= 0 && idx < contentIds.length) {
+      res[idx].id = contentIds[idx];
+    }
   }
   return res;
 };
@@ -101,6 +105,15 @@ let _getBlogIds = blogData => {
   return res;
 };
 
+let getBlogAndContentsIds = blog => {
+  let res = { id: -1, contentIds: []}
+  res.id = blog.id;
+  blog.contents.forEach(content => {
+    res.contentIds.push(content.id);
+  });
+  return res;
+}
+
 // TODO: ERROR HANDLING
 /**
  * Retrives all blogs
@@ -121,7 +134,6 @@ let getBlogs = async () => {
     const resData = _generateBlogObjects(blogData, blogContents);
     return blogData;
   } catch (err) {
-    console.log(err);
     return null;
   }
 };
@@ -163,12 +175,54 @@ let createBlog = async (title, summary, tags, user_id, fileList, mediaText) => {
   }
 };
 
+let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blog}) => {
+  const {id, contentIds} = getBlogAndContentsIds(blog);
+  const contentDatas = _createContentData(id, fileList, mediaText, contentIds);
+
+  try {
+    const dbQueries = await knex.transaction(trx => {
+      let queries = [];
+      queries.push(knex(BLOG_POST)
+        .where({ id, user_id })
+        .update(_createBlogPostData(title, summary, tags, user_id))
+      );
+
+      if (mediaText.length < contentIds.length) {
+        const diff = contentIds.length - mediaText.length;
+        for (let i = 1; i <= diff; i++) {
+          const sequence = contentIds.length - i;
+          queries.push(knex(BLOG_CONTENT).where({blogPost_id: id, sequence }).del());
+        }
+      }
+
+      contentDatas.forEach(data => {
+        if (!data.id) {
+          //insert to BlogContent table
+          queries.push(knex(BLOG_CONTENT).insert(data));
+        } else {
+          //update BlogContent row
+          queries.push(knex(BLOG_CONTENT)
+            .where({ blogPost_id: data.blogPost_id, id: data.id })
+            .update(data)
+          );
+        }
+      });
+
+      Promise.all(queries).then(trx.commit).catch(trx.rollback);
+    });
+
+    const data = await getBlogWithId(id);
+    return data[0];
+  } catch (err) {
+    return null;
+  }
+};
+
 let deleteBlog = async (id) => {
   try {
     const res = await knex(BLOG_POST).where('id', id).del();
     return res;
   } catch (err) {
-    console.log(err);
     return null;
   }
 };
@@ -180,5 +234,6 @@ module.exports = {
   getBlogsFromUserId,
   getBlogWithId,
   createBlog,
+  updateBlog,
   deleteBlog,
 };
