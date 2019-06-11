@@ -171,7 +171,7 @@ class BlogContainer extends Component {
 
   render() {
     const { isCreateVisible, isReadVisible, isUpdateVisible, selectedBlog } = this.state;
-    const { blogs, currentUser, createBlog, deleteBlog } = this.props;
+    const { blogs, currentUser, createBlog, deleteBlog, updateBlog } = this.props;
 
     return (
       <Content >
@@ -191,6 +191,7 @@ class BlogContainer extends Component {
             handleClose={ this.handleUpdateModal }
             currentUser={ currentUser }
             blog={ selectedBlog }
+            updateBlog={ updateBlog }
           /> :
           null
         }
@@ -217,6 +218,7 @@ const mapDispatchToProps = dispatch => {
       getBlogs: BlogAction.getBlogs,
       createBlog: BlogAction.createBlog,
       deleteBlog: BlogAction.deleteBlog,
+      updateBlog: BlogAction.updateBlog,
     },
     dispatch
   );

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Tag, Icon, Upload  } from 'antd';
 import { BlogAction } from '../../actions';
 import { isEqual } from 'lodash';
+import "./BlogModal.css";
 
 const INITIAL_STATE = {
   title: "", //required
@@ -142,6 +143,10 @@ class BlogUpdateFormModal extends Component {
     }
   };
 
+  /**
+   * This function removes file from fileList as well as mediaText located in the same index
+   * @param  {Object} file [file to be removed]
+   */
   handleMediaRemove = (file) => {
     const { fileList, mediaText } = this.state;
     let idx = -1;
@@ -164,11 +169,11 @@ class BlogUpdateFormModal extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    // const { title, summary, tags, fileList, mediaText } = this.state;
-    // const { currentUser, createBlog } = this.props;
-    // createBlog(Object.assign({
-    //   title, summary, tags, fileList, mediaText, user_id: currentUser.id
-    // }));
+    const { title, summary, tags, fileList, mediaText } = this.state;
+    const { currentUser, updateBlog } = this.props;
+    updateBlog(Object.assign({
+      title, summary, tags, fileList, mediaText, user_id: currentUser.id
+    }));
 
     this.handleModalClose(e);
   };
@@ -306,13 +311,13 @@ class BlogUpdateFormModal extends Component {
         Close
       </Button>,
       <Button
-        key="submit"
-        type="primary"
+        key="update"
+        className="warning-button"
         htmlType="submit"
         onClick={this.handleSubmit}
         disabled= {this.isSubmitDisabled(title, summary)}
       >
-        Submit
+        Update
       </Button>,
     ];
   };
