@@ -18,7 +18,7 @@ export default (state = initialState, action) => {
     }
     case BLOG_ACTION.DELETE_BLOG_SUCCESS: {
       const items = state.items.filter(item => {
-        return item.id === action.payload.id
+        return item.id !== action.payload.id
       });
       return Object.assign({...state}, { items });
     }

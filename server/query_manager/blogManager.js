@@ -180,7 +180,6 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
   const {id, contentIds} = getBlogAndContentsIds(blog);
   const contentDatas = _createContentData(id, fileList, mediaText, contentIds);
 
-
   try {
     const dbQueries = await knex.transaction(trx => {
       let queries = [];
@@ -191,8 +190,8 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
 
       if (mediaText.length < contentIds.length) {
         const diff = contentIds.length - mediaText.length;
+        console.log("delete");
         for (let i = 1; i <= diff; i++) {
-          // refactor to delete unused ids
           const sequence = contentIds.length - i;
           queries.push(knex(BLOG_CONTENT).where({blogPost_id: id, sequence }).del());
         }
@@ -200,10 +199,10 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
 
       contentDatas.forEach(data => {
         if (!data.id) {
-          //add
+          //insert to BlogContent table
           queries.push(knex(BLOG_CONTENT).insert(data));
         } else {
-          //update
+          //update BlogContent row
           queries.push(knex(BLOG_CONTENT)
             .where({ blogPost_id: data.blogPost_id, id: data.id })
             .update(data)

@@ -158,8 +158,7 @@ class BlogUpdateFormModal extends Component {
       return true;
     });
 
-    const removalText = idx === -1 ? "" : mediaText[idx];
-    let modifiedTexts = mediaText.filter(text => text !== removalText);
+    let modifiedTexts = mediaText.filter((text, i) => i !== idx);
 
     this.setState({
       fileList: modifiedFileList,

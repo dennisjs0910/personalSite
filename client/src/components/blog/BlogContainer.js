@@ -172,7 +172,7 @@ class BlogContainer extends Component {
   render() {
     const { isCreateVisible, isReadVisible, isUpdateVisible, selectedBlog } = this.state;
     const { blogs, currentUser, createBlog, deleteBlog, updateBlog } = this.props;
-
+    console.log(this.state);
     return (
       <Content >
         { this.renderHeaderRow() }
