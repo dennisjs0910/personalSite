@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Tag, Icon, Upload  } from 'antd';
 import { BlogAction } from '../../actions';
+import { isEqual } from 'lodash';
 
 const INITIAL_STATE = {
   title: "", //required
@@ -104,6 +105,30 @@ class BlogCreateModal extends Component {
     }
   };
 
+  /**
+   * This function removes file from fileList as well as mediaText located in the same index
+   * @param  {Object} file [file to be removed]
+   */
+  handleMediaRemove = (file) => {
+    const { fileList, mediaText } = this.state;
+    let idx = -1;
+    let modifiedFileList = fileList.filter((f, i) => {
+      if (isEqual(file, f)) {
+        idx = i;
+        return false;
+      }
+      return true;
+    });
+
+    const removalText = idx === -1 ? "" : mediaText[idx];
+    let modifiedTexts = mediaText.filter(text => text !== removalText);
+
+    this.setState({
+      fileList: modifiedFileList,
+      mediaText: modifiedTexts
+    });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
@@ -186,6 +211,7 @@ class BlogCreateModal extends Component {
           customRequest={ this.uploadImageToCloudinary }
           onChange={ this.handleMediaChange }
           fileList={ fileList }
+          onRemove={ this.handleMediaRemove }
         >
           <Button>
             <Icon type="upload" /> Upload
@@ -220,7 +246,7 @@ class BlogCreateModal extends Component {
         <Form.Item label={`Media Description ${idx + 1}`} key={idx} >
           <Input.TextArea
             data-id={idx}
-            defaultValue={ val }
+            value={ val }
             onChange={ this.handleMediaTextChange }
           >
           </Input.TextArea>
