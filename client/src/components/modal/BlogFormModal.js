@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Tag, Icon, Upload  } from 'antd';
 import { BlogAction } from '../../actions';
 
+const INITIAL_STATE = {
+  title: "", //required
+  summary: "", //required
+  tags: [],
+  inputVisible: false,
+  tagInputValue: '',
+  fileList: [],
+  mediaText: []
+};
+
 class BlogFormModal extends Component {
   constructor(props) {
     super(props);
     this.tagSet = new Set();
-    this.state = {
-      title: "", //required
-      summary: "", //required
-      tags: [],
-      inputVisible: false,
-      tagInputValue: '',
-      fileList: [],
-      mediaText: [""]
-    };
-
+    this.state = INITIAL_STATE;
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
@@ -33,6 +34,7 @@ class BlogFormModal extends Component {
       let data = new FormData();
       data.append('file', file);
       const imageRes = await BlogAction.postImage(data);
+      this.addTextBox();
       onSuccess(imageRes.data, file);
     } catch(err) {
       onError(err);
@@ -47,6 +49,13 @@ class BlogFormModal extends Component {
    */
   showTagInput = () => {
     this.setState({ inputVisible: true }, () => this.input.focus());
+  };
+
+  /**
+   * Returns true if title of summary is an empty string
+   */
+  isSubmitDisabled = (title, summary) => {
+    return title === "" || summary === "";
   };
 
   /**
@@ -71,6 +80,10 @@ class BlogFormModal extends Component {
     }
   };
 
+  handleStateReset = (e) => {
+    e.preventDefault();
+    this.setState(INITIAL_STATE);
+  };
   /**
    * Handle close is used to remove a tag user have added
    * @param  {String} removedTag [Tag name to be deleted]
@@ -94,11 +107,12 @@ class BlogFormModal extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, handleClose, createBlog } = this.props;
-    handleClose();
+    const { currentUser, createBlog, handleClose } = this.props;
     createBlog(Object.assign({
       title, summary, tags, fileList, mediaText, user_id: currentUser.id
     }));
+    handleClose(e);
+    this.handleStateReset();
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
@@ -111,7 +125,7 @@ class BlogFormModal extends Component {
     this.setState({ [key]: target.value });
   };
 
-  addTextBox = e => {
+  addTextBox = () => {
     const { mediaText } = this.state;
     this.setState({
       mediaText: [...mediaText, ""]
@@ -181,19 +195,19 @@ class BlogFormModal extends Component {
     )
   };
 
-  renderTitleForm() {
+  renderTitleForm(title) {
     return(
       <Form.Item label="Blog Title">
-        <Input onChange={(e) => this.handleTextInputChange(e, "title") }>
+        <Input value={title} onChange={(e) => this.handleTextInputChange(e, "title") }>
         </Input>
       </Form.Item>
     );
   };
 
-  renderBlogSummaryForm() {
+  renderBlogSummaryForm(summary) {
     return(
       <Form.Item label="Summary">
-        <Input.TextArea onChange={(e) => this.handleTextInputChange(e, "summary") }>
+        <Input.TextArea value={summary} onChange={(e) => this.handleTextInputChange(e, "summary") }>
         </Input.TextArea>
       </Form.Item>
     );
@@ -215,26 +229,20 @@ class BlogFormModal extends Component {
     });
   };
 
-  renderAddMoreTextButton() {
-    return(
-      <Button type="primary" onClick={ this.addTextBox } >
-        Add More Content
-      </Button>
-    );
-  };
-
-  isSubmitDisabled = (title, summary) => {
-    return title === "" || summary === "";
-  };
-
   /**
    * This function returns the footor of a main mondal component
-   * @param  {Function} handleClose [function that closes modal]
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
   getFooterElements = (handleClose) => {
     const { title, summary } = this.state;
     return [
+      <Button
+        key="clear"
+        onClick={ this.handleStateReset }
+        type="danger"
+      >
+        Clear
+      </Button>,
       <Button key="back" onClick={ handleClose }>
         Close
       </Button>,
@@ -252,6 +260,8 @@ class BlogFormModal extends Component {
 
   render() {
     const { isVisible, handleClose } = this.props;
+    const { title, summary } = this.state;
+
     return (
       <div>
         <Modal
@@ -262,12 +272,11 @@ class BlogFormModal extends Component {
           footer={ this.getFooterElements(handleClose) }
         >
           <Form onSubmit={this.handleSubmit} className="bp-form-container">
-            { this.renderTitleForm()}
-            { this.renderBlogSummaryForm()}
+            { this.renderTitleForm(title)}
+            { this.renderBlogSummaryForm(summary)}
             { this.renderTagForm() }
             { this.renderMediaContentForm() }
             { this.renderInputTextBoxes() }
-            { this.renderAddMoreTextButton() }
           </Form>
         </Modal>
       </div>
