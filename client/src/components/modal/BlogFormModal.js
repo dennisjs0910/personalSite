@@ -112,7 +112,7 @@ class BlogFormModal extends Component {
       title, summary, tags, fileList, mediaText, user_id: currentUser.id
     }));
     handleClose(e);
-    this.handleStateReset();
+    this.handleStateReset(e);
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
