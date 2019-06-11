@@ -134,7 +134,6 @@ let getBlogs = async () => {
     const resData = _generateBlogObjects(blogData, blogContents);
     return blogData;
   } catch (err) {
-    console.log(err);
     return null;
   }
 };
@@ -190,7 +189,6 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
 
       if (mediaText.length < contentIds.length) {
         const diff = contentIds.length - mediaText.length;
-        console.log("delete");
         for (let i = 1; i <= diff; i++) {
           const sequence = contentIds.length - i;
           queries.push(knex(BLOG_CONTENT).where({blogPost_id: id, sequence }).del());
@@ -216,22 +214,8 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
     const data = await getBlogWithId(id);
     return data[0];
   } catch (err) {
-    console.log(err);
     return null;
   }
-
-
-  if (mediaText.length === contentIds.length) {
-    console.log("equal length og vs mediaText");
-  } else if (mediaText.length < contentIds.length) {
-    const diff = contentIds.length - mediaText.length;
-    console.log("removed content, how many?" , diff);
-  } else {
-    const extra = mediaText.length - contentIds.length;
-    console.log("boy added more", extra);
-  }
-
-  return blog;
 };
 
 let deleteBlog = async (id) => {
@@ -239,7 +223,6 @@ let deleteBlog = async (id) => {
     const res = await knex(BLOG_POST).where('id', id).del();
     return res;
   } catch (err) {
-    console.log(err);
     return null;
   }
 };

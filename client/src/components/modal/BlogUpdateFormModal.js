@@ -159,7 +159,6 @@ class BlogUpdateFormModal extends Component {
     });
 
     let modifiedTexts = mediaText.filter((text, i) => i !== idx);
-
     this.setState({
       fileList: modifiedFileList,
       mediaText: modifiedTexts
