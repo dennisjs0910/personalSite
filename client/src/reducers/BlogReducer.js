@@ -6,12 +6,16 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case BLOG_ACTION.FETCH_BLOG_SUCCESS:
+      return Object.assign({...state}, { items: action.payload.data });
     case BLOG_ACTION.CREATE_BLOG_SUCCESS : {
       const { items } = state;
       return Object.assign({...state}, { items: [ action.payload.data,  ...items ] });
     }
-    case BLOG_ACTION.FETCH_BLOG_SUCCESS:
-      return Object.assign({...state}, { items: action.payload.data });
+    case BLOG_ACTION.UPDATE_BLOG_SUCCESS : {
+      const items = state.items.map(item => item.id === action.payload.data.id ? action.payload.data : item);
+      return Object.assign({...state}, { items });
+    }
     case BLOG_ACTION.DELETE_BLOG_SUCCESS: {
       const items = state.items.filter(item => {
         return item.id === action.payload.id

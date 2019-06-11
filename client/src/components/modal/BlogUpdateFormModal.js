@@ -14,7 +14,6 @@ const INITIAL_STATE = {
   mediaText: []
 };
 
-
 class BlogUpdateFormModal extends Component {
   constructor(props) {
     super(props);
@@ -48,7 +47,7 @@ class BlogUpdateFormModal extends Component {
         uid: `${idx}`,
         name: `${idx}_image`,
         status: 'done',
-        url: content.media_url
+        response: [{ secure_url: content.media_url }]
       });
       res.texts.push(content.summary);
     });
@@ -171,9 +170,9 @@ class BlogUpdateFormModal extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, updateBlog } = this.props;
+    const { currentUser, updateBlog, blog } = this.props;
     updateBlog(Object.assign({
-      title, summary, tags, fileList, mediaText, user_id: currentUser.id
+      title, summary, tags, fileList, mediaText, user_id: currentUser.id, blog
     }));
 
     this.handleModalClose(e);
