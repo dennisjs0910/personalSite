@@ -13,14 +13,46 @@ const INITIAL_STATE = {
   mediaText: []
 };
 
-class BlogCreateModal extends Component {
+class BlogFormModal extends Component {
   constructor(props) {
     super(props);
-    this.tagSet = new Set();
-    this.state = INITIAL_STATE;
+
+    const { blog, isVisible, isUpdate } = props;
+    if (!!blog && isVisible && isUpdate) {
+      const mediaFilesAndText = this._getFilesAndText(blog);
+      this.tagSet = new Set(blog.category);
+      this.state = {
+        title: blog.title,
+        summary: blog.summary,
+        tags: [...blog.category],
+        inputVisible: false,
+        tagInputValue: '',
+        fileList: mediaFilesAndText.files,
+        mediaText: mediaFilesAndText.texts
+      };
+    } else {
+      this.tagSet = new Set();
+      this.state = INITIAL_STATE;
+    }
+
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
+
+  _getFilesAndText = ({contents=[]}) => {
+    let res = { files: [], texts: []};
+    contents.forEach((content, idx) => {
+      res.files.push({
+        uid: `${idx}`,
+        name: `${idx}_image`,
+        status: 'done',
+        response: [{ secure_url: content.media_url }]
+      });
+      res.texts.push(content.summary);
+    });
+
+    return res;
+  };
 
   /**
    * Custom Request to upload an image to Cloudinary.
@@ -127,15 +159,24 @@ class BlogCreateModal extends Component {
     });
   };
 
-  handleSubmit = e => {
+  handleFormSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, createBlog, handleClose } = this.props;
-    createBlog(Object.assign({
+    const { currentUser, createBlog, handleClose, handleSubmit } = this.props;
+    handleSubmit(Object.assign({
       title, summary, tags, fileList, mediaText, user_id: currentUser.id
     }));
     handleClose(e);
     this.handleStateReset(e);
+  };
+
+  handleModalClose = (e) => {
+    e.preventDefault();
+    const { handleClose } = this.props;
+    this.setState(INITIAL_STATE);
+    delete this.input;
+    delete this.tagSet;
+    handleClose(e);
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
@@ -257,7 +298,7 @@ class BlogCreateModal extends Component {
    * This function returns the footor of a main mondal component
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
-  getFooterElements = (handleClose) => {
+  getFooterElements = () => {
     const { title, summary } = this.state;
     return [
       <Button
@@ -267,14 +308,14 @@ class BlogCreateModal extends Component {
       >
         Clear
       </Button>,
-      <Button key="back" onClick={ handleClose }>
+      <Button key="close" onClick={ this.handleModalClose }>
         Close
       </Button>,
       <Button
         key="submit"
         type="primary"
         htmlType="submit"
-        onClick={this.handleSubmit}
+        onClick={ this.handleFormSubmit }
         disabled= {this.isSubmitDisabled(title, summary)}
       >
         Submit
@@ -283,19 +324,20 @@ class BlogCreateModal extends Component {
   };
 
   render() {
-    const { isVisible, handleClose } = this.props;
+    const { isVisible } = this.props;
     const { title, summary } = this.state;
 
     return (
       <div>
         <Modal
+          width="50rem"
           visible={ isVisible }
           title="Blog Creation Form"
-          onOk={ this.handleSubmit }
-          onCancel={ handleClose }
-          footer={ this.getFooterElements(handleClose) }
+          onOk={ this.handleFormSubmit }
+          onCancel={ this.handleModalClose }
+          footer={ this.getFooterElements() }
         >
-          <Form onSubmit={this.handleSubmit} className="bp-form-container">
+          <Form onSubmit={this.handleFormSubmit} className="bp-form-container">
             { this.renderTitleForm(title)}
             { this.renderBlogSummaryForm(summary)}
             { this.renderTagForm() }
@@ -308,4 +350,4 @@ class BlogCreateModal extends Component {
   }
 }
 
-export default BlogCreateModal;
+export default BlogFormModal;

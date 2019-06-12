@@ -25,6 +25,7 @@ export default class BlogAction {
    * @return {Function}    [async function to dispatch results to reducers]
    */
   static createBlog = (data) => {
+    console.log("action createBlog");
      return async (dispatch) => {
        try {
          let res = await axios.post(`/api/blog`, data);
@@ -76,6 +77,7 @@ export default class BlogAction {
   };
 
   static updateBlog = (data) => {
+    console.log("action updateBlog");
     return async (dispatch) => {
        try {
          let res = await axios.put(`/api/blog`, data);

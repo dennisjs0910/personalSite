@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
 import { BlogAction } from '../../actions';
-import { BlogCreateModal, BlogModal, BlogUpdateFormModal } from '../modal';
+import { BlogFormModal, BlogModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import "./BlogContainer.css";
@@ -13,9 +13,11 @@ class BlogContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isCreateVisible: false,
-      isUpdateVisible: false,
+      isFormVisible: false,
+      // isFormVisible: false, //combine
+      // isUpdateVisible: false, //combine
       isReadVisible: false,
+      isUpdate: false,
       selectedBlog: null,
       pageMin: 0,
       pageMax: PER_PAGINATION,
@@ -66,10 +68,11 @@ class BlogContainer extends Component {
    * This is used to open and close blog Create Form.
    */
   handleCreateModal = () => {
+    console.log("create handleCreateModal");
     this.setState({
-      isCreateVisible: !this.state.isCreateVisible,
       isReadVisible: false,
-      isUpdateVisible: false,
+      isFormVisible: !this.state.isFormVisible,
+      isUpdate: false,
       selectedBlog: null,
     });
   };
@@ -81,20 +84,39 @@ class BlogContainer extends Component {
    */
   handleReadModal = (blog) => {
     this.setState({
-      isCreateVisible: false,
       isReadVisible: !this.state.isReadVisible,
-      isUpdateVisible: false,
+      isFormVisible: false,
+      isUpdate: false,
       selectedBlog: blog,
     });
   };
 
   handleUpdateModal = (blog) => {
+    console.log("update handleUpdateModal");
     this.setState({
-      isCreateVisible: false,
       isReadVisible: false,
-      isUpdateVisible: !this.state.isUpdateVisible,
+      isFormVisible: !this.state.isFormVisible,
+      isUpdate: !this.state.isUpdate,
       selectedBlog: blog,
     });
+  };
+
+  generateFormProps = () => {
+    const { isFormVisible, isReadVisible, isUpdate, selectedBlog } = this.state;
+    const { blogs, currentUser, createBlog, updateBlog } = this.props;
+    let formProps = {
+      currentUser,
+      isUpdate,
+      isVisible: isFormVisible,
+      blog: selectedBlog,
+      handleClose: this.handleCreateModal,
+      handleSubmit: createBlog,
+    };
+    if (isUpdate) {
+      formProps.handleClose = this.handleUpdateModal;
+      formProps.handleSubmit = updateBlog;
+    }
+    return formProps;
   };
 
   renderCreateBlogPostButton() {
@@ -170,29 +192,17 @@ class BlogContainer extends Component {
   //REFACTOR TOGETHER END================================================
 
   render() {
-    const { isCreateVisible, isReadVisible, isUpdateVisible, selectedBlog } = this.state;
-    const { blogs, currentUser, createBlog, deleteBlog, updateBlog } = this.props;
+    const { isFormVisible, isReadVisible, isUpdate, selectedBlog } = this.state;
+    const { blogs, currentUser, deleteBlog } = this.props;
+    const formProps = this.generateFormProps();
+
     return (
       <Content >
         { this.renderHeaderRow() }
         { this.renderAllBlogs(blogs) }
-        { isCreateVisible ?
-          <BlogCreateModal
-            isVisible={ isCreateVisible }
-            handleClose={ this.handleCreateModal }
-            createBlog={ createBlog }
-            currentUser={ currentUser }
-          /> : null
-        }
-        { isUpdateVisible ?
-          <BlogUpdateFormModal
-            isVisible={ isUpdateVisible }
-            handleClose={ this.handleUpdateModal }
-            currentUser={ currentUser }
-            blog={ selectedBlog }
-            updateBlog={ updateBlog }
-          /> :
-          null
+        { isFormVisible ?
+          <BlogFormModal {...formProps} />
+          : null
         }
         {
           isReadVisible && selectedBlog !== null ?
