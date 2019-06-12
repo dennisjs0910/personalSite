@@ -115,11 +115,6 @@ class RegistrationFormTemplate extends Component {
               ],
             })(<Input.Password onBlur={this.handleConfirmBlur} />)}
           </Form.Item>
-          {/**<Form.Item label="Phone Number">
-              {getFieldDecorator('phone', {
-                rules: [{ required: true, message: 'Please input your phone number!' }],
-              })(<Input addonBefore={prefixSelector} />)}
-            </Form.Item>*/}
 
           <Form.Item className="signup-submit-button">
             <Button type="primary" htmlType="submit">
