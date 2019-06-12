@@ -1,9 +1,7 @@
-import BlogCreateModal from './BlogCreateModal';
-import BlogUpdateFormModal from './BlogUpdateFormModal';
+import BlogFormModal from './BlogFormModal';
 import BlogModal from './BlogModal';
 
 export {
-  BlogCreateModal,
+  BlogFormModal,
   BlogModal,
-  BlogUpdateFormModal
 };
