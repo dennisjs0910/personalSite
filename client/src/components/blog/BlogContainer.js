@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
+import { Alert, Layout, Row, Col, Button, Card, Pagination } from 'antd';
 import { BlogAction } from '../../actions';
 import { BlogFormModal, BlogModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { isEmpty } from 'lodash';
 import "./BlogContainer.css";
 
 const PER_PAGINATION = 4;
@@ -189,11 +190,20 @@ class BlogContainer extends Component {
 
   render() {
     const { isFormVisible, isReadVisible, selectedBlog } = this.state;
-    const { blogs, currentUser, deleteBlog } = this.props;
+    const { blogs, currentUser, deleteBlog, error } = this.props;
     const formProps = this.generateFormProps();
 
     return (
       <Content >
+        { !isEmpty(error) ?
+          <Alert
+            message="Error"
+            description={error.message}
+            type="error"
+            showIcon
+            closable
+          /> : null
+        }
         { this.renderHeaderRow() }
         { this.renderAllBlogs(blogs) }
         { isFormVisible ?
@@ -230,9 +240,9 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mapStateToProps = state => {
-  const { items } = state.blog;
+  const { items, error } = state.blog;
   const { currentUser } = state.auth;
-  return { blogs: items, currentUser };
+  return { blogs: items, currentUser, error };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlogContainer);

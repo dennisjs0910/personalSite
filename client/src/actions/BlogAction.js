@@ -18,12 +18,6 @@ export default class BlogAction {
     }
   };
 
-  /**
-   * This static function is used to send data to `/api/blog` server api endpoint to store
-   * information about the blog that is being created
-   * @param  {Object} data [keys: tags, image_url, img-descprition, title]
-   * @return {Function}    [async function to dispatch results to reducers]
-   */
   static createBlog = (data) => {
      return async (dispatch) => {
        try {
@@ -35,7 +29,7 @@ export default class BlogAction {
        } catch (err) {
          dispatch({
            type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-           error: err
+           error: { message: "Something went wrong creating your blog, please try again" }
          });
        }
     }
@@ -52,24 +46,7 @@ export default class BlogAction {
       } catch (err) {
         dispatch({
           type: BLOG_ACTION.FETCH_BLOG_FAILURE,
-          error: err
-        });
-      }
-    }
-  };
-
-  static deleteBlog = ({id}) => {
-    return async (dispatch) => {
-      try{
-        await axios.delete(`/api/blog/${id}`);
-        dispatch({
-          type: BLOG_ACTION.DELETE_BLOG_SUCCESS,
-          payload: { id }
-        });
-      } catch (err) {
-        dispatch({
-          type: BLOG_ACTION.DELETE_BLOG_FAILURE,
-          payload: err
+          error: { message: "An error occured, please try again and refresh the page" }
         });
       }
     }
@@ -86,9 +63,26 @@ export default class BlogAction {
        } catch (err) {
          dispatch({
            type: BLOG_ACTION.UPDATE_BLOG_FAILURE,
-           error: err
+           error: { message: "Something went wrong updating your blog, please try again" }
          });
        }
+    }
+  };
+
+  static deleteBlog = ({id}) => {
+    return async (dispatch) => {
+      try{
+        await axios.delete(`/api/blog/${id}`);
+        dispatch({
+          type: BLOG_ACTION.DELETE_BLOG_SUCCESS,
+          payload: { id }
+        });
+      } catch (err) {
+        dispatch({
+          type: BLOG_ACTION.DELETE_BLOG_FAILURE,
+          error: null
+        });
+      }
     }
   };
 }

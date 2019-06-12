@@ -5,6 +5,10 @@
   position: relative;
 }
 
+main.ant-layout-content.fullscreen {
+  height: 100vh;
+}
+
 .login-form-container {
   margin: auto;
   margin-top: 300px;

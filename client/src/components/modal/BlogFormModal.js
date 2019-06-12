@@ -286,6 +286,7 @@ class BlogFormModal extends Component {
   renderTitleForm(title) {
     return(
       <Form.Item label="Blog Title"
+        required
         labelCol={{span: 3}}
         wrapperCol={{span: 21}}
       >
@@ -298,6 +299,7 @@ class BlogFormModal extends Component {
   renderBlogSummaryForm(summary) {
     return(
       <Form.Item label="Summary"
+        required
         labelCol={{span: 3}}
         wrapperCol={{span: 21}}
       >
@@ -315,7 +317,7 @@ class BlogFormModal extends Component {
     const { mediaText } = this.state;
     return mediaText.map((val, idx) => {
       return(
-        <Form.Item label={`Summary ${idx + 1}`} key={idx} >
+        <Form.Item label={`Media Summary ${idx + 1}`} key={idx} >
           <Input.TextArea
             autosize={{ minRows: 6, maxRows: 20 }}
             data-id={idx}
