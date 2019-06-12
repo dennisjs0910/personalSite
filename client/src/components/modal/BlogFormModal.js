@@ -338,7 +338,7 @@ class BlogFormModal extends Component {
     const { title, summary } = this.state;
     const { isUpdate } = this.props;
     const buttonClassName = isUpdate ? "warning-button" : "ant-btn-primary";
-
+    const buttonText = isUpdate ? "Update" : "Submit";
     return [
       <Button
         key="clear"
@@ -357,7 +357,7 @@ class BlogFormModal extends Component {
         onClick={ this.handleFormSubmit }
         disabled= {this.isSubmitDisabled(title, summary)}
       >
-        Submit
+        { buttonText }
       </Button>,
     ];
   };
