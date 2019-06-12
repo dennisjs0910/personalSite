@@ -8,6 +8,8 @@ const BLOG_CONTENT = "BlogContent";
 const BLOG_CONTENT_COL = ['id', 'blogPost_id', 'video_url', 'video_text',
   'image_url', 'image_text', 'sequence', 'created_at', 'updated_at'];
 
+const userManager = require('./userManager');
+
 let _createBlogPostData = (title, summary, tags, user_id) => {
   return {
     title,
@@ -180,11 +182,14 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
   const contentDatas = _createContentData(id, fileList, mediaText, contentIds);
 
   try {
+    const isUserAdmin = await userManager.isUserAdmin({ id: user_id });
+    const userId = isUserAdmin ? blog.user_id : user_id;
+
     const dbQueries = await knex.transaction(trx => {
       let queries = [];
       queries.push(knex(BLOG_POST)
-        .where({ id, user_id })
-        .update(_createBlogPostData(title, summary, tags, user_id))
+        .where({ id, user_id: userId })
+        .update(_createBlogPostData(title, summary, tags, userId))
       );
 
       if (mediaText.length < contentIds.length) {
@@ -214,6 +219,7 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
     const data = await getBlogWithId(id);
     return data[0];
   } catch (err) {
+    console.log(err);
     return null;
   }
 };

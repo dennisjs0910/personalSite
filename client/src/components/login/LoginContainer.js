@@ -3,13 +3,35 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import LoginForm from "./LoginForm";
 import { AuthAction } from '../../actions';
+import { isEmpty } from 'lodash';
+import { Layout, Alert } from 'antd';
+import "./login.css";
+
+const { Content } = Layout;
 
 class LoginContainer extends Component {
+  generateErrorDescription = error => {
+    return `${error.message}`;
+  };
 
   render() {
-    const { loginUser } = this.props;
+    const { loginUser, error } = this.props;
+
+    console.log(!isEmpty(error));
     return (
-      <LoginForm loginUser={loginUser}/>
+      <Content className="fullscreen">
+        { !isEmpty(error) ?
+          <Alert
+            message="Error"
+            description={ this.generateErrorDescription(error) }
+            type="error"
+            showIcon
+          /> : null
+        }
+        <div className="login-container">
+          <LoginForm loginUser={loginUser}/>
+        </div>
+      </Content>
     );
   }
 }

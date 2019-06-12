@@ -17,6 +17,7 @@ routes.post('/', async (req, res) => {
   const data = await blogManager.createBlog(title, summary, tags, user_id, fileList, mediaText);
   if (!!!data) {
     res.sendStatus(404);
+    return;
   }
   res.status(200);
   res.json({ data });
@@ -28,6 +29,7 @@ routes.put('/', async (req, res) => {
 
   if (!!!data) {
     res.sendStatus(404);
+    return;
   }
   res.status(200);
   res.json({ data });
@@ -38,6 +40,7 @@ routes.delete('/:id', async (req, res) => {
   const data = await blogManager.deleteBlog(id);
   if (!!!data) {
     res.sendStatus(404);
+    return;
   }
 
   res.sendStatus(204);

@@ -10,17 +10,51 @@ const INITIAL_STATE = {
   inputVisible: false,
   tagInputValue: '',
   fileList: [],
-  mediaText: []
+  mediaText: [],
+  isPreviewVisible: false,
+  previewImage: ""
 };
 
-class BlogCreateModal extends Component {
+class BlogFormModal extends Component {
   constructor(props) {
     super(props);
-    this.tagSet = new Set();
-    this.state = INITIAL_STATE;
+
+    const { blog, isVisible, isUpdate } = props;
+    if (!!blog && isVisible && isUpdate) {
+      const mediaFilesAndText = this._getFilesAndText(blog);
+      this.tagSet = new Set(blog.category);
+      this.state = {
+        title: blog.title,
+        summary: blog.summary,
+        tags: [...blog.category],
+        inputVisible: false,
+        tagInputValue: '',
+        fileList: mediaFilesAndText.files,
+        mediaText: mediaFilesAndText.texts
+      };
+    } else {
+      this.tagSet = new Set();
+      this.state = INITIAL_STATE;
+    }
+
     this.renderTagForm = this.renderTagForm.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
+
+  _getFilesAndText = ({contents=[]}) => {
+    let res = { files: [], texts: []};
+    contents.forEach((content, idx) => {
+      res.files.push({
+        uid: `${idx}`,
+        name: `${idx}_image`,
+        status: 'done',
+        response: [{ secure_url: content.media_url }]
+      });
+      res.texts.push(content.summary);
+    });
+
+    return res;
+  };
 
   /**
    * Custom Request to upload an image to Cloudinary.
@@ -63,10 +97,10 @@ class BlogCreateModal extends Component {
    * This function adds a new tag to the list of tags if tagInput is unique.
    * Also we reset the inputValue and unfocus the input.
    */
-  handleInputConfirm = () => {
+  handleTagConfirm = () => {
     const { tagInputValue, tags } = this.state;
 
-    if (!this.tagSet.has(tagInputValue)) {
+    if (!this.tagSet.has(tagInputValue) && tagInputValue !== '') {
       this.tagSet.add(tagInputValue);
       this.setState({
         tags: [...tags, tagInputValue],
@@ -127,15 +161,25 @@ class BlogCreateModal extends Component {
     });
   };
 
-  handleSubmit = e => {
+  handleFormSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, createBlog, handleClose } = this.props;
-    createBlog(Object.assign({
-      title, summary, tags, fileList, mediaText, user_id: currentUser.id
+    const { currentUser, handleSubmit, handleClose, blog } = this.props;
+
+    handleSubmit(Object.assign({
+      title, summary, tags, fileList, mediaText, user_id: currentUser.id, blog
     }));
-    handleClose(e);
+    handleClose(null);
     this.handleStateReset(e);
+  };
+
+  handleModalClose = (e) => {
+    e.preventDefault();
+    const { handleClose } = this.props;
+    this.setState(INITIAL_STATE);
+    delete this.input;
+    delete this.tagSet;
+    handleClose(e);
   };
 
   handleMediaChange = ({ fileList }) => this.setState({ fileList });
@@ -148,6 +192,16 @@ class BlogCreateModal extends Component {
     this.setState({ [key]: target.value });
   };
 
+  handlePreviewCancel = () => this.setState({ isPreviewVisible: false });
+
+  handlePreview = file => {
+    const url = (file.response && file.response.length === 1 && file.response[0].secure_url) || "";
+    this.setState({
+      previewImage: url,
+      isPreviewVisible: true,
+    });
+  };
+
   addTextBox = () => {
     const { mediaText } = this.state;
     this.setState({
@@ -158,11 +212,15 @@ class BlogCreateModal extends Component {
   renderTagForm() {
     const { inputVisible, tagInputValue, tags } = this.state;
     return(
-      <Form.Item label="Tags">
+      <Form.Item label="Tags"
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
         { this.renderTagInput(inputVisible, tagInputValue) }
-        <div>
+        <div className="tag-wrapper-container">
           { tags.map(tag =>
             <Tag
+              className="form-tag"
               closable
               onClose={() => this.handleTagClose(tag) }
               key={tag}
@@ -179,19 +237,20 @@ class BlogCreateModal extends Component {
     if (inputVisible) {
       return(
         <Input
+          className="form-tag-input"
           ref={ this.saveInputRef }
           type="text"
-          size="small"
           value={ tagInputValue }
           onChange={(e) => this.handleTextInputChange(e, "tagInputValue") }
-          onBlur={ this.handleInputConfirm }
-          onPressEnter={ this.handleInputConfirm }
+          onBlur={ this.handleTagConfirm }
+          onPressEnter={ this.handleTagConfirm }
         />);
     } else {
       return(
         <Tag
-          className="bp-form-add-new-tag"
+          className="form-add-tag form-tag-input"
           onClick={ this.showTagInput }
+          color="blue"
         >
           <Icon type="plus" /> New Tag
         </Tag>
@@ -202,15 +261,20 @@ class BlogCreateModal extends Component {
   renderMediaContentForm() {
     const { fileList } = this.state;
     return(
-      <Form.Item label="Media">
-        <h6>Only able to support one video and one image</h6>
+      <Form.Item label="Media"
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
         <Upload
           className='upload-list-inline'
+          listType="picture-card"
           customRequest={ this.uploadImageToCloudinary }
           onChange={ this.handleMediaChange }
+          onPreview={this.handlePreview}
           fileList={ fileList }
           onRemove={ this.handleMediaRemove }
         >
+          <h6>Only able to upload one image at a time.</h6>
           <Button>
             <Icon type="upload" /> Upload
           </Button>
@@ -221,7 +285,11 @@ class BlogCreateModal extends Component {
 
   renderTitleForm(title) {
     return(
-      <Form.Item label="Blog Title">
+      <Form.Item label="Blog Title"
+        required
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
         <Input value={title} onChange={(e) => this.handleTextInputChange(e, "title") }>
         </Input>
       </Form.Item>
@@ -230,8 +298,16 @@ class BlogCreateModal extends Component {
 
   renderBlogSummaryForm(summary) {
     return(
-      <Form.Item label="Summary">
-        <Input.TextArea value={summary} onChange={(e) => this.handleTextInputChange(e, "summary") }>
+      <Form.Item label="Summary"
+        required
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
+        <Input.TextArea
+          value={summary}
+          autosize={{ minRows: 6, maxRows: 20 }}
+          onChange={(e) => this.handleTextInputChange(e, "summary") }
+        >
         </Input.TextArea>
       </Form.Item>
     );
@@ -241,8 +317,9 @@ class BlogCreateModal extends Component {
     const { mediaText } = this.state;
     return mediaText.map((val, idx) => {
       return(
-        <Form.Item label={`Media Description ${idx + 1}`} key={idx} >
+        <Form.Item label={`Media Summary ${idx + 1}`} key={idx} >
           <Input.TextArea
+            autosize={{ minRows: 6, maxRows: 20 }}
             data-id={idx}
             value={ val }
             onChange={ this.handleMediaTextChange }
@@ -257,8 +334,11 @@ class BlogCreateModal extends Component {
    * This function returns the footor of a main mondal component
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
-  getFooterElements = (handleClose) => {
+  getFooterElements = () => {
     const { title, summary } = this.state;
+    const { isUpdate } = this.props;
+    const buttonClassName = isUpdate ? "warning-button" : "ant-btn-primary";
+    const buttonText = isUpdate ? "Update" : "Submit";
     return [
       <Button
         key="clear"
@@ -267,45 +347,49 @@ class BlogCreateModal extends Component {
       >
         Clear
       </Button>,
-      <Button key="back" onClick={ handleClose }>
+      <Button key="close" onClick={ this.handleModalClose }>
         Close
       </Button>,
       <Button
         key="submit"
-        type="primary"
+        className={ buttonClassName }
         htmlType="submit"
-        onClick={this.handleSubmit}
+        onClick={ this.handleFormSubmit }
         disabled= {this.isSubmitDisabled(title, summary)}
       >
-        Submit
+        { buttonText }
       </Button>,
     ];
   };
 
   render() {
-    const { isVisible, handleClose } = this.props;
-    const { title, summary } = this.state;
+    const { isVisible } = this.props;
+    const { title, summary, isPreviewVisible, previewImage } = this.state;
 
     return (
       <div>
         <Modal
+          width="66%"
           visible={ isVisible }
           title="Blog Creation Form"
-          onOk={ this.handleSubmit }
-          onCancel={ handleClose }
-          footer={ this.getFooterElements(handleClose) }
+          onOk={ this.handleFormSubmit }
+          onCancel={ this.handleModalClose }
+          footer={ this.getFooterElements() }
         >
-          <Form onSubmit={this.handleSubmit} className="bp-form-container">
+          <Form onSubmit={this.handleFormSubmit} className="bp-form-container" labelAlign='left'>
             { this.renderTitleForm(title)}
             { this.renderBlogSummaryForm(summary)}
             { this.renderTagForm() }
             { this.renderMediaContentForm() }
             { this.renderInputTextBoxes() }
           </Form>
+          <Modal visible={isPreviewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+            <img alt="example" style={{ width: '100%' }} src={previewImage} />
+          </Modal>
         </Modal>
       </div>
     );
   }
 }
 
-export default BlogCreateModal;
+export default BlogFormModal;

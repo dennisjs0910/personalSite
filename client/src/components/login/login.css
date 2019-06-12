@@ -1,0 +1,40 @@
+.login-container {
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  position: relative;
+}
+
+main.ant-layout-content.fullscreen {
+  height: 100vh;
+}
+
+.login-form-container {
+  margin: auto;
+  margin-top: 300px;
+  padding: 15px;
+  background-color: #d9d9d9;
+  width: 400px;
+  height: 290px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.ant-layout {
+  height: 100%;
+  width: 100%;
+  overflow-y: hidden;
+}
+
+.login-form {
+  height: 100%;
+}
+
+div.ant-form-item.login-input-container {
+  margin: 15px 0;
+}
+
+div.ant-form-item.login-input-container.password-container {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
