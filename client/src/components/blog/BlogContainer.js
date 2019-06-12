@@ -68,7 +68,6 @@ class BlogContainer extends Component {
    * This is used to open and close blog Create Form.
    */
   handleCreateModal = () => {
-    console.log("create handleCreateModal");
     this.setState({
       isReadVisible: false,
       isFormVisible: !this.state.isFormVisible,
@@ -92,7 +91,6 @@ class BlogContainer extends Component {
   };
 
   handleUpdateModal = (blog) => {
-    console.log("update handleUpdateModal");
     this.setState({
       isReadVisible: false,
       isFormVisible: !this.state.isFormVisible,

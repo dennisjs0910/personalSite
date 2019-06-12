@@ -2,6 +2,7 @@ const knexOptions = require('@root/knexfile');
 const knex = require('knex')(knexOptions);
 const USER_TABLE = "User";
 const VISIBLE_COLUMNS = ["id", "first_name", "last_name", "email", "permission"];
+const ADMIN = "admin";
 
 module.exports = {
   /**
@@ -32,6 +33,15 @@ module.exports = {
       return result;
     } catch (err) {
       return null;
+    }
+  },
+
+  isUserAdmin: async (whereClause = {}) => {
+    try{
+      const data = await knex(USER_TABLE).select(["permission"]).where(whereClause);
+      return !!data && data.length === 1 && data[0].permission === ADMIN;
+    } catch(err) {
+      return false;
     }
   }
 }

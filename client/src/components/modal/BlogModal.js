@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Modal, Button, Tag} from 'antd';
 import "./BlogModal.css";
 
+const ADMIN = "admin";
+
 class BlogModal extends Component {
 
   handleDeleteOnClick = () => {
@@ -21,9 +23,9 @@ class BlogModal extends Component {
    * @param  {Function} handleClose [function that closes modal]
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
-  getFooterElements = ({id}, {user_id}, handleClose) => {
+  getFooterElements = (currentUser, {user_id}, handleClose) => {
     let footer = [];
-    if (id === user_id && !!id) {
+    if ((!!currentUser && currentUser.id === user_id ) || currentUser.permission === ADMIN) {
       footer.push(
         (<Button
           onClick={ this.handleDeleteOnClick }

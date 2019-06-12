@@ -162,11 +162,12 @@ class BlogFormModal extends Component {
   handleFormSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, createBlog, handleClose, handleSubmit } = this.props;
+    const { currentUser, handleSubmit, handleClose, blog, isUpdate } = this.props;
+
     handleSubmit(Object.assign({
-      title, summary, tags, fileList, mediaText, user_id: currentUser.id
+      title, summary, tags, fileList, mediaText, user_id: currentUser.id, blog
     }));
-    handleClose(e);
+    handleClose(null);
     this.handleStateReset(e);
   };
 
@@ -300,6 +301,9 @@ class BlogFormModal extends Component {
    */
   getFooterElements = () => {
     const { title, summary } = this.state;
+    const { isUpdate } = this.props;
+    const buttonClassName = isUpdate ? "warning-button" : "ant-btn-primary";
+
     return [
       <Button
         key="clear"
@@ -313,7 +317,7 @@ class BlogFormModal extends Component {
       </Button>,
       <Button
         key="submit"
-        type="primary"
+        className={ buttonClassName }
         htmlType="submit"
         onClick={ this.handleFormSubmit }
         disabled= {this.isSubmitDisabled(title, summary)}
