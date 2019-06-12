@@ -162,7 +162,7 @@ class BlogFormModal extends Component {
   handleFormSubmit = e => {
     e.preventDefault();
     const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, handleSubmit, handleClose, blog, isUpdate } = this.props;
+    const { currentUser, handleSubmit, handleClose, blog } = this.props;
 
     handleSubmit(Object.assign({
       title, summary, tags, fileList, mediaText, user_id: currentUser.id, blog

@@ -14,8 +14,6 @@ class BlogContainer extends Component {
     super(props);
     this.state = {
       isFormVisible: false,
-      // isFormVisible: false, //combine
-      // isUpdateVisible: false, //combine
       isReadVisible: false,
       isUpdate: false,
       selectedBlog: null,
@@ -100,8 +98,8 @@ class BlogContainer extends Component {
   };
 
   generateFormProps = () => {
-    const { isFormVisible, isReadVisible, isUpdate, selectedBlog } = this.state;
-    const { blogs, currentUser, createBlog, updateBlog } = this.props;
+    const { isFormVisible, isUpdate, selectedBlog } = this.state;
+    const { currentUser, createBlog, updateBlog } = this.props;
     let formProps = {
       currentUser,
       isUpdate,
@@ -190,7 +188,7 @@ class BlogContainer extends Component {
   //REFACTOR TOGETHER END================================================
 
   render() {
-    const { isFormVisible, isReadVisible, isUpdate, selectedBlog } = this.state;
+    const { isFormVisible, isReadVisible, selectedBlog } = this.state;
     const { blogs, currentUser, deleteBlog } = this.props;
     const formProps = this.generateFormProps();
 
