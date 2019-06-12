@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import RegistrationForm from "./RegistrationForm";
 import { UserAction } from '../../actions';
+import "./registration.css";
 
 class RegistrationContainer extends Component {
   render() {

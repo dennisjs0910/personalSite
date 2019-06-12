@@ -10,7 +10,9 @@ const INITIAL_STATE = {
   inputVisible: false,
   tagInputValue: '',
   fileList: [],
-  mediaText: []
+  mediaText: [],
+  isPreviewVisible: false,
+  previewImage: ""
 };
 
 class BlogFormModal extends Component {
@@ -95,10 +97,10 @@ class BlogFormModal extends Component {
    * This function adds a new tag to the list of tags if tagInput is unique.
    * Also we reset the inputValue and unfocus the input.
    */
-  handleInputConfirm = () => {
+  handleTagConfirm = () => {
     const { tagInputValue, tags } = this.state;
 
-    if (!this.tagSet.has(tagInputValue)) {
+    if (!this.tagSet.has(tagInputValue) && tagInputValue !== '') {
       this.tagSet.add(tagInputValue);
       this.setState({
         tags: [...tags, tagInputValue],
@@ -190,6 +192,16 @@ class BlogFormModal extends Component {
     this.setState({ [key]: target.value });
   };
 
+  handlePreviewCancel = () => this.setState({ isPreviewVisible: false });
+
+  handlePreview = file => {
+    const url = (file.response && file.response.length === 1 && file.response[0].secure_url) || "";
+    this.setState({
+      previewImage: url,
+      isPreviewVisible: true,
+    });
+  };
+
   addTextBox = () => {
     const { mediaText } = this.state;
     this.setState({
@@ -200,11 +212,15 @@ class BlogFormModal extends Component {
   renderTagForm() {
     const { inputVisible, tagInputValue, tags } = this.state;
     return(
-      <Form.Item label="Tags">
+      <Form.Item label="Tags"
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
         { this.renderTagInput(inputVisible, tagInputValue) }
-        <div>
+        <div className="tag-wrapper-container">
           { tags.map(tag =>
             <Tag
+              className="form-tag"
               closable
               onClose={() => this.handleTagClose(tag) }
               key={tag}
@@ -221,19 +237,20 @@ class BlogFormModal extends Component {
     if (inputVisible) {
       return(
         <Input
+          className="form-tag-input"
           ref={ this.saveInputRef }
           type="text"
-          size="small"
           value={ tagInputValue }
           onChange={(e) => this.handleTextInputChange(e, "tagInputValue") }
-          onBlur={ this.handleInputConfirm }
-          onPressEnter={ this.handleInputConfirm }
+          onBlur={ this.handleTagConfirm }
+          onPressEnter={ this.handleTagConfirm }
         />);
     } else {
       return(
         <Tag
-          className="bp-form-add-new-tag"
+          className="form-add-tag form-tag-input"
           onClick={ this.showTagInput }
+          color="blue"
         >
           <Icon type="plus" /> New Tag
         </Tag>
@@ -244,15 +261,20 @@ class BlogFormModal extends Component {
   renderMediaContentForm() {
     const { fileList } = this.state;
     return(
-      <Form.Item label="Media">
-        <h6>Only able to support one video and one image</h6>
+      <Form.Item label="Media"
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
         <Upload
           className='upload-list-inline'
+          listType="picture-card"
           customRequest={ this.uploadImageToCloudinary }
           onChange={ this.handleMediaChange }
+          onPreview={this.handlePreview}
           fileList={ fileList }
           onRemove={ this.handleMediaRemove }
         >
+          <h6>Only able to upload one image at a time.</h6>
           <Button>
             <Icon type="upload" /> Upload
           </Button>
@@ -263,7 +285,11 @@ class BlogFormModal extends Component {
 
   renderTitleForm(title) {
     return(
-      <Form.Item label="Blog Title">
+      <Form.Item label="Blog Title"
+        required
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
         <Input value={title} onChange={(e) => this.handleTextInputChange(e, "title") }>
         </Input>
       </Form.Item>
@@ -272,8 +298,16 @@ class BlogFormModal extends Component {
 
   renderBlogSummaryForm(summary) {
     return(
-      <Form.Item label="Summary">
-        <Input.TextArea value={summary} onChange={(e) => this.handleTextInputChange(e, "summary") }>
+      <Form.Item label="Summary"
+        required
+        labelCol={{span: 3}}
+        wrapperCol={{span: 21}}
+      >
+        <Input.TextArea
+          value={summary}
+          autosize={{ minRows: 6, maxRows: 20 }}
+          onChange={(e) => this.handleTextInputChange(e, "summary") }
+        >
         </Input.TextArea>
       </Form.Item>
     );
@@ -283,8 +317,9 @@ class BlogFormModal extends Component {
     const { mediaText } = this.state;
     return mediaText.map((val, idx) => {
       return(
-        <Form.Item label={`Media Description ${idx + 1}`} key={idx} >
+        <Form.Item label={`Media Summary ${idx + 1}`} key={idx} >
           <Input.TextArea
+            autosize={{ minRows: 6, maxRows: 20 }}
             data-id={idx}
             value={ val }
             onChange={ this.handleMediaTextChange }
@@ -303,7 +338,7 @@ class BlogFormModal extends Component {
     const { title, summary } = this.state;
     const { isUpdate } = this.props;
     const buttonClassName = isUpdate ? "warning-button" : "ant-btn-primary";
-
+    const buttonText = isUpdate ? "Update" : "Submit";
     return [
       <Button
         key="clear"
@@ -322,32 +357,35 @@ class BlogFormModal extends Component {
         onClick={ this.handleFormSubmit }
         disabled= {this.isSubmitDisabled(title, summary)}
       >
-        Submit
+        { buttonText }
       </Button>,
     ];
   };
 
   render() {
     const { isVisible } = this.props;
-    const { title, summary } = this.state;
+    const { title, summary, isPreviewVisible, previewImage } = this.state;
 
     return (
       <div>
         <Modal
-          width="50rem"
+          width="66%"
           visible={ isVisible }
           title="Blog Creation Form"
           onOk={ this.handleFormSubmit }
           onCancel={ this.handleModalClose }
           footer={ this.getFooterElements() }
         >
-          <Form onSubmit={this.handleFormSubmit} className="bp-form-container">
+          <Form onSubmit={this.handleFormSubmit} className="bp-form-container" labelAlign='left'>
             { this.renderTitleForm(title)}
             { this.renderBlogSummaryForm(summary)}
             { this.renderTagForm() }
             { this.renderMediaContentForm() }
             { this.renderInputTextBoxes() }
           </Form>
+          <Modal visible={isPreviewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+            <img alt="example" style={{ width: '100%' }} src={previewImage} />
+          </Modal>
         </Modal>
       </div>
     );

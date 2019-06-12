@@ -21,8 +21,8 @@ app.use(
     keys: [process.env.COOKIE_SESSION_KEY]
   })
 );
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
