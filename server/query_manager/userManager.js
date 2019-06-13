@@ -4,6 +4,9 @@ const USER_TABLE = "User";
 const VISIBLE_COLUMNS = ["id", "first_name", "last_name", "email", "permission"];
 const ADMIN = "admin";
 
+const bcrypt = require("bcrypt");
+const BCRYPT_SALT_ROUNDS = 5;
+
 module.exports = {
   /**
    * Searches in the database to find specified user.
@@ -29,9 +32,18 @@ module.exports = {
    */
   createUser: async (fields) => {
     try {
-      const result = await knex(USER_TABLE).insert(Object.assign({ ...fields }, { permission: "admin"}) );
+      const { password } = fields;
+      const encryptedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
+      const result = await knex(USER_TABLE)
+        .insert(Object.assign(
+          { ...fields }, {
+            permission: "admin",
+            password: encryptedPassword
+          })
+        );
       return result;
     } catch (err) {
+      console.log(err);
       return null;
     }
   },

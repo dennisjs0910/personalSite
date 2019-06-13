@@ -6,13 +6,17 @@ const { userManager } = require('@qm/index');
  */
 routes.post('/', async (req, res) => {
   const { first_name, last_name, email, password } = req.body;
-  const result = await userManager.createUser({ first_name, last_name, email, password });
-  if (!!!result) {
-    res.status(404)
-    res.json({ error : err });
-    return;
+  try {
+    const result = await userManager.createUser({ first_name, last_name, email, password });
+    if (!!!result) {
+      res.sendStatus(404);
+      return;
+    }
+    res.sendStatus(200);
+  } catch(err) {
+    res.sendStatus(404);
   }
-  res.sendStatus(200);
+
 });
 
 module.exports = routes;
