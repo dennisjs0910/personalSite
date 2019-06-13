@@ -48,7 +48,7 @@ class BlogFormModal extends Component {
         uid: `${idx}`,
         name: `${idx}_image`,
         status: 'done',
-        response: [{ secure_url: content.media_url }]
+        response: [{ public_id: content.public_id, secure_url: content.media_url }]
       });
       res.texts.push(content.summary);
     });
@@ -70,6 +70,7 @@ class BlogFormModal extends Component {
       data.append('file', file);
       const imageRes = await BlogAction.postImage(data);
       this.addTextBox();
+      console.log(imageRes.data);
       onSuccess(imageRes.data, file);
     } catch(err) {
       onError(err);
@@ -151,7 +152,7 @@ class BlogFormModal extends Component {
       if (isEqual(file, f)) {
         // let data = new FormData();
         // data.append('file', file);
-        BlogAction.deleteImage();
+        BlogAction.deleteImage(file.response[0].public_id);
 
         idx = i;
         return false;
@@ -187,7 +188,11 @@ class BlogFormModal extends Component {
     handleClose(e);
   };
 
-  handleMediaChange = ({ fileList }) => this.setState({ fileList });
+  handleMediaChange = (something) => {
+    const { fileList } = something;
+    console.log(something);
+    this.setState({ fileList });
+  };
 
   /**
    * This function sets the input value to what the user is typing.
@@ -370,7 +375,7 @@ class BlogFormModal extends Component {
   render() {
     const { isVisible } = this.props;
     const { title, summary, isPreviewVisible, previewImage } = this.state;
-    console.log("fileList", this.state.fileList);
+
     return (
       <div>
         <Modal

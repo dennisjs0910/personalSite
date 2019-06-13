@@ -18,7 +18,6 @@ routes.delete('/:public_id', async (req, res) => {
     const deleteResponse = await cloudinary.uploader.destroy(public_id);
     res.sendStatus(204);
   } catch (err) {
-    console.log(err);
     res.sendStatus(404);
   }
 });
