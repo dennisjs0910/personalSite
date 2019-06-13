@@ -3,10 +3,21 @@ services:
   - docker
 
 before_install:
-  - docker build -t dennisjs/personalsite -f client/Dockerfile.dev client/
+  - docker build -t dennisjs/personalsite -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run dennisjs/personalsite npm run ci_test -- --coverage
+
+after_success:
+  - docker build -t dennisjs/blog-client ./client
+  - docker build -t dennisjs/blog-nginx ./nginx
+  - docker build -t dennisjs/blog-server ./server
+  # Login to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take built images and push to dockerhub
+  - docker push dennisjs/blog-client
+  - docker push dennisjs/blog-nginx
+  - docker push dennisjs/blog-server
 
 # deploy:
 #   provider: elasticbeanstalk
