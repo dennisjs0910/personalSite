@@ -22,6 +22,7 @@ exports.up = (knex) => {
     blogContent.integer('blogPost_id').unsigned().references('id').inTable('BlogPost').notNull().onDelete('cascade');
     blogContent.boolean('is_video');
     blogContent.string('media_url');
+    blogContent.string('public_id');
     blogContent.text('summary', 'longtext');
     blogContent.integer('sequence').notNullable();
     blogContent.timestamps(false, true);
