@@ -4,8 +4,8 @@ import { BlogAction } from '../../actions';
 import { isEqual } from 'lodash';
 
 const INITIAL_STATE = {
-  title: "", //required
-  summary: "", //required
+  title: "",
+  summary: "",
   tags: [],
   inputVisible: false,
   tagInputValue: '',
@@ -77,7 +77,6 @@ class BlogFormModal extends Component {
    */
   handleTagConfirm = () => {
     const { tagInputValue, tags } = this.state;
-
     if (!this.tagSet.has(tagInputValue) && tagInputValue !== '') {
       this.tagSet.add(tagInputValue);
       this.setState({
@@ -135,7 +134,6 @@ class BlogFormModal extends Component {
 
     let modifiedFileList = fileList.filter((f, i) => {
       if (isEqual(file, f)) {
-        // this.imageSet.delete(file.response[0].public_id);
         filesToDelete.push(file.response[0].public_id);
         idx = i;
         return false;
@@ -178,14 +176,19 @@ class BlogFormModal extends Component {
   handleModalClose = (e, isSubmitted) => {
     e.preventDefault();
     this.deleteUnusedImages(isSubmitted);
-
-    // this.state.filesToDelete.forEach(id => BlogAction.deleteImage(id));
     delete this.input;
     delete this.tagSet;
     delete this.ogImageSet;
     this.props.handleClose(null);
   };
 
+  /**
+   * When isUpdate=true and isSubmitted=false it is a modal close so we do not delete original images
+   * If it is sumbitted we delete all filesThat need to be deleted from cloudinary.
+   * Otherwise, delete all media files from cloudinary.
+   * @param  {Boolean} isSubmitted [description]
+   * @return {[type]}              [description]
+   */
   deleteUnusedImages = (isSubmitted) => {
     const { isUpdate } = this.props;
     if (isUpdate && !isSubmitted) {
@@ -206,15 +209,23 @@ class BlogFormModal extends Component {
       });
     }
   };
-
+  /**
+   * When the user is clears the blog, we store all media files for future deletes.
+   * @param  {Event} e
+   */
   handleStateReset = (e) => {
     e.preventDefault();
-    this.setState(INITIAL_STATE);
+    const { isUpdate } = this.props;
+    let initState = INITIAL_STATE;
+    let filesToDelete = [];
+    this.state.fileList.forEach(file => filesToDelete.push(file.response[0].public_id));
+    initState = Object.assign({...INITIAL_STATE}, { filesToDelete: [...filesToDelete, ...this.state.filesToDelete]});
+    this.setState(initState);
   };
 
   /**
    * This function sets the input value to what the user is typing.
-   * @param  {Event Object} e
+   * @param  {Event} e
    */
   handleTextInputChange = ({target}, key) => {
     this.setState({ [key]: target.value });

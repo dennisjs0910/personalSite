@@ -24,7 +24,6 @@ export default class BlogAction {
    * @param  { String } publicId
    */
   static deleteImage = async (publicId) => {
-    console.log("hit", publicId);
     try {
       const res = await axios.delete(`/api/image-upload/${publicId}`);
       return res;
