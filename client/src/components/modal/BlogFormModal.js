@@ -146,8 +146,13 @@ class BlogFormModal extends Component {
   handleMediaRemove = (file) => {
     const { fileList, mediaText } = this.state;
     let idx = -1;
+
     let modifiedFileList = fileList.filter((f, i) => {
       if (isEqual(file, f)) {
+        // let data = new FormData();
+        // data.append('file', file);
+        BlogAction.deleteImage();
+
         idx = i;
         return false;
       }
@@ -365,7 +370,7 @@ class BlogFormModal extends Component {
   render() {
     const { isVisible } = this.props;
     const { title, summary, isPreviewVisible, previewImage } = this.state;
-
+    console.log("fileList", this.state.fileList);
     return (
       <div>
         <Modal

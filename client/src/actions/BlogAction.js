@@ -18,6 +18,17 @@ export default class BlogAction {
     }
   };
 
+  static deleteImage = async (file) => {
+    try {
+      const publicId = "ykuj1dlvwxhppkcczq2f";
+      const res = await axios.delete(`/api/image-upload/${publicId}`);
+      return res;
+    } catch(err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
   static createBlog = (data) => {
      return async (dispatch) => {
        try {
