@@ -5,7 +5,7 @@ exports.up = (knex) => {
     user.string('first_name', 50).notNullable();
     user.string('last_name', 50).notNullable();
     user.string('email', 50).unique().notNullable();
-    user.string('password', 50).notNullable();
+    user.string('password', 60).notNullable();
     user.enu('permission', ['admin', 'basic']).notNullable();
     user.timestamps(false, true);
   })
