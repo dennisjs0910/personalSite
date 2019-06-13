@@ -18,15 +18,20 @@ export default class BlogAction {
     }
   };
 
+  /**
+   * This static function is not used to data to the reducers. It will connect to backend server
+   * to delete an image in Cloudinary.
+   * @param  { String } publicId
+   */
   static deleteImage = async (publicId) => {
+    console.log("hit", publicId);
     try {
       const res = await axios.delete(`/api/image-upload/${publicId}`);
       return res;
     } catch(err) {
-      console.log(err);
       throw err;
     }
-  }
+  };
 
   static createBlog = (data) => {
      return async (dispatch) => {

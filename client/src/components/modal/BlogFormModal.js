@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   tagInputValue: '',
   fileList: [],
   mediaText: [],
+  filesToDelete: [],
   isPreviewVisible: false,
   previewImage: ""
 };
@@ -20,15 +21,18 @@ class BlogFormModal extends Component {
     super(props);
 
     const { blog, isVisible, isUpdate } = props;
+    this.ogImageSet = new Set();
+
     if (!!blog && isVisible && isUpdate) {
-      const mediaFilesAndText = this._getFilesAndText(blog);
       this.tagSet = new Set(blog.category);
+      const mediaFilesAndText = this._getFilesAndText(blog);
       this.state = {
         title: blog.title,
         summary: blog.summary,
         tags: [...blog.category],
         inputVisible: false,
         tagInputValue: '',
+        filesToDelete: [],
         fileList: mediaFilesAndText.files,
         mediaText: mediaFilesAndText.texts
       };
@@ -37,13 +41,14 @@ class BlogFormModal extends Component {
       this.state = INITIAL_STATE;
     }
 
-    this.renderTagForm = this.renderTagForm.bind(this);
+    this.renderTagContainer = this.renderTagContainer.bind(this);
     this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
 
   _getFilesAndText = ({contents=[]}) => {
     let res = { files: [], texts: []};
     contents.forEach((content, idx) => {
+      this.ogImageSet.add(content.public_id);
       res.files.push({
         uid: `${idx}`,
         name: `${idx}_image`,
@@ -56,27 +61,6 @@ class BlogFormModal extends Component {
     return res;
   };
 
-  /**
-   * Custom Request to upload an image to Cloudinary.
-   * It is used to obtain a secure url to pass to the server in the future.
-   * When it is successful
-   * @param  { File } file
-   * @param  { callback fn } onSuccess
-   * @param  { callback fn } onError (currently removed)
-   */
-  uploadImageToCloudinary = async ({ file, onSuccess, onError }) => {
-    try {
-      let data = new FormData();
-      data.append('file', file);
-      const imageRes = await BlogAction.postImage(data);
-      this.addTextBox();
-      console.log(imageRes.data);
-      onSuccess(imageRes.data, file);
-    } catch(err) {
-      onError(err);
-    }
-  };
-
   saveInputRef = input => (this.input = input);
 
   /**
@@ -85,13 +69,6 @@ class BlogFormModal extends Component {
    */
   showTagInput = () => {
     this.setState({ inputVisible: true }, () => this.input.focus());
-  };
-
-  /**
-   * Returns true if title of summary is an empty string
-   */
-  isSubmitDisabled = (title, summary) => {
-    return title === "" || summary === "";
   };
 
   /**
@@ -116,10 +93,6 @@ class BlogFormModal extends Component {
     }
   };
 
-  handleStateReset = (e) => {
-    e.preventDefault();
-    this.setState(INITIAL_STATE);
-  };
   /**
    * Handle close is used to remove a tag user have added
    * @param  {String} removedTag [Tag name to be deleted]
@@ -130,13 +103,24 @@ class BlogFormModal extends Component {
     this.setState({ tags });
   };
 
-  handleMediaTextChange = ({ target }) => {
-    const idx = (target.dataset && target.dataset.id) || -1;
-    const { value } = target;
-    if (idx >= 0) {
-      let mediaText = [...this.state.mediaText];
-      mediaText[idx] = value;
-      this.setState({ mediaText });
+  /**
+   * Custom Request to upload an image to Cloudinary.
+   * It is used to obtain a secure url to pass to the server in the future.
+   * When it is successful
+   * @param  { File } file
+   * @param  { callback fn } onSuccess
+   * @param  { callback fn } onError (currently removed)
+   */
+  handleMediaUpload = async ({ file, onSuccess, onError }) => {
+    try {
+      let data = new FormData();
+      data.append('file', file);
+      const imageRes = await BlogAction.postImage(data);
+      this.addTextBox();
+      // this.imageSet.add(imageRes.data.response[0].public_id);
+      onSuccess(imageRes.data, file);
+    } catch(err) {
+      onError(err);
     }
   };
 
@@ -147,13 +131,12 @@ class BlogFormModal extends Component {
   handleMediaRemove = (file) => {
     const { fileList, mediaText } = this.state;
     let idx = -1;
+    let filesToDelete = [];
 
     let modifiedFileList = fileList.filter((f, i) => {
       if (isEqual(file, f)) {
-        // let data = new FormData();
-        // data.append('file', file);
-        BlogAction.deleteImage(file.response[0].public_id);
-
+        // this.imageSet.delete(file.response[0].public_id);
+        filesToDelete.push(file.response[0].public_id);
         idx = i;
         return false;
       }
@@ -163,43 +146,9 @@ class BlogFormModal extends Component {
     let modifiedTexts = mediaText.filter((text, i) => i !== idx);
     this.setState({
       fileList: modifiedFileList,
-      mediaText: modifiedTexts
+      mediaText: modifiedTexts,
+      filesToDelete: [...this.state.filesToDelete, ...filesToDelete]
     });
-  };
-
-  handleFormSubmit = e => {
-    e.preventDefault();
-    const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, handleSubmit, handleClose, blog } = this.props;
-
-    handleSubmit(Object.assign({
-      title, summary, tags, fileList, mediaText, user_id: currentUser.id, blog
-    }));
-    handleClose(null);
-    this.handleStateReset(e);
-  };
-
-  handleModalClose = (e) => {
-    e.preventDefault();
-    const { handleClose } = this.props;
-    this.setState(INITIAL_STATE);
-    delete this.input;
-    delete this.tagSet;
-    handleClose(e);
-  };
-
-  handleMediaChange = (something) => {
-    const { fileList } = something;
-    console.log(something);
-    this.setState({ fileList });
-  };
-
-  /**
-   * This function sets the input value to what the user is typing.
-   * @param  {Event Object} e
-   */
-  handleTextInputChange = ({target}, key) => {
-    this.setState({ [key]: target.value });
   };
 
   handlePreviewCancel = () => this.setState({ isPreviewVisible: false });
@@ -212,6 +161,75 @@ class BlogFormModal extends Component {
     });
   };
 
+  handleMediaChange = ({ fileList }) => this.setState({ fileList });
+
+  handleFormSubmit = e => {
+    e.preventDefault();
+    const { title, summary, tags, fileList, mediaText } = this.state;
+    const { currentUser, handleSubmit, blog } = this.props;
+
+    handleSubmit(Object.assign({
+      title, summary, tags, fileList, mediaText, user_id: currentUser.id, blog
+    }));
+
+    this.handleModalClose(e, true);
+  };
+
+  handleModalClose = (e, isSubmitted) => {
+    e.preventDefault();
+    this.deleteUnusedImages(isSubmitted);
+
+    // this.state.filesToDelete.forEach(id => BlogAction.deleteImage(id));
+    delete this.input;
+    delete this.tagSet;
+    delete this.ogImageSet;
+    this.props.handleClose(null);
+  };
+
+  deleteUnusedImages = (isSubmitted) => {
+    const { isUpdate } = this.props;
+    if (isUpdate && !isSubmitted) {
+      let idList = [];
+      this.state.filesToDelete.forEach(id => {
+        if (!this.ogImageSet.has(id)) {
+          idList.push(id);
+        }
+      });
+      idList.forEach(id => BlogAction.deleteImage(id));
+      return;
+    };
+
+    this.state.filesToDelete.forEach(id => BlogAction.deleteImage(id));
+    if (!isSubmitted) {
+      this.state.fileList.forEach(file => {
+        BlogAction.deleteImage(file.response[0].public_id);
+      });
+    }
+  };
+
+  handleStateReset = (e) => {
+    e.preventDefault();
+    this.setState(INITIAL_STATE);
+  };
+
+  /**
+   * This function sets the input value to what the user is typing.
+   * @param  {Event Object} e
+   */
+  handleTextInputChange = ({target}, key) => {
+    this.setState({ [key]: target.value });
+  };
+
+  handleMediaTextChange = ({ target }) => {
+    const idx = (target.dataset && target.dataset.id) || -1;
+    const { value } = target;
+    if (idx >= 0) {
+      let mediaText = [...this.state.mediaText];
+      mediaText[idx] = value;
+      this.setState({ mediaText });
+    }
+  };
+
   addTextBox = () => {
     const { mediaText } = this.state;
     this.setState({
@@ -219,7 +237,14 @@ class BlogFormModal extends Component {
     });
   };
 
-  renderTagForm() {
+  /**
+   * Returns true if title of summary is an empty string
+   */
+  isSubmitDisabled = (title, summary) => {
+    return title === "" || summary === "";
+  };
+
+  renderTagContainer() {
     const { inputVisible, tagInputValue, tags } = this.state;
     return(
       <Form.Item label="Tags"
@@ -278,9 +303,9 @@ class BlogFormModal extends Component {
         <Upload
           className='upload-list-inline'
           listType="picture-card"
-          customRequest={ this.uploadImageToCloudinary }
+          customRequest={ this.handleMediaUpload }
           onChange={ this.handleMediaChange }
-          onPreview={this.handlePreview}
+          onPreview={ this.handlePreview }
           fileList={ fileList }
           onRemove={ this.handleMediaRemove }
         >
@@ -357,7 +382,7 @@ class BlogFormModal extends Component {
       >
         Clear
       </Button>,
-      <Button key="close" onClick={ this.handleModalClose }>
+      <Button key="close" onClick={(e) => this.handleModalClose(e, false) }>
         Close
       </Button>,
       <Button
@@ -383,13 +408,13 @@ class BlogFormModal extends Component {
           visible={ isVisible }
           title="Blog Creation Form"
           onOk={ this.handleFormSubmit }
-          onCancel={ this.handleModalClose }
+          onCancel={ (e) => this.handleModalClose(e, false) }
           footer={ this.getFooterElements() }
         >
           <Form onSubmit={this.handleFormSubmit} className="bp-form-container" labelAlign='left'>
             { this.renderTitleForm(title)}
             { this.renderBlogSummaryForm(summary)}
-            { this.renderTagForm() }
+            { this.renderTagContainer() }
             { this.renderMediaContentForm() }
             { this.renderInputTextBoxes() }
           </Form>
