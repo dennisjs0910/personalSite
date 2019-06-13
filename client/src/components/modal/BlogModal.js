@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Button, Tag} from 'antd';
+import { BlogAction } from '../../actions';
 import "./BlogModal.css";
 
 const ADMIN = "admin";
@@ -8,6 +9,7 @@ class BlogModal extends Component {
 
   handleDeleteOnClick = () => {
     const { deleteBlog, handleClose, blog} = this.props;
+    blog.contents.forEach(content => BlogAction.deleteImage(content.public_id));
     deleteBlog(blog);
     handleClose();
   };
@@ -70,7 +72,7 @@ class BlogModal extends Component {
   render() {
     const { isVisible, handleClose, blog, currentUser } = this.props;
     if (!blog) return null;
-
+    console.log(blog);
     return(
       <Modal
         className="blog-modal-container"

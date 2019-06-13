@@ -215,7 +215,6 @@ class BlogFormModal extends Component {
    */
   handleStateReset = (e) => {
     e.preventDefault();
-    const { isUpdate } = this.props;
     let initState = INITIAL_STATE;
     let filesToDelete = [];
     this.state.fileList.forEach(file => filesToDelete.push(file.response[0].public_id));
