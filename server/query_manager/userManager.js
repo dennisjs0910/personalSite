@@ -37,7 +37,7 @@ module.exports = {
       const result = await knex(USER_TABLE)
         .insert(Object.assign(
           { ...fields }, {
-            permission: "admin",
+            permission: "basic",
             password: encryptedPassword
           })
         );
