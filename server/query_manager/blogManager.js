@@ -5,8 +5,7 @@ const BLOG_POST = "BlogPost";
 const BLOG_POST_COL = ['id', 'user_id', 'title', 'category', 'created_at', 'updated_at'];
 
 const BLOG_CONTENT = "BlogContent";
-const BLOG_CONTENT_COL = ['id', 'blogPost_id', 'video_url', 'video_text',
-  'image_url', 'image_text', 'sequence', 'created_at', 'updated_at'];
+const BLOG_CONTENT_COL = ['id', 'blogPost_id', 'is_video', 'media_url', 'public_id', 'summary', 'sequence'];
 
 const userManager = require('./userManager');
 
@@ -23,10 +22,12 @@ let _createContentData = (blogPost_id, fileList=[], mediaText=[], contentIds=[])
   let res = [];
   for (let idx = 0; idx < fileList.length; idx++) {
     const media_url = fileList[idx].response[0].secure_url;
+    const public_id = fileList[idx].response[0].public_id;
     const summary = mediaText[idx];
     res.push({
       blogPost_id,
       is_video: false, // TODO: Requires refactoring when supporting video files.
+      public_id,
       media_url,
       summary,
       sequence: idx
