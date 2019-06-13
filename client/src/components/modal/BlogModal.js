@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Tag} from 'antd';
+import { Modal, Button, Tag, Popconfirm } from 'antd';
 import { BlogAction } from '../../actions';
 import "./BlogModal.css";
 
@@ -25,16 +25,23 @@ class BlogModal extends Component {
    * @param  {Function} handleClose [function that closes modal]
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
-  getFooterElements = (currentUser, {user_id}, handleClose) => {
+  getFooterElements = (currentUser={}, {user_id}, handleClose) => {
     let footer = [];
     if ((!!currentUser && currentUser.id === user_id ) || currentUser.permission === ADMIN) {
       footer.push(
-        (<Button
-          onClick={ this.handleDeleteOnClick }
-          type="danger"
-          key="delete">
-          Delete
-        </Button>),
+        (<Popconfirm
+          key="popup"
+          title="Are you sure you want to delete this blog?"
+          onConfirm={ this.handleDeleteOnClick }
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button
+            type="danger"
+            key="delete">
+            Delete
+          </Button>
+        </Popconfirm>),
         (<Button
           onClick={ this.handleUpdateOnClick }
           className="warning-button"
@@ -72,7 +79,7 @@ class BlogModal extends Component {
   render() {
     const { isVisible, handleClose, blog, currentUser } = this.props;
     if (!blog) return null;
-    console.log(blog);
+
     return(
       <Modal
         className="blog-modal-container"
@@ -80,7 +87,7 @@ class BlogModal extends Component {
         title={blog.title}
         visible={ isVisible }
         onCancel={() => handleClose(null) }
-        footer={ this.getFooterElements(currentUser || {}, blog, handleClose) }
+        footer={ this.getFooterElements(currentUser, blog, handleClose) }
       >
         <div className="blog-summary-container">
           <h3>Summary:</h3>

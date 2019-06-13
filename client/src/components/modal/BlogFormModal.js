@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Form, Input, Tag, Icon, Upload  } from 'antd';
+import { Modal, Button, Form, Input, Tag, Icon, Upload, Popconfirm } from 'antd';
 import { BlogAction } from '../../actions';
 import { isEqual } from 'lodash';
 
@@ -385,13 +385,20 @@ class BlogFormModal extends Component {
     const buttonClassName = isUpdate ? "warning-button" : "ant-btn-primary";
     const buttonText = isUpdate ? "Update" : "Submit";
     return [
-      <Button
-        key="clear"
-        onClick={ this.handleStateReset }
-        type="danger"
+      <Popconfirm
+        key="popup"
+        title="Are you sure you want to reset this blog? Closing the blog after will not change the contents"
+        onConfirm={ this.handleStateReset }
+        okText="Yes"
+        cancelText="No"
       >
-        Clear
-      </Button>,
+        <Button
+          key="clear"
+          type="danger"
+        >
+          Clear
+        </Button>
+      </Popconfirm>,
       <Button key="close" onClick={(e) => this.handleModalClose(e, false) }>
         Close
       </Button>,
@@ -408,15 +415,15 @@ class BlogFormModal extends Component {
   };
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, isUpdate } = this.props;
     const { title, summary, isPreviewVisible, previewImage } = this.state;
-
+    const modalTitle = isUpdate ? "Blog Update Form" : "Blog Create Form";
     return (
       <div>
         <Modal
           width="66%"
           visible={ isVisible }
-          title="Blog Creation Form"
+          title={ modalTitle }
           onOk={ this.handleFormSubmit }
           onCancel={ (e) => this.handleModalClose(e, false) }
           footer={ this.getFooterElements() }
