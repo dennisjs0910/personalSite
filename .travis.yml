@@ -8,25 +8,27 @@ before_install:
 script:
   - docker run dennisjs/personalsite npm run ci_test -- --coverage
 
-# TESTED IT IS WORKING, COMMENT OUT FOR NOW.
-# after_success:
-#   - docker build -t dennisjs/blog-client ./client
-#   - docker build -t dennisjs/blog-nginx ./nginx
-#   - docker build -t dennisjs/blog-server ./server
-#   # Login to docker hub
-#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-#   # Take built images and push to dockerhub
-#   - docker push dennisjs/blog-client
-#   - docker push dennisjs/blog-nginx
-#   - docker push dennisjs/blog-server
+after_success:
+  - docker build -t dennisjs/blog-client ./client
+  - docker build -t dennisjs/blog-nginx ./nginx
+  - docker build -t dennisjs/blog-server ./server
+  # Login to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take built images and push to dockerhub
+  - docker push dennisjs/blog-client
+  - docker push dennisjs/blog-nginx
+  - docker push dennisjs/blog-server
 
-# deploy:
-#   provider: elasticbeanstalk
-#   region: "TODO:us-west-2"
-#   app: "SAME AS elastic bean stalk name ex:personalSite"
-#   env: "TODO:Docker-env"
-#   bucket_name: "todo:search s3 and find appropriate bucket"
-#   bucket_path: "todo:same as app name"
-#   on:
-#     branch: master
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-1
+  app: personal-blog
+  env: PersonalBlog-env
+  bucket_name: elasticbeanstalk-us-west-1-452090972272
+  bucket_path: docker-personal-blog
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
 
