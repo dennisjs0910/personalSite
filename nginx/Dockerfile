@@ -1,2 +1,2 @@
 FROM staticfloat/nginx-certbot
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./*.conf /etc/nginx/conf.d/
