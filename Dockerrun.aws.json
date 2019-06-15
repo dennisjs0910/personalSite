@@ -22,8 +22,8 @@
       "essential": true,
       "environment" : [
         {
-          "name" : "CERTBOT_EMAIL",
-          "value" "dennis.jsyi@gmail.com"
+          "name": "CERTBOT_EMAIL",
+          "value": "dennis.jsyi@gmail.com"
         }
       ],
       "portMappings": [
