@@ -32,6 +32,14 @@
         {
           "name": "CERTBOT_EMAIL",
           "value": "dennis.jsyi@gmail.com"
+        },
+        {
+          "name": "ALLOWED_DOMAINS",
+          "value": "jsydennis"
+        },
+        {
+          "name": "SITES",
+          "value": "jsydennis.com=nginx:80"
         }
       ],
       "portMappings": [
