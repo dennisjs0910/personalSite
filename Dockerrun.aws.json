@@ -20,7 +20,7 @@
       "image": "dennisjs/blog-nginx",
       "hostname": "nginx",
       "essential": true,
-      "environment" : [
+      "environment": [
         {
           "name": "CERTBOT_EMAIL",
           "value": "dennis.jsyi@gmail.com"
@@ -34,7 +34,7 @@
         {
           "hostPort": 443,
           "containerPort": 443
-        },
+        }
       ],
       "links": ["client", "server"],
       "memory": 128
