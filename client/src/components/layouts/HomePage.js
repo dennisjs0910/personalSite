@@ -34,7 +34,7 @@ class HomePage extends Component {
         <Row>
           <Col span={24}>
             <div id ="homepage-header" className="main-img">
-              <h1 className="homepage-main-h1">Currently Under Construction</h1>
+              <h1 className="homepage-main-h1">Personal Blog K8S</h1>
               <p className="homepage-main-p">{ `${paragraph} ${paragraph}` }</p>
             </div>
           </Col>
