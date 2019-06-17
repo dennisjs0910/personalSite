@@ -1,0 +1,20 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: jsydennis-com-tls
+spec:
+  secretName: jsydennis-com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commanName: jsydennis.com
+  dnsNames:
+    - jsydennis.com
+    - www.jsydennis.com
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - jsydennis.com
+          - www.jsydennis.com
