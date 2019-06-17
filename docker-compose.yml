@@ -27,11 +27,11 @@ services:
     depends_on:
       - db
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: dennisjs
-      POSTGRES_DB: personal_blog
-      POSTGRES_PORT: '5432'
-      POSTGRES_HOST: 'db'
+      PGPASSWORD: password
+      PGUSER: dennisjs
+      PGDATABASE: personal_blog
+      PGPORT: '5432'
+      PGHOST: 'db'
       WAIT_HOSTS: 'db:5432'
     ports:
       - '5000:5000'
