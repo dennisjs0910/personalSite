@@ -4,26 +4,47 @@ Personal website to showcase project and resume </br>
 Pull request is currently managed through Trello.
 
 ### Environment
+- Kubernetes
 - Docker
 - Back end: Node.js + Express.js
 - Front end: React + Redux
-- Build Automation: (Partial Completion) Travis CI (will be released in the future)
-- Server host: (Under Construction) AWS
+- Build Automation: Travis CI
+- Server host: GCP, GKE
 
 ### Release Version
-Currently in development for version 1.0.0
+Currently in development for version 0.1.0
 
-**1.0.0**
+**0.1.0**
 ``` markdown
 Release will include functionalities such as:
-1. Create, Read, Update, Delete a blog with an image and description. (Admin only)
-2. User functionality is not included in this version.
-3. Dockerized container to use on digital ocean.
+1. Create, Read, Update, Delete a blog with an image and description.
+  - (Cloudinary API reconfiguration for production).
+2. User sign up and login
+2. Deployment to GKE with 2 nodes each with 2 pods.
+3. Dockerized container.
 ```
 
-**1.0.1**
+**0.1.1**
 ``` markdown
-Release will include functionalities such as:
-1. User sign up and login
-2. Blogs will belong to a specific user which means update and deleting blogs can only be done by that specific user.
+Future Release will include functionalities such as:
+TBD
+```
+
+### How to run the program.
+Option 1. Using docker-compose
+Make sure you have docker and docker-compose.
+  - At the root of the project.
+``` bash
+docker-compose up --build
+```
+
+Option 2. Using minikube
+Make sure you have kubectl and minikube installed
+  - At the root of the project.
+``` bash
+minikube start
+```
+  After minikube has started:
+``` bash
+kubectl apply -f k8s/
 ```
