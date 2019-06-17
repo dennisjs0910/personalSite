@@ -25,7 +25,7 @@ spec:
             - name: PGPORT
               value: '5432'
             - name: PGDATABASE
-              value: personal_blog
+              value: postgres
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
