@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   name: client-pod
   labels:
+    # tied to client-node-port selector
     component: web
 spec:
   containers:
