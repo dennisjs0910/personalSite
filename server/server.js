@@ -26,7 +26,8 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/api", require('@routes'));
+app.use('/', require('@routes'));
+
 
 // SERVER: Listen to a specific server port
 const serverPort = process.env.SERVER_PORT || 5000;
