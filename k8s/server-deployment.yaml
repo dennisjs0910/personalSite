@@ -31,3 +31,18 @@ spec:
                 secretKeyRef:
                   name: pgpassword
                   key: PGPASSWORD
+            - name: CLOUDINARY_CLOUDNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinarycloudname
+                  key: CLOUDINARY_CLOUDNAME
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinaryapikey
+                  key: CLOUDINARY_API_KEY
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinaryapisecret
+                  key: CLOUDINARY_API_SECRET

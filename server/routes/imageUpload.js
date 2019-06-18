@@ -8,7 +8,9 @@ routes.post('/', (req, res) => {
   Promise.all(promises).then(results => {
     res.status(200);
     res.json(results)
-  });
+  }).catch(err => {
+    res.sendStatus(500);
+  })
 });
 
 
