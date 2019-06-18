@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Layout, Row, Col } from 'antd';
 import './HomePage.css';
-
+import textFile from './data/home-paragraph.json';
 const { Content } = Layout;
-const paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
 class HomePage extends Component {
-  _renderFeaturedResumes() {
+  renderFeaturedResumes() {
     return(
       <div className="wrapper-content-margin">
         <h2>Featured Resume</h2>
@@ -29,18 +28,18 @@ class HomePage extends Component {
   }
 
   render() {
+
     return (
       <Content >
         <Row>
           <Col span={24}>
             <div id ="homepage-header" className="main-img">
               <h1 className="homepage-main-h1">Personal Blog K8S</h1>
-              <p className="homepage-main-p">{ `${paragraph} ${paragraph}` }</p>
+              <p className="homepage-main-p">{`${textFile.paragraph}`}</p>
             </div>
           </Col>
         </Row>
-        { this._renderFeaturedResumes() }
-        { this._renderFeaturedResumes() }
+        { this.renderFeaturedResumes() }
       </Content>
     );
   }
