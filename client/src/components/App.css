@@ -11,6 +11,10 @@ main.ant-layout-content.fullscreen {
   background-size: cover;
 }
 
+h2.form-header {
+  margin-bottom: 40px;
+}
+
 h3.input-label {
   text-align: left;
 }

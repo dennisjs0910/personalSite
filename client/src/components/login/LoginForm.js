@@ -20,7 +20,7 @@ class LoginFormTemplate extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="login-form-container">
-        <h2 className="login-header">Login</h2>
+        <h2 className="form-header">Login</h2>
         <Form onSubmit={this.handleSubmit}>
           <h3 className="input-label required">E-mail</h3>
           <Form.Item className="login-input-container">
@@ -34,7 +34,7 @@ class LoginFormTemplate extends Component {
             })(
               <Input
                 className="login-input"
-                prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                prefix={<Icon type="user" />}
               />,
             )}
           </Form.Item>
@@ -46,7 +46,7 @@ class LoginFormTemplate extends Component {
             })(
               <Input
                 className="login-input"
-                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                prefix={<Icon type="lock" />}
                 type="password"
               />,
             )}
