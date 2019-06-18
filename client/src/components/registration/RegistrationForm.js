@@ -48,7 +48,7 @@ class RegistrationFormTemplate extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="signup-form-container">
-        <h2>Please provide your information</h2>
+        <h2 className="registration-header">Please provide your information</h2>
         <Form onSubmit={this.handleSubmit} labelAlign='left'>
           <h3 className="input-label required">E-mail</h3>
           <Form.Item>

@@ -1,13 +1,15 @@
 div.signup-form-container {
   min-width: 500px;
-  width: 35rem;
+  width: 30rem;
   margin: auto;
-  margin-top: 7.5rem;
   border: 1px solid;
   border-radius: 10px;
-  padding: 3rem 2rem 1rem 2rem;
+  padding: 1rem;
   background-image: linear-gradient(135deg, #A9C1D5, #EDE0CD);
   border: 3px solid #9AB6CB;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 div.signup-submit-button {
@@ -15,7 +17,7 @@ div.signup-submit-button {
 }
 
 main.ant-layout-content.fullscreen.registration-container.main-img {
-  background-image: url("../../assets/images/chill.jpg");
+  background-image: url("https://res.cloudinary.com/dsospjk5r/image/upload/v1560839314/backgroundimages/chill_fce66w.jpg");
 }
 
 .ant-input.registration-input {
@@ -30,7 +32,7 @@ main.ant-layout-content.fullscreen.registration-container.main-img {
   border-bottom: 1px solid #e8e8e8;
   background: transparent;
   margin-bottom: 10px;
-  height: 45px;
+  height: 2.5rem;
 }
 
 .ant-input-password.registration-input .ant-input {
@@ -45,7 +47,7 @@ main.ant-layout-content.fullscreen.registration-container.main-img {
   border-bottom: 1px solid #e8e8e8;
   background: transparent !important;
   margin-bottom: 10px;
-  height: 45px;
+  height: 2.5rem;
 }
 
 h3.input-label {
@@ -64,6 +66,10 @@ h3.input-label.required::before {
   font-family: SimSun, sans-serif;
   line-height: 1;
   content: '*';
+}
+
+h2.registration-header {
+  margin-bottom: 40px;
 }
 
 
