@@ -3,11 +3,11 @@ body {
 }
 
 main.ant-layout-content.fullscreen {
-  height: 100vh;
+  height: calc(100vh - 48px);
 }
 
 .main-img {
-  height: 100vh;
+  height: calc(100vh - 48px);
   text-align: center;
   background-repeat: no-repeat;
   background-attachment: fixed;

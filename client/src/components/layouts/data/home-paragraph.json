@@ -1,3 +1,69 @@
 {
-  "paragraph": "Hello there! Welcome to a website. It is currently hosted on GKE"
+  "paragraph": "Hi and welcome to Dennis’s blog website. This website is a platform for users to highlight their personal accomplishments. Currently, I am posting about my previous work experience and projects that I have worked on. To give you a brief overview of the tech stack and tools used for this application, I have provided a list below.",
+  "techStacks": [
+    {
+      "title": "Front End:",
+      "list": [
+        {
+          "title": "React",
+          "link": "https://reactjs.org/"
+        },
+        {
+          "title": "Redux",
+          "link": "https://redux.js.org/"
+        }
+      ]
+    },
+    {
+      "title": "Back End:",
+      "list": [
+        {
+          "title": "Node.js",
+          "link": "https://nodejs.org/"
+        },
+        {
+          "title": "Express",
+          "link": "https://expressjs.com/"
+        },
+        {
+          "title": "PostgreSQL",
+          "link": "https://www.postgresql.org/"
+        },
+        {
+          "title": "Knex.js",
+          "link": "https://knexjs.org/"
+        }
+      ]
+    },
+    {
+      "title": "Tools:",
+      "list": [
+        {
+          "title": "Docker",
+          "link": "https://www.docker.com/"
+        },
+        {
+          "title": "Kubernetes",
+          "link": "https://kubernetes.io/"
+        },
+        {
+          "title": "Travis CI",
+          "link": "https://travis-ci.org/"
+        }
+      ]
+    },
+    {
+      "title": "Hosted on:",
+      "list": [
+        {
+          "title": "Google Kubernetes Engine",
+          "link": "https://cloud.google.com/kubernetes-engine/"
+        },
+        {
+          "title": "Google Cloud Platform",
+          "link": "https://cloud.google.com/"
+        }
+      ]
+    }
+  ]
 }

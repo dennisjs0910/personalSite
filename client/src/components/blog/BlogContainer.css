@@ -13,9 +13,8 @@ div.pagination-container {
   object-fit: cover;
 }*/
 
-#blogHeaderContainer {
+.blog-container {
   background-image: url("../../assets/prodImages/chill.jpg");
-  margin-bottom: 2rem;
 }
 
 h1.title-header {

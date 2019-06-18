@@ -194,7 +194,7 @@ class BlogContainer extends Component {
     const formProps = this.generateFormProps();
 
     return (
-      <Content >
+      <Content className="fullscreen blog-container main-img">
         { !isEmpty(error) ?
           <Alert
             message="Error"
