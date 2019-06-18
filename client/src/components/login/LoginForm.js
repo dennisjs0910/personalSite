@@ -20,7 +20,9 @@ class LoginFormTemplate extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="login-form-container">
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <h2 className="login-header">Login</h2>
+        <Form onSubmit={this.handleSubmit}>
+          <h3 className="input-label required">E-mail</h3>
           <Form.Item className="login-input-container">
             {getFieldDecorator('email', {
               rules: [{
@@ -29,22 +31,23 @@ class LoginFormTemplate extends Component {
               },{
                 required: true, message: 'Please input your E-mail!'
               }],
-              validateTrigger: "onSubmit",
             })(
               <Input
+                className="login-input"
                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="Email"
               />,
             )}
           </Form.Item>
+
+          <h3 className="input-label required">Password</h3>
           <Form.Item className="login-input-container password-container">
             {getFieldDecorator('password', {
               rules: [{ required: true, message: 'Please input your Password!' }],
             })(
               <Input
+                className="login-input"
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 type="password"
-                placeholder="Password"
               />,
             )}
           </Form.Item>
