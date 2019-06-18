@@ -16,10 +16,8 @@ class LoginContainer extends Component {
 
   render() {
     const { loginUser, error } = this.props;
-
-    console.log(!isEmpty(error));
     return (
-      <Content className="fullscreen">
+      <Content className="fullscreen main-img login-container">
         { !isEmpty(error) ?
           <Alert
             message="Error"

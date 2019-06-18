@@ -1,14 +1,5 @@
 #homepage-header {
-  background-image: url("../../assets/sf.jpg");
-}
-
-.main-img {
-  height: 48rem;
-  text-align: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center; /* Center the image */
-  background-size: cover;
+  background-image: url("../../assets/images/sf.jpg");
 }
 
 h1.homepage-main-h1 {

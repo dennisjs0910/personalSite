@@ -47,4 +47,6 @@ minikube start
   After minikube has started:
 ``` bash
 kubectl apply -f k8s/
+kubectl delete ingress ingress-service
 ```
+The ingress-service-dev will take over and port 80 should available.

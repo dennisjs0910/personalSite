@@ -1,0 +1,30 @@
+main.ant-layout-content.fullscreen {
+  height: 100vh;
+}
+
+.main-img {
+  height: 100vh;
+  text-align: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center; /* Center the image */
+  background-size: cover;
+}
+
+h2.form-header {
+  margin-bottom: 40px;
+}
+
+h3.input-label {
+  text-align: left;
+}
+
+h3.input-label.required::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #f5222d;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
+}

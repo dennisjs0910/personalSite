@@ -13,6 +13,8 @@ import { AuthAction } from "../actions";
 import 'antd/dist/antd.css'; // can move to babel
 import { Layout } from 'antd';
 
+import "./App.css";
+
 // const PrivateRoute = ({ component: Component, hasLoggedIn, ...rest }) => {
 //   return (
 //     <Route
