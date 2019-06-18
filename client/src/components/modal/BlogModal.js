@@ -27,7 +27,7 @@ class BlogModal extends Component {
    */
   getFooterElements = (currentUser={}, {user_id}, handleClose) => {
     let footer = [];
-    if ((!!currentUser && currentUser.id === user_id ) || currentUser.permission === ADMIN) {
+    if (!!currentUser && (currentUser.id === user_id  || currentUser.permission === ADMIN)) {
       footer.push(
         (<Popconfirm
           key="popup"
