@@ -1,0 +1,12 @@
+main.ant-layout-content.fullscreen {
+  height: 100vh;
+}
+
+.main-img {
+  height: 100vh;
+  text-align: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center; /* Center the image */
+  background-size: cover;
+}

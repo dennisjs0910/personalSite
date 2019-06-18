@@ -5,11 +5,16 @@ import RegistrationForm from "./RegistrationForm";
 import { UserAction } from '../../actions';
 import "./registration.css";
 
+import { Layout } from 'antd';
+const { Content } = Layout;
+
 class RegistrationContainer extends Component {
   render() {
     const { registerUser } = this.props;
     return (
-      <RegistrationForm registerUser={registerUser}/>
+      <Content className="fullscreen registration-container main-img">
+        <RegistrationForm registerUser={registerUser}/>
+      </Content>
     );
   }
 }
