@@ -7,12 +7,19 @@ import { AuthAction } from '../../actions';
 import { ReactComponent as Logo } from "../../assets/logo.svg";
 
 const LOGOUT = "logout";
+const menuItems = {
+  "/login"  : "login",
+  "/logout" : "logout",
+  "/"       : "home",
+  "/blogs"  : "blogs",
+  "/signup" : "signup"
+};
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 'home',
+      activeMenu: 'home',
       top: 0
     }
 
@@ -20,14 +27,19 @@ class NavBar extends Component {
     this.renderSignUpGreetingMenutItem = this.renderSignUpGreetingMenutItem.bind(this);
   }
 
+  static getDerivedStateFromProps(props, state) {
+    const { pathname } = props.location;
+    return { activeMenu: menuItems[pathname] || 'home' };
+  }
+
   handleClick = e => {
     const { logoutUser, history } = this.props;
     if (e.key === LOGOUT) {
       logoutUser(history);
-      this.setState({ current: 'login'});
+      this.setState({ activeMenu: 'login'});
       return;
     }
-    this.setState({ current: e.key });
+    this.setState({ activeMenu: e.key });
   }
 
   renderAuthMenuItem() {
@@ -77,7 +89,7 @@ class NavBar extends Component {
       <Affix offsetTop={this.state.top}>
         <Menu //theme="dark"
           onClick={this.handleClick}
-          selectedKeys={[this.state.current]}
+          selectedKeys={[this.state.activeMenu]}
           mode="horizontal"
         >
           <Menu.Item key="home">
