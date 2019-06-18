@@ -48,11 +48,10 @@ class RegistrationFormTemplate extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="signup-form-container">
+        <h2>Please provide your information</h2>
         <Form onSubmit={this.handleSubmit} labelAlign='left'>
-          <Form.Item label="E-mail"
-            labelCol={{span: 5}}
-            wrapperCol={{span: 19}}
-          >
+          <h3 className="input-label required">E-mail</h3>
+          <Form.Item>
             {getFieldDecorator('email', {
               rules: [{
                 type: 'email',
@@ -61,31 +60,25 @@ class RegistrationFormTemplate extends Component {
                 required: true,
                 message: 'Please input your E-mail!',
               }],
-              validateTrigger: "onSubmit",
-            })(<Input />)}
+            })(<Input className="registration-input"/>)}
           </Form.Item>
 
-          <Form.Item label="First Name"
-            labelCol={{span: 5}}
-            wrapperCol={{span: 19}}
-          >
+          <h3 className="input-label required">First Name</h3>
+          <Form.Item>
             {getFieldDecorator('first_name', {
               rules: [{ required: true, message: 'Please input your first name!' }],
-            })(<Input />)}
+            })(<Input className="registration-input"/>)}
           </Form.Item>
 
-          <Form.Item label="Last Name"
-            labelCol={{span: 5}}
-            wrapperCol={{span: 19}}
-          >
+          <h3 className="input-label required">Last Name</h3>
+          <Form.Item>
             {getFieldDecorator('last_name', {
               rules: [{ required: true, message: 'Please input your last name!' }],
-            })(<Input />)}
+            })(<Input className="registration-input"/>)}
           </Form.Item>
 
-          <Form.Item label="Password" hasFeedback
-            labelCol={{span: 5}}
-            wrapperCol={{span: 19}}
+          <h3 className="input-label required">Password</h3>
+          <Form.Item hasFeedback
           >
             {getFieldDecorator('password', {
               rules: [
@@ -97,12 +90,11 @@ class RegistrationFormTemplate extends Component {
                   validator: this.validateToNextPassword,
                 },
               ],
-            })(<Input.Password />)}
+            })(<Input.Password className="registration-input"/>)}
           </Form.Item>
-          <Form.Item label="Confirm Password" hasFeedback
-            labelCol={{span: 5}}
-            wrapperCol={{span: 19}}
-          >
+
+          <h3 className="input-label required">Confirm Password</h3>
+          <Form.Item hasFeedback>
             {getFieldDecorator('confirm', {
               rules: [
                 {
@@ -113,7 +105,9 @@ class RegistrationFormTemplate extends Component {
                   validator: this.compareToFirstPassword,
                 },
               ],
-            })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+            })(<Input.Password className="registration-input"
+                  onBlur={this.handleConfirmBlur}
+                />)}
           </Form.Item>
 
           <Form.Item className="signup-submit-button">
