@@ -126,7 +126,7 @@ let getBlogs = async () => {
   try {
     let blogData = await knex(BLOG_POST).select('*')
       .orderBy('updated_at', 'desc')
-      .limit(5);
+      .limit(100);
 
     const blogPostIds = _getBlogIds(blogData);
 

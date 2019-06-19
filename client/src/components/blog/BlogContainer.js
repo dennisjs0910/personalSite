@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Layout, Row, Col, Button, Card, Pagination, List } from 'antd';
+import { Alert, Layout, Button, List } from 'antd';
 import BlogList from './BlogList';
 import { BlogAction } from '../../actions';
 import { BlogFormModal, BlogModal } from '../modal';

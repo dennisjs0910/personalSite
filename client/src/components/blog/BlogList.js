@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { Alert, Layout, Row, Col, Button, Card, Pagination, List } from 'antd';
+import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
 import "./BlogList.css";
 
 const ROW_NUM = 24;
-const PER_PAGINATION = 3;
+const PER_PAGINATION = 2;
 const { Content } = Layout;
 
 class BlogList extends Component {
   constructor(props) {
+    console.log(props.blogs);
     super(props);
     this.state = {
       pageMin: 0,
-      pageMax: PER_PAGINATION,
+      pageMax: PER_PAGINATION * PER_PAGINATION,
+      curPage: 1
     }
   }
 
@@ -31,22 +33,25 @@ class BlogList extends Component {
    * @param  {int} value [page number]
    */
   handlePaginationChange = value => {
+    const perPageSquare = (PER_PAGINATION * PER_PAGINATION);
     if (value <= 1) {
       this.setState({
         pageMin: 0,
-        pageMax: PER_PAGINATION
+        pageMax: perPageSquare
       });
     } else {
+      console.log('from idx:' , Math.max(1, value - 1) * perPageSquare);
+      console.log('to idx:' , Math.min(Math.max(1, value) * perPageSquare, this.props.blogs.length));
       this.setState({
-        pageMin: Math.max(1, value - 1) * PER_PAGINATION,
-        pageMax: Math.min(Math.max(1, value) * PER_PAGINATION, this.props.blogs.length)
+        pageMin: Math.max(1, value - 1) * perPageSquare,
+        pageMax: Math.min(Math.max(1, value) * perPageSquare)
       });
     }
   };
 
   renderBlogsToCard(blogs) {
-    console.log(blogs[0]);
     if (blogs && blogs.length > 0) {
+      // const start = this.state.pageMin *
       return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => {
         return (
           <Col span={ROW_NUM / PER_PAGINATION} key={blog.id}>
