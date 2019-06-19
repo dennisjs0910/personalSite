@@ -1,29 +1,53 @@
-div.blog-card {
-  margin: auto;
-}
-
 div.pagination-container {
   text-align: center;
   margin: 2rem;
 }
 
-/*img.blog-img {
-  width: 100%;
-  height: 15rem;
-  object-fit: cover;
-}*/
-
-#blogHeaderContainer {
-  background-image: url("../../assets/prodImages/chill.jpg");
-  margin-bottom: 2rem;
+.blog-container {
+  background-image: url("../../assets/prodImages/beach.jpg");
 }
 
-h1.title-header {
-  font-size: 3rem;
-  color: white;
+.blog-header-container.main-img {
+  /*height: 100% !important;*/
+  padding-top: 20px;
+  padding-left: 15px;
+  margin-left: 100px;
+  max-width: 37rem;
+  min-width: 600px;
+  text-align: left;
+  background-image: linear-gradient(135deg, rgba(227, 205, 200, 0.5), rgba(179, 154, 151, 0.2));
+  overflow-y: auto;
 }
 
-p.p-header {
+.blog-page-list.ant-list {
+  margin-top: 1rem;
+}
+
+.homepage-main {
+  color: #cdf2f4;
+}
+
+.ant-btn.blog-create-button.ant-btn-primary {
+  margin: 1rem 0 1.5rem 0;
   font-size: 1.25rem;
-  color: white;
+  height: 40px;
+}
+
+h1.homepage-main {
+  color: #aaf4f7;
+  font-size: 2.5rem;
+}
+
+h2.homepage-main {
+  color: #aaf4f7;
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+p.homepage-main {
+  font-size: 1rem;
+}
+
+div.release-list-container {
+  margin-bottom: 20px;
 }

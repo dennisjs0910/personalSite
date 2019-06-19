@@ -1,5 +1,5 @@
 main.ant-layout-content.fullscreen.login-container.main-img {
-  background-image: url("../../assets/prodImages/twocliffs.jpg");
+  background-image: url("../../assets/prodImages/cage.jpg");
 }
 
 .login-container {
@@ -13,17 +13,16 @@ main.ant-layout-content.fullscreen.login-container.main-img {
   min-width: 500px;
   width: 30rem;
   margin: auto;
-  border: 1px solid;
   border-radius: 10px;
   padding: 1rem;
-  background-image: linear-gradient(135deg, rgba(119, 194, 170, 0.5), rgba(149, 244, 212, 0.5));
-  border: 3px solid rgba(119, 194, 170, 0.5);
+  background-image: linear-gradient(135deg, rgba(26, 26, 19, 0.9), rgba(58, 103, 99, 0.79));
+  border: 2px solid rgba(26, 26, 19, 0.1);
   position: relative;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.login-input input.ant-input {
+.login-input .ant-input {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -36,8 +35,17 @@ main.ant-layout-content.fullscreen.login-container.main-img {
   background: transparent !important;
   margin-bottom: 10px;
   height: 2.5rem;
+  color: white;
+  font-size: 1rem;
 }
 
-.ant-input-affix-wrapper .ant-input-prefix {
-  top: 39% !important;
+.login-form-container .ant-input-affix-wrapper .ant-input-prefix {
+  top: 39%;
+  color:white;
+  font-size: 1rem;
+}
+
+.login-form-container .form-header, .login-form-container h3.input-label,
+.login-form-containerh3.input-label.required::before, .login-form-container h2.form-header {
+  color: white;
 }

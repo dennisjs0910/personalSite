@@ -35,7 +35,7 @@ export default class AuthAction {
             error: null
           }
         });
-        history.push("/");
+        history.push("/blogs");
       } catch (err) {
         dispatch({
           type: AUTH_ACTION.LOGIN_FAILURE,
