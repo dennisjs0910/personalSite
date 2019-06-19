@@ -4,6 +4,7 @@ import "./BlogList.css";
 
 const ROW_NUM = 24;
 const PER_PAGINATION = 2;
+const TAGS_PER_BLOG = 5;
 const { Content } = Layout;
 
 class BlogList extends Component {
@@ -49,10 +50,23 @@ class BlogList extends Component {
     }
   };
 
+  getBlogTags = (blog, tagNum) => {
+    let tags = [];
+    for (let i = 0; i < tagNum; i++) {
+      if (!!blog.category[i]) {
+        tags.push(<p className="blog-tag tagged">{blog.category[i]}</p>);
+      } else {
+        tags.push(<p className="blog-tag tagged"></p>);
+      }
+    }
+
+    return tags;
+  };
+
   renderBlogsToCard(blogs) {
     if (blogs && blogs.length > 0) {
-      // const start = this.state.pageMin *
-      return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => {
+      const toRender = blogs.slice(this.state.pageMin, this.state.pageMax);
+      return toRender.map(blog => {
         return (
           <Col span={ROW_NUM / PER_PAGINATION} key={blog.id}>
             <Card className="blog-card"
@@ -62,11 +76,9 @@ class BlogList extends Component {
                   view
                 </Button>
               }
+              actions={this.getBlogTags(blog, TAGS_PER_BLOG)}
             >
               <p className="blog-card-body">{ blog.summary }</p>
-              <div className="tag-container">
-                {blog.category}
-              </div>
             </Card>
           </Col>
         );
@@ -80,10 +92,12 @@ class BlogList extends Component {
     return(
       <Content className="blog-list-container">
         <h2 className="blog-list-header">View All Blogs</h2>
-        <div className="wrapper-content-margin blog-card-container">
-          <Row gutter={16}>
-            { this.renderBlogsToCard(blogs) }
-          </Row>
+        <div className="blog-card-container">
+          <div className="wrapper-content-margin">
+            <Row gutter={16}>
+              { this.renderBlogsToCard(blogs) }
+            </Row>
+          </div>
 
           <div className="pagination-container">
             <Pagination
