@@ -1,0 +1,15 @@
+{
+  "title": "Blog Page",
+  "paragraphOne": "Current release allows a user to:",
+  "releaseList": [
+    "Create and manage your own blog.",
+    "Upload multiple images.",
+    "View other blogs."
+  ],
+  "paragraphTwo" : "Upcoming release will include:",
+  "featureList": [
+    "Upload videos!",
+    "Comment on comments. Comment and like blogs.",
+    "Search blogs using tags"
+  ]
+}

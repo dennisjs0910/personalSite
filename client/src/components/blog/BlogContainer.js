@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Alert, Layout, Row, Col, Button, Card, Pagination } from 'antd';
+import { Alert, Layout, Row, Col, Button, Card, Pagination, List } from 'antd';
+import BlogList from './BlogList';
 import { BlogAction } from '../../actions';
 import { BlogFormModal, BlogModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { isEmpty } from 'lodash';
 import "./BlogContainer.css";
+import textFile from './data/blog-paragraph.json';
 
-const PER_PAGINATION = 4;
 const { Content } = Layout;
 
 class BlogContainer extends Component {
@@ -18,49 +19,16 @@ class BlogContainer extends Component {
       isReadVisible: false,
       isUpdate: false,
       selectedBlog: null,
-      pageMin: 0,
-      pageMax: PER_PAGINATION,
     };
 
-    this.handlePaginationChange = this.handlePaginationChange.bind(this);
     this.handleCreateModal = this.handleCreateModal.bind(this);
     this.handleReadModal = this.handleReadModal.bind(this);
     this.handleUpdateModal = this.handleUpdateModal.bind(this);
-    this.renderHeaderRow = this.renderHeaderRow.bind(this);
     this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
   };
 
   componentDidMount() {
     this.props.getBlogs();
-  };
-
-  /**
-   * Shortens image_text of blog that is to be displayed.
-   * @param  {String} text
-   * @return {String}    first 197 chars of image_text appended with ...;
-   */
-  _shortenImageDescription = (text) => {
-    if (text && text.length <= 250) return text;
-    const end = Math.min(text.length, 247);
-    return text.substring(0, end) + "...";
-  };
-
-  /**
-   * When user clicks on < or > it will recalculate indexes that are to be shown.
-   * @param  {int} value [page number]
-   */
-  handlePaginationChange = value => {
-    if (value <= 1) {
-      this.setState({
-        pageMin: 0,
-        pageMax: PER_PAGINATION
-      });
-    } else {
-      this.setState({
-        pageMin: Math.max(1, value - 1) * PER_PAGINATION,
-        pageMax: Math.min(Math.max(1, value) * PER_PAGINATION, this.props.blogs.length)
-      });
-    }
   };
 
   /**
@@ -127,66 +95,59 @@ class BlogContainer extends Component {
     }
   }
 
-  renderHeaderRow() {
-    const paragraph = "Search through exisiting projects people have accomplished. Also you have the ability showcase your skillsets to people who are intereseted. Just click on the 'CREATE +' Button."
-
-    return(<Row>
-      <Col span={24}>
-        <div id='blogHeaderContainer' className="main-img">
-          <h1 className="title-header">Blog Currently Under Construction</h1>
-          <p className="p-header">{ `${paragraph}` }</p>
-          { this.renderCreateBlogPostButton() }
-        </div>
-      </Col>
-    </Row>);
-  }
-
-  //TODO: this can be of a component on its own.
-  //REFACTOR TOGETHER START==============================================
-  renderAllBlogs(blogs) {
+  renderHeader(currentUser) {
     return(
-      <Content>
-        <div className="wrapper-content-margin">
-          <h2>View All Blogs</h2>
-          <Row gutter={16}>
-            { this._renderBlogsToCard(blogs) }
-          </Row>
-
-          <div className="pagination-container">
-            <Pagination
-              defaultCurrent={1}
-              defaultPageSize={4}
-              onChange={ this.handlePaginationChange }
-              total={ blogs.length }
-            />
-          </div>
+      <div className="blog-header-container main-img">
+        {!!currentUser ?
+          <div>
+            <h2 className="homepage-main">Click here to create a blog</h2>
+            <Button
+              className="blog-create-button"
+              type="primary"
+              onClick={ () => this.handleCreateModal() }
+            >
+              Create
+            </Button>
+          </div>:
+          <h1 className="homepage-main">{ textFile.title }</h1>
+         }
+        <div className="release-list-container">
+          <h2 className="homepage-main">{ textFile.paragraphOne }</h2>
+          <List className="blog-page-list"
+            key={ "releaseList" }
+            itemLayout="horizontal"
+            dataSource={ textFile.releaseList }
+            renderItem={item => (
+              <List.Item>
+                <List.Item.Meta
+                  title={
+                    <p className="homepage-main">{item}</p>
+                  }
+                />
+              </List.Item>
+            )}
+          />
         </div>
-      </Content>
+        <div className="feature-list-container">
+          <h2 className="homepage-main">{ textFile.paragraphTwo }</h2>
+          <List className="blog-page-list"
+            key={ "featureList" }
+            itemLayout="horizontal"
+            dataSource={ textFile.featureList }
+            renderItem={item => (
+              <List.Item>
+                <List.Item.Meta
+                  title={
+                    <p className="homepage-main">{item}</p>
+                  }
+                />
+              </List.Item>
+            )}
+          />
+        </div>
+      </div>
     );
   }
-
-  _renderBlogsToCard(blogs) {
-    if (blogs && blogs.length > 0) {
-      return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => {
-        return (
-          <Col span={6} key={blog.id}>
-            <Card className="blog-card"
-              title={blog.title}
-              extra={
-                <Button onClick={ () => this.handleReadModal(blog) } >
-                  More
-                </Button>
-              }
-            >
-              <p>{this._shortenImageDescription(blog.summary)}</p>
-            </Card>
-          </Col>
-        );
-      });
-    }
-    return null;
-  }
-  //REFACTOR TOGETHER END================================================
 
   render() {
     const { isFormVisible, isReadVisible, selectedBlog } = this.state;
@@ -204,8 +165,9 @@ class BlogContainer extends Component {
             closable
           /> : null
         }
-        { this.renderHeaderRow() }
-        { this.renderAllBlogs(blogs) }
+        { this.renderHeader(currentUser) }
+
+        <BlogList blogs={blogs} handleReadModal={ this.handleReadModal }/>
         { isFormVisible ?
           <BlogFormModal {...formProps} />
           : null

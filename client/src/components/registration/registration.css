@@ -2,11 +2,10 @@ div.signup-form-container {
   min-width: 500px;
   width: 30rem;
   margin: auto;
-  border: 1px solid;
   border-radius: 10px;
   padding: 1rem;
-  background-image: linear-gradient(135deg, #A9C1D5, #EDE0CD);
-  border: 3px solid #9AB6CB;
+  background-image: linear-gradient(135deg, rgba(169,193,213, 0.85), rgba(237,224,205, 1));
+  border: 2px solid rgba(169,193,213, 0.5);
   position: relative;
   top: 50%;
   transform: translateY(-50%);

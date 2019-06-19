@@ -38,7 +38,7 @@ class HomePage extends Component {
         renderItem={item => (
           <List.Item>
             <List.Item.Meta
-              title={<a target="_blank" className="homepage-main"href={item.link}>{item.title}</a>}
+              title={<a target="_blank" rel="noopener noreferrer" className="homepage-main"href={item.link}>{item.title}</a>}
             />
           </List.Item>
         )}
