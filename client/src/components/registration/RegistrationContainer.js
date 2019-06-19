@@ -13,7 +13,9 @@ class RegistrationContainer extends Component {
     const { registerUser } = this.props;
     return (
       <Content className="fullscreen registration-container main-img">
-        <RegistrationForm registerUser={registerUser}/>
+        <div className="registration-container-body">
+          <RegistrationForm registerUser={registerUser}/>
+        </div>
       </Content>
     );
   }

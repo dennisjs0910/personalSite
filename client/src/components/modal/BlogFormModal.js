@@ -183,7 +183,7 @@ class BlogFormModal extends Component {
   };
 
   /**
-   * When isUpdate=true and isSubmitted=false it is a modal close so we do not delete original images
+   * When isUpdate=true and isSubmitted=false, it is a modal close so we do not delete original images
    * If it is sumbitted we delete all filesThat need to be deleted from cloudinary.
    * Otherwise, delete all media files from cloudinary.
    * @param  {Boolean} isSubmitted [description]
@@ -193,6 +193,12 @@ class BlogFormModal extends Component {
     const { isUpdate } = this.props;
     if (isUpdate && !isSubmitted) {
       let idList = [];
+      this.state.fileList.forEach(file => {
+        if (!this.ogImageSet.has(file.response[0].public_id)) {
+          idList.push(file.response[0].public_id);
+        }
+      });
+
       this.state.filesToDelete.forEach(id => {
         if (!this.ogImageSet.has(id)) {
           idList.push(id);
@@ -201,7 +207,6 @@ class BlogFormModal extends Component {
       idList.forEach(id => BlogAction.deleteImage(id));
       return;
     };
-
     this.state.filesToDelete.forEach(id => BlogAction.deleteImage(id));
     if (!isSubmitted) {
       this.state.fileList.forEach(file => {
@@ -216,9 +221,8 @@ class BlogFormModal extends Component {
   handleStateReset = (e) => {
     e.preventDefault();
     let initState = INITIAL_STATE;
-    let filesToDelete = [];
-    this.state.fileList.forEach(file => filesToDelete.push(file.response[0].public_id));
-    initState = Object.assign({...INITIAL_STATE}, { filesToDelete: [...filesToDelete, ...this.state.filesToDelete]});
+    const moreFilesToDelete = this.state.fileList.map(file => file.response[0].public_id);
+    initState = Object.assign({...INITIAL_STATE}, { filesToDelete: [...moreFilesToDelete, ...this.state.filesToDelete]});
     this.setState(initState);
   };
 

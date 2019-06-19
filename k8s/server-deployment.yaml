@@ -46,3 +46,8 @@ spec:
                 secretKeyRef:
                   name: cloudinaryapisecret
                   key: CLOUDINARY_API_SECRET
+            - name: CLOUDINARY_FOLDER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinaryfolder
+                  key: CLOUDINARY_FOLDER
