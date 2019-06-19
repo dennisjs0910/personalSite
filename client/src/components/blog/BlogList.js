@@ -9,7 +9,6 @@ const { Content } = Layout;
 
 class BlogList extends Component {
   constructor(props) {
-    console.log(props.blogs);
     super(props);
     this.state = {
       pageMin: 0,
@@ -41,8 +40,6 @@ class BlogList extends Component {
         pageMax: perPageSquare
       });
     } else {
-      console.log('from idx:' , Math.max(1, value - 1) * perPageSquare);
-      console.log('to idx:' , Math.min(Math.max(1, value) * perPageSquare, this.props.blogs.length));
       this.setState({
         pageMin: Math.max(1, value - 1) * perPageSquare,
         pageMax: Math.min(Math.max(1, value) * perPageSquare)

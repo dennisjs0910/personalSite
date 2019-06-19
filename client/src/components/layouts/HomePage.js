@@ -28,7 +28,6 @@ class HomePage extends Component {
   }
 
   renderTechStack() {
-    console.log(textFile);
     const listJsx = textFile.techStacks.map((techStack) => (
       <List className="home-page-list"
         key={techStack.title}
