@@ -133,7 +133,7 @@ class BlogFormModal extends Component {
     let filesToDelete = [];
 
     let modifiedFileList = fileList.filter((f, i) => {
-      if (isEqual(file, f)) {
+      if (isEqual(file, f) && !!file.response) {
         filesToDelete.push(file.response[0].public_id);
         idx = i;
         return false;
@@ -210,7 +210,9 @@ class BlogFormModal extends Component {
     this.state.filesToDelete.forEach(id => BlogAction.deleteImage(id));
     if (!isSubmitted) {
       this.state.fileList.forEach(file => {
-        BlogAction.deleteImage(file.response[0].public_id);
+        if (!!file.response) {
+          BlogAction.deleteImage(file.response[0].public_id);
+        }
       });
     }
   };
