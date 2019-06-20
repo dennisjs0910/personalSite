@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Button, Tag, Popconfirm } from 'antd';
+import { CommentEditor } from '../comment';
 import { BlogAction } from '../../actions';
 import "./BlogModal.css";
 
@@ -72,7 +73,6 @@ class BlogModal extends Component {
 
   renderContents = ({ contents=[] }) => {
     return contents.map(content => {
-      console.log(content.summary.split('\n'));
       return(
         <div className="blog-content-container" key={content.id}>
           {
@@ -83,8 +83,8 @@ class BlogModal extends Component {
             <img className="blog-content-media" src={content.media_url} alt="" />
           }
           <div className="blog-content-summary-container">{
-            content.summary.split('\n').map(paragraph => (
-              <p className="blog-content-summary" >{paragraph}</p>
+            content.summary.split('\n').map((paragraph, idx) => (
+              <p key={`${idx}`} className="blog-content-summary" >{paragraph}</p>
             ))
           }</div>
         </div>
@@ -114,6 +114,7 @@ class BlogModal extends Component {
           <h4 className="blog-category-label">Tags:</h4>
           { this.renderCategoryElements(blog) }
         </div>
+        <CommentEditor blogId={blog.id} parentId={blog.id} currentUser={currentUser}/>
       </Modal>
     );
   };

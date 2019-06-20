@@ -25,6 +25,18 @@ module.exports = {
     }
   },
 
+  getUserName: async (whereClause) => {
+    try {
+      const users = await knex(USER_TABLE)
+        .select(['first_name', 'last_name'])
+        .where(whereClause);
+      if (!!!users || users.length == 0) return null;
+      return users[0];
+    } catch (err) {
+      return null;
+    }
+  },
+
   /**
    * Inserts row into "User" Table
    * @param  {Object} fields [fields that need to be inserted into the row]
