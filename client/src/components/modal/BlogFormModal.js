@@ -159,7 +159,12 @@ class BlogFormModal extends Component {
     });
   };
 
-  handleMediaChange = ({ fileList }) => this.setState({ fileList });
+  handleMediaChange = ({ fileList }) => {
+    const noErrorFileList = fileList.filter(media => !!media.error);
+    // console.log("handleMediaChange fileList", fileList);
+    // console.log("handleMediaChange noErrorFileList", noErrorFileList);
+    this.setState({ fileList })
+  };
 
   handleFormSubmit = e => {
     e.preventDefault();

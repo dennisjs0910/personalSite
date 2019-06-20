@@ -22,8 +22,6 @@ routes.post('/', (req, res) => {
   });
 });
 
-
-
 routes.delete('/', async (req, res) => {
   try {
     const { public_id } = req.body;

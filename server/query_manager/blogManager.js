@@ -21,12 +21,14 @@ let _createBlogPostData = (title, summary, tags, user_id) => {
 let _createContentData = (blogPost_id, fileList=[], mediaText=[], contentIds=[]) => {
   let res = [];
   for (let idx = 0; idx < fileList.length; idx++) {
-    const media_url = fileList[idx].response[0].secure_url;
-    const public_id = fileList[idx].response[0].public_id;
+    const fileItem = fileList[idx]
+    const media_url = fileItem.response[0].secure_url;
+    const public_id = fileItem.response[0].public_id;
+    const is_video = fileItem.response[0].resource_type && fileItem.response[0].resource_type.includes('video');
     const summary = mediaText[idx];
     res.push({
       blogPost_id,
-      is_video: false, // TODO: Requires refactoring when supporting video files.
+      is_video,
       public_id,
       media_url,
       summary,
@@ -220,7 +222,6 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
     const data = await getBlogWithId(id);
     return data[0];
   } catch (err) {
-    console.log(err);
     return null;
   }
 };
