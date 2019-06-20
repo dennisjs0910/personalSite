@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CommentAction } from '../../actions';
 
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
+const Editor = ({ onChange, onSubmit, value }) => (
   <div>
     <Form.Item>
       <Input.TextArea rows={4} onChange={onChange} value={value} />
     </Form.Item>
     <Form.Item>
-      <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
+      <Button htmlType="submit" onClick={onSubmit} type="primary">
         Add Comment
       </Button>
     </Form.Item>
@@ -31,14 +31,23 @@ class CommentEditor extends Component {
     super(props);
     this.state = {
       comments: [],
-      submitting: false,
       value: '',
     };
   }
 
-  handleSubmit = () => {
-    console.log("comment value:", this.state.value);
-    console.log("blogId:", this.props.blogId);
+  //TODO:
+  componentDidMount() {
+    this.props.getComments(this.props.blogId);
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const data = {
+      comment_text: this.state.value,
+      blogPost_id: this.props.blogId,
+      parent_id: this.props.parentId
+    };
+    this.props.createComment(data);
   };
 
   handleChange = e => {
@@ -48,7 +57,7 @@ class CommentEditor extends Component {
   };
 
   render() {
-    const { comments, submitting, value } = this.state;
+    const { comments, value } = this.state;
     return(
       <div className="comment-container">
         <Comment
@@ -56,7 +65,6 @@ class CommentEditor extends Component {
             <Editor
               onChange={this.handleChange}
               onSubmit={this.handleSubmit}
-              submitting={submitting}
               value={value}
             />
           }

@@ -4,20 +4,22 @@ import { BLOG_ACTION } from "./ActionTypes";
 export default class CommentAction {
 
   static createComment = (data) => {
-     return async (dispatch) => {
-       try {
-         let res = await axios.post(`/api/blog`, data);
-         dispatch({
-           type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
-           payload: res.data
-         });
-       } catch (err) {
-         dispatch({
-           type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-           error: { message: "Something went wrong creating your blog, please try again" }
-         });
-       }
-    }
+    console.log("from action yo",data);
+    return { type: ""};
+    //  return async (dispatch) => {
+    //    try {
+    //      let res = await axios.post(`/api/blog`, data);
+    //      dispatch({
+    //        type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
+    //        payload: res.data
+    //      });
+    //    } catch (err) {
+    //      dispatch({
+    //        type: BLOG_ACTION.CREATE_BLOG_FAILURE,
+    //        error: { message: "Something went wrong creating your blog, please try again" }
+    //      });
+    //    }
+    // }
   };
 
   static getComments = () => {
