@@ -38,7 +38,7 @@ const CommentList = ({ currentUser, blogId, comments, deleteComment }) => {
 const CustomComment = ({item, deleteComment, blogId, currentUser}) => (
   <Comment
     key={ item.id }
-    author={ "TODO" }
+    author={ item.first_name ? `${item.first_name} ${item.last_name}` : "Unknown" }
     content={ item.comment_text }
     datetime={ item.updated_at }
     actions={[

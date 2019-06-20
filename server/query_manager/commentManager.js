@@ -3,6 +3,8 @@ const knex = require('knex')(knexOptions);
 const COMMENT_TABLE = "Comment";
 const VISIBLE_COLUMNS = ["id", "blogPost_id", "user_id", "parent_id", "comment_text", "created_at", "updated_at"];
 
+const USER_TABLE = "User";
+const userManager = require('./userManager');
 
 module.exports = {
   /**
@@ -15,11 +17,14 @@ module.exports = {
    */
   createComment: async ({ blogPost_id, parent_id, comment_text, user_id }) => {
     try {
-      const comments = await knex(COMMENT_TABLE)
+      let [comment] = await knex(COMMENT_TABLE)
         .insert({ blogPost_id, parent_id, comment_text, user_id })
         .returning(VISIBLE_COLUMNS);
 
-      return comments[0];
+      const user = await userManager.getUserName({id : user_id});
+      comment.first_name = user.first_name;
+      comment.last_name = user.last_name;
+      return comment;
     } catch (err) {
       return null;
     }
@@ -27,8 +32,13 @@ module.exports = {
 
   getComment: async blogPost_id => {
     try{
+      const selectCols = ['User.first_name', 'User.last_name',
+        ...VISIBLE_COLUMNS.map(col => `${COMMENT_TABLE}.${col}`)
+      ];
+
       const comments = await knex(COMMENT_TABLE)
-        .select(VISIBLE_COLUMNS)
+        .join(USER_TABLE, `${USER_TABLE}.id`, `${COMMENT_TABLE}.user_id`)
+        .select(selectCols)
         .where({ blogPost_id })
         .orderBy('updated_at', 'desc');
 
