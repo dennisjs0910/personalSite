@@ -22,7 +22,13 @@ const CommentList = ({ comments }) => (
     dataSource={comments}
     header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
     itemLayout="horizontal"
-    renderItem={props => <Comment {...props} />}
+    renderItem={item => (
+      <Comment
+        author={"dennis yi"}
+        content={item.comment_text}
+        datetime={item.updated_at}
+     />)
+    }
   />
 );
 
@@ -35,7 +41,6 @@ class CommentEditor extends Component {
     };
   }
 
-  //TODO:
   componentDidMount() {
     this.props.getComments(this.props.blogId);
   };
@@ -63,7 +68,8 @@ class CommentEditor extends Component {
   };
 
   render() {
-    const { comments, value } = this.state;
+    const { value } = this.state;
+    const { comments } = this.props;
     return(
       <div className="comment-container">
         <Comment
@@ -95,4 +101,8 @@ const mapDispatchToProps = dispatch => {
   );
 }
 
-export default connect(null, mapDispatchToProps)(CommentEditor);
+const mapStateToProps = ({ comment }) => {
+  return { comments: comment.items || [] };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentEditor);
