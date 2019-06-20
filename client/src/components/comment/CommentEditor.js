@@ -42,7 +42,7 @@ const CustomComment = ({item, deleteComment, blogId, currentUser}) => (
     content={ item.comment_text }
     datetime={ item.updated_at }
     actions={[
-      !!currentUser && (currentUser.id === item.user_id || currentUser.permission === "ADMIN") ?
+      !!currentUser && (currentUser.id === item.user_id || currentUser.permission === 'admin') ?
       <Popconfirm
         key={ `popup_${item.id}` }
         title="Are you sure you want to delete this comment?"
