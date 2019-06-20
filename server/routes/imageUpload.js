@@ -24,8 +24,12 @@ routes.post('/', (req, res) => {
 
 routes.delete('/', async (req, res) => {
   try {
-    const { public_id } = req.body;
-    const deleteResponse = await cloudinary.v2.uploader.destroy(public_id);
+    const { public_id, resource_type } = req.body;
+    if (resource_type === 'video') {
+      await cloudinary.v2.uploader.destroy(public_id, { resource_type });
+    } else {
+      await cloudinary.v2.uploader.destroy(public_id);
+    }
     res.sendStatus(204);
   } catch (err) {
     res.sendStatus(404);
