@@ -42,12 +42,18 @@ class CommentEditor extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    console.log('this.props.currentUser', this.props.currentUser);
     const data = {
       comment_text: this.state.value,
       blogPost_id: this.props.blogId,
-      parent_id: this.props.parentId
+      parent_id: this.props.parentId,
+      user_id: this.props.currentUser.id
     };
+
     this.props.createComment(data);
+    // this.setState({
+    //   value: ''
+    // });
   };
 
   handleChange = e => {

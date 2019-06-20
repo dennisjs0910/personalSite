@@ -5,39 +5,35 @@ export default class CommentAction {
 
   static createComment = (data) => {
     console.log("from action yo",data);
-    return { type: ""};
-    //  return async (dispatch) => {
-    //    try {
-    //      let res = await axios.post(`/api/blog`, data);
-    //      dispatch({
-    //        type: BLOG_ACTION.CREATE_BLOG_SUCCESS,
-    //        payload: res.data
-    //      });
-    //    } catch (err) {
-    //      dispatch({
-    //        type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-    //        error: { message: "Something went wrong creating your blog, please try again" }
-    //      });
-    //    }
-    // }
+     return async (dispatch) => {
+       try {
+         const res = await axios.post(`/api/blog/${data.blogPost_id}/comment`, data);
+         dispatch({
+           type: "nothing",
+         });
+       } catch (err) {
+         dispatch({
+           type: "nothing",
+         });
+       }
+    }
   };
 
-  static getComments = () => {
-    return {};
-    // return async (dispatch) => {
-    //   try{
-    //     let res = await axios.get(`/api/blog`);
-    //     dispatch({
-    //       type: BLOG_ACTION.FETCH_BLOG_SUCCESS,
-    //       payload: res.data
-    //     });
-    //   } catch (err) {
-    //     dispatch({
-    //       type: BLOG_ACTION.FETCH_BLOG_FAILURE,
-    //       error: { message: "An error occured, please try again and refresh the page" }
-    //     });
-    //   }
-    // }
+  static getComments = (blogPost_id) => {
+    return async (dispatch) => {
+      try{
+        const res = await axios.get(`/api/blog/${blogPost_id}/comment?blogPostId=${blogPost_id}`, { blogPost_id });
+        console.log(res);
+        dispatch({
+          type: "nothing",
+        });
+      } catch (err) {
+        console.log(err);
+        dispatch({
+          type: "nothing",
+        });
+      }
+    }
   };
 
   static updateComment = (data) => {

@@ -114,7 +114,7 @@ class BlogModal extends Component {
           <h4 className="blog-category-label">Tags:</h4>
           { this.renderCategoryElements(blog) }
         </div>
-        <CommentEditor blogId={blog.id} parentId={blog.id} />
+        <CommentEditor blogId={blog.id} parentId={blog.id} currentUser={currentUser}/>
       </Modal>
     );
   };
