@@ -36,5 +36,14 @@ module.exports = {
     } catch(err) {
       return null;
     }
+  },
+
+  deleteComment: async (id) => {
+    try {
+      const res = await knex(COMMENT_TABLE).where('id', id).del();
+      return res;
+    } catch (err) {
+      return null;
+    }
   }
 }

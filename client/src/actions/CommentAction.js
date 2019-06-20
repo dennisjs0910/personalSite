@@ -3,7 +3,6 @@ import { COMMENT_ACTION } from "./ActionTypes";
 
 export default class CommentAction {
   static createComment = (data) => {
-    console.log("from action yo",data);
      return async (dispatch) => {
        try {
          const res = await axios.post(`/api/blog/${data.blogPost_id}/comment`, data);
@@ -22,7 +21,8 @@ export default class CommentAction {
   static getComments = (blogPost_id) => {
     return async (dispatch) => {
       try{
-        const res = await axios.get(`/api/blog/${blogPost_id}/comment?blogPostId=${blogPost_id}`, { blogPost_id });
+        const endpoint = `/api/blog/${blogPost_id}/comment?blogPostId=${blogPost_id}`;
+        const res = await axios.get(endpoint, { blogPost_id });
         dispatch({
           type: COMMENT_ACTION.GET_COMMENT_SUCCESS,
           payload: res.data
@@ -39,7 +39,20 @@ export default class CommentAction {
     return {};
   };
 
-  static deleteComment = ({id}) => {
-    return {};
+  static deleteComment = (blogPost_id, id) => {
+    return async (dispatch) => {
+      try{
+        const endpoint = `/api/blog/${blogPost_id}/comment`;
+        const res = await axios.delete(endpoint,  { data: { id } });
+        dispatch({
+          type: COMMENT_ACTION.DELETE_COMMENT_SUCCESS,
+          payload: { id }
+        });
+      } catch (err) {
+        dispatch({
+          type: COMMENT_ACTION.DELETE_COMMENT_FAILURE
+        });
+      }
+    }
   };
 }

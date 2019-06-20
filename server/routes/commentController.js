@@ -23,4 +23,16 @@ routes.post('/',  async (req, res) => {
   res.json({ data });
 });
 
+
+routes.delete('/',  async (req, res) => {
+  const { id } = req.body;
+  const data = await commentManager.deleteComment(id);
+  if (!!!data) {
+    res.sendStatus(404);
+    return;
+  }
+
+  res.sendStatus(204);
+});
+
 module.exports = routes;

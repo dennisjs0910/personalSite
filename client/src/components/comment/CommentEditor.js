@@ -17,20 +17,23 @@ const Editor = ({ onChange, onSubmit, value }) => (
   </div>
 );
 
-const CommentList = ({ comments }) => (
+const CommentList = ({ blogId, comments, deleteComment }) => {
+  return (
   <List
     dataSource={comments}
     header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
     itemLayout="horizontal"
     renderItem={item => (
       <Comment
-        author={"dennis yi"}
-        content={item.comment_text}
-        datetime={item.updated_at}
+        key={ item.id }
+        author={ "TODO" }
+        content={ item.comment_text }
+        datetime={ item.updated_at }
+        actions={ [<span onClick={(e) => deleteComment(e, blogId, item.id) }>Delete</span>] }
      />)
     }
   />
-);
+)};
 
 class CommentEditor extends Component {
   constructor(props) {
@@ -47,7 +50,6 @@ class CommentEditor extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log('this.props.currentUser', this.props.currentUser);
     const data = {
       comment_text: this.state.value,
       blogPost_id: this.props.blogId,
@@ -56,9 +58,11 @@ class CommentEditor extends Component {
     };
 
     this.props.createComment(data);
-    // this.setState({
-    //   value: ''
-    // });
+  };
+
+  handleDelete = (e, blogId, id) => {
+    e.preventDefault();
+    this.props.deleteComment(blogId, id);
   };
 
   handleChange = e => {
@@ -69,7 +73,7 @@ class CommentEditor extends Component {
 
   render() {
     const { value } = this.state;
-    const { comments } = this.props;
+    const { comments, blogId } = this.props;
     return(
       <div className="comment-container">
         <Comment
@@ -82,7 +86,11 @@ class CommentEditor extends Component {
           }
         />
         <div className="comment-list-container">
-        {comments.length > 0 && <CommentList comments={comments} />}
+        {comments.length > 0 && <CommentList
+          blogId={ blogId }
+          comments={ comments }
+          deleteComment={ this.handleDelete.bind(this) }
+        />}
         </div>
       </div>
     );
