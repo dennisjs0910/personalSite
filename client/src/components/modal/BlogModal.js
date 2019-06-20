@@ -71,12 +71,25 @@ class BlogModal extends Component {
   };
 
   renderContents = ({ contents=[] }) => {
-    return contents.map(content => (
-      <div className="blog-content-container" key={content.id}>
-        <img className="blog-content-img" src={content.media_url} alt="" />
-        <p>{content.summary}</p>
-      </div>
-    ));
+    return contents.map(content => {
+      console.log(content.summary.split('\n'));
+      return(
+        <div className="blog-content-container" key={content.id}>
+          {
+            content.is_video ?
+            <video className="blog-content-media" controls>
+              <source src={content.media_url} type="video/mp4"/>
+            </video> :
+            <img className="blog-content-media" src={content.media_url} alt="" />
+          }
+          <div className="blog-content-summary-container">{
+            content.summary.split('\n').map(paragraph => (
+              <p className="blog-content-summary" >{paragraph}</p>
+            ))
+          }</div>
+        </div>
+      );
+    });
   };
 
   render() {
