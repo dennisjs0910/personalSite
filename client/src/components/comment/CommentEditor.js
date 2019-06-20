@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Comment, Form, Button, List, Input } from 'antd';
+import { Comment, Form, Button, List, Input, Popconfirm } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CommentAction } from '../../actions';
+import './CommentEditor.css';
 
 const Editor = ({ onChange, onSubmit, value }) => (
   <div>
@@ -17,23 +18,43 @@ const Editor = ({ onChange, onSubmit, value }) => (
   </div>
 );
 
-const CommentList = ({ blogId, comments, deleteComment }) => {
+const CommentList = ({ currentUser, blogId, comments, deleteComment }) => {
   return (
   <List
     dataSource={comments}
     header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
     itemLayout="horizontal"
     renderItem={item => (
-      <Comment
-        key={ item.id }
-        author={ "TODO" }
-        content={ item.comment_text }
-        datetime={ item.updated_at }
-        actions={ [<span onClick={(e) => deleteComment(e, blogId, item.id) }>Delete</span>] }
-     />)
-    }
+      <CustomComment
+        item={ item }
+        deleteComment={ deleteComment }
+        blogId={blogId}
+        currentUser={currentUser}
+      />
+    )}
   />
 )};
+
+const CustomComment = ({item, deleteComment, blogId, currentUser}) => (
+  <Comment
+    key={ item.id }
+    author={ "TODO" }
+    content={ item.comment_text }
+    datetime={ item.updated_at }
+    actions={[
+      !!currentUser && (currentUser.id === item.user_id || currentUser.permission === "ADMIN") ?
+      <Popconfirm
+        key={ `popup_${item.id}` }
+        title="Are you sure you want to delete this comment?"
+        onConfirm={ (e) => deleteComment(e, blogId, item.id) }
+        okText="Yes"
+        cancelText="No"
+      >
+        <span className="comment-delete-span">Delete</span>
+      </Popconfirm> : null
+    ]}
+ />
+);
 
 class CommentEditor extends Component {
   constructor(props) {
@@ -50,14 +71,14 @@ class CommentEditor extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const data = {
+    this.props.createComment({
       comment_text: this.state.value,
       blogPost_id: this.props.blogId,
       parent_id: this.props.parentId,
       user_id: this.props.currentUser.id
-    };
+    });
 
-    this.props.createComment(data);
+    this.setState({ value:'' });
   };
 
   handleDelete = (e, blogId, id) => {
@@ -73,7 +94,7 @@ class CommentEditor extends Component {
 
   render() {
     const { value } = this.state;
-    const { comments, blogId } = this.props;
+    const { comments, blogId, currentUser } = this.props;
     return(
       <div className="comment-container">
         <Comment
@@ -86,11 +107,12 @@ class CommentEditor extends Component {
           }
         />
         <div className="comment-list-container">
-        {comments.length > 0 && <CommentList
-          blogId={ blogId }
-          comments={ comments }
-          deleteComment={ this.handleDelete.bind(this) }
-        />}
+          {comments.length > 0 && <CommentList
+            currentUser={ currentUser }
+            blogId={ blogId }
+            comments={ comments }
+            deleteComment={ this.handleDelete.bind(this) }
+          />}
         </div>
       </div>
     );

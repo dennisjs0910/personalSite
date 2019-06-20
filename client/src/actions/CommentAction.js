@@ -43,7 +43,7 @@ export default class CommentAction {
     return async (dispatch) => {
       try{
         const endpoint = `/api/blog/${blogPost_id}/comment`;
-        const res = await axios.delete(endpoint,  { data: { id } });
+        await axios.delete(endpoint,  { data: { id } });
         dispatch({
           type: COMMENT_ACTION.DELETE_COMMENT_SUCCESS,
           payload: { id }
