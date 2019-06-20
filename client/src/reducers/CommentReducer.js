@@ -10,7 +10,7 @@ export default (state = initialState, action) => {
       return Object.assign({...state}, { items: action.payload.data });
     }
     case COMMENT_ACTION.CREATE_COMMENT_SUCCESS : {
-      return state;
+      return Object.assign({...state}, { items: [action.payload.data, ...state.items] });
     }
     case COMMENT_ACTION.CREATE_COMMENT_FAILURE :
     case COMMENT_ACTION.GET_COMMENT_FAILURE :
