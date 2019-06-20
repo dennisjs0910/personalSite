@@ -9,7 +9,10 @@ class BlogModal extends Component {
 
   handleDeleteOnClick = () => {
     const { deleteBlog, handleClose, blog} = this.props;
-    blog.contents.forEach(content => BlogAction.deleteImage(content.public_id));
+    blog.contents.forEach(content => BlogAction.deleteImage({
+      public_id: content.public_id,
+      resource_type: content.is_video ? 'video' : 'image'
+    }));
     deleteBlog(blog);
     handleClose();
   };
