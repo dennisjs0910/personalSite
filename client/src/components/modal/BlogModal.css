@@ -12,7 +12,7 @@ div.blog-content-container {
   padding: 10px 0;
 }
 
-div.blog-content-container img.blog-content-img {
+div.blog-content-container img.blog-content-media, div.blog-content-container video.blog-content-media {
   width: 100%;
 }
 
@@ -85,6 +85,10 @@ input.form-tag-input {
   width: 10%;
 }
 
-.bp-form-container div.ant-row.ant-form-item .ant-form-item-label label{
+.bp-form-container div.ant-row.ant-form-item .ant-form-item-label label {
   font-size: 1rem;
+}
+
+.blog-content-summary-container {
+  margin-top: 20px;
 }

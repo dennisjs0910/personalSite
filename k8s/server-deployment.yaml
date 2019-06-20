@@ -51,3 +51,8 @@ spec:
                 secretKeyRef:
                   name: cloudinaryfolder
                   key: CLOUDINARY_FOLDER
+            - name: COOKIE_SESSION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cookiesessionkey
+                  key: COOKIE_SESSION_KEY

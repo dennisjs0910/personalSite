@@ -23,9 +23,9 @@ export default class BlogAction {
    * to delete an image in Cloudinary.
    * @param  { String } publicId
    */
-  static deleteImage = async (publicId) => {
+  static deleteImage = async ({ public_id, resource_type }) => {
     try {
-      const res = await axios.delete(`/api/image-upload/`, { data: { public_id: publicId } });
+      const res = await axios.delete(`/api/image-upload/`, { data: { public_id, resource_type } });
       return res;
     } catch(err) {
       throw err;

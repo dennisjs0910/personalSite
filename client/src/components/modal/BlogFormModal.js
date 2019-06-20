@@ -53,7 +53,11 @@ class BlogFormModal extends Component {
         uid: `${idx}`,
         name: `${idx}_image`,
         status: 'done',
-        response: [{ public_id: content.public_id, secure_url: content.media_url }]
+        response: [{
+          public_id: content.public_id,
+          secure_url: content.media_url,
+          resource_type: content.is_video ? "video" : "image"
+        }]
       });
       res.texts.push(content.summary);
     });
@@ -133,8 +137,11 @@ class BlogFormModal extends Component {
     let filesToDelete = [];
 
     let modifiedFileList = fileList.filter((f, i) => {
-      if (isEqual(file, f)) {
-        filesToDelete.push(file.response[0].public_id);
+      if (isEqual(file, f) && !!file.response) {
+        filesToDelete.push({
+          public_id : file.response[0].public_id,
+          resource_type: file.response[0].resource_type === 'video' ? 'video' : 'image'
+        });
         idx = i;
         return false;
       }
@@ -159,7 +166,11 @@ class BlogFormModal extends Component {
     });
   };
 
-  handleMediaChange = ({ fileList }) => this.setState({ fileList });
+  handleMediaChange = ({ fileList }) => {
+    // remove error files
+    const noErrorFileList = fileList.filter(media => !!!media.error);
+    this.setState({ fileList : noErrorFileList })
+  };
 
   handleFormSubmit = e => {
     e.preventDefault();
@@ -191,26 +202,42 @@ class BlogFormModal extends Component {
    */
   deleteUnusedImages = (isSubmitted) => {
     const { isUpdate } = this.props;
+    // case: update blog closed modal
     if (isUpdate && !isSubmitted) {
       let idList = [];
+      // put all files that were added to the idList O(n)
       this.state.fileList.forEach(file => {
         if (!this.ogImageSet.has(file.response[0].public_id)) {
-          idList.push(file.response[0].public_id);
+          idList.push({
+            public_id: file.response[0].public_id,
+            resource_type: file.response[0].resource_type
+          });
         }
       });
 
-      this.state.filesToDelete.forEach(id => {
-        if (!this.ogImageSet.has(id)) {
-          idList.push(id);
+      // keep original files that belong to the blog and put others in idList O(n)
+      this.state.filesToDelete.forEach(file => {
+        if (!this.ogImageSet.has(file.public_id)) {
+          idList.push({
+            public_id: file.public_id,
+            resource_type: file.resource_type
+          });
         }
       });
-      idList.forEach(id => BlogAction.deleteImage(id));
+      //delete all files in idList
+      idList.forEach(file => BlogAction.deleteImage(file));
       return;
     };
-    this.state.filesToDelete.forEach(id => BlogAction.deleteImage(id));
+    // case: update blog and submit, create blog and sumbit, create blog and close
+    // for create we want to delete all files in filesToDelete since they don't belong to any content
+    this.state.filesToDelete.forEach(file => BlogAction.deleteImage(file));
+
+    // case: create blog and close, delete everything that is left.
     if (!isSubmitted) {
       this.state.fileList.forEach(file => {
-        BlogAction.deleteImage(file.response[0].public_id);
+        if (!!file.response) {
+          BlogAction.deleteImage(file.response[0]);
+        }
       });
     }
   };
@@ -221,7 +248,10 @@ class BlogFormModal extends Component {
   handleStateReset = (e) => {
     e.preventDefault();
     let initState = INITIAL_STATE;
-    const moreFilesToDelete = this.state.fileList.map(file => file.response[0].public_id);
+    const moreFilesToDelete = this.state.fileList.map(file => ({
+      public_id: file.response[0].public_id,
+      resource_type: file.response[0].resource_type
+    }));
     initState = Object.assign({...INITIAL_STATE}, { filesToDelete: [...moreFilesToDelete, ...this.state.filesToDelete]});
     this.setState(initState);
   };
