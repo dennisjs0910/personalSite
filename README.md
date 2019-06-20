@@ -31,7 +31,15 @@ TBD
 ```
 
 ### How to run the program.
+
 Option 1. Using docker-compose
+``` markdown
+First: Register an account with cloudinary and create an .env file. Add the following values:
+1) CLOUDINARY_CLOUDNAME
+2) CLOUDINARY_API_KEY
+3) CLOUDINARY_API_SECRET
+```
+
 Make sure you have docker and docker-compose.
   - At the root of the project.
 ``` bash
@@ -44,9 +52,18 @@ Make sure you have kubectl and minikube installed
 ``` bash
 minikube start
 ```
-  After minikube has started:
+After minikube has started:
+
+``` markdown
+Register an account with cloudinary and generate kubectl secrets
+   [secretKeyRef name]     [name, secretKeyRef key]
+1) cloudinarycloudname  :  CLOUDINARY_CLOUDNAME
+2) cloudinaryapikey     :  CLOUDINARY_API_KEY
+3) cloudinaryapisecret  :  CLOUDINARY_API_SECRET
+```
+
 ``` bash
 kubectl apply -f k8s/
 kubectl delete ingress ingress-service
 ```
-The ingress-service-dev will take over and port 80 should available.
+The ingress-service-dev will take over and port 80 should available. If the browser says unsafe, go to advance and proceed into the ip address.
