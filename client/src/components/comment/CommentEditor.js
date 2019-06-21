@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router-dom";
 import { Comment, Form, Button, List, Input, Popconfirm } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -78,11 +79,17 @@ class CommentEditor extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    const { currentUser, parentId, blogId, history } = this.props;
+    if (!currentUser) {
+      history.push("/login");
+      return;
+    }
+
     this.props.createComment({
       comment_text: this.state.value,
-      blogPost_id: this.props.blogId,
-      parent_id: this.props.parentId,
-      user_id: this.props.currentUser.id
+      blogPost_id: blogId,
+      parent_id: parentId,
+      user_id: currentUser.id
     });
 
     this.setState({ value:'' });
@@ -141,4 +148,4 @@ const mapStateToProps = ({ comment }) => {
   return { comments: comment.items || [] };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CommentEditor));
