@@ -13,19 +13,21 @@ const BlogCard = ({blog, handleReadModal, blogTags}) => {
       className="blog-card"
       title={blog.title}
       actions={ blogTags }
-      extra={
-        <Button onClick={ () => handleReadModal(blog) } >
-          view
-        </Button>
-      }
+      extra={ <Button onClick={() => handleReadModal(blog) }>view</Button> }
     >
-      <div className="blog-card-body">
-        { blog.summary.split("\n").map(paragraph => (
-          <p className="blog-card-paragraph">{paragraph}</p>
-        ))}
-      </div>
+      <CardBody summary={blog.summary} />
     </Card>
   )
+};
+
+const CardBody = ({ summary }) => {
+  return (
+    <div className="blog-card-body">
+      { summary.split("\n").map(paragraph => (
+        <p className="blog-card-paragraph">{paragraph}</p>
+      ))}
+    </div>
+  );
 };
 
 class BlogList extends Component {
