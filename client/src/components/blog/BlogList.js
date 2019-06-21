@@ -8,6 +8,7 @@ const TAGS_PER_BLOG = 5;
 const { Content } = Layout;
 
 const BlogCard = ({blog, handleReadModal, blogTags}) => {
+  console.log(blogTags);
   return (
     <Card
       className="blog-card"
@@ -15,17 +16,34 @@ const BlogCard = ({blog, handleReadModal, blogTags}) => {
       actions={ blogTags }
       extra={ <Button onClick={() => handleReadModal(blog) }>view</Button> }
     >
-      <CardBody summary={blog.summary} />
+      <CardBody blog={blog} />
     </Card>
   )
 };
 
-const CardBody = ({ summary }) => {
+const CardBody = ({ blog }) => {
+  const { summary, contents } = blog;
   return (
     <div className="blog-card-body">
-      { summary.split("\n").map(paragraph => (
-        <p className="blog-card-paragraph">{paragraph}</p>
-      ))}
+      { summary.split("\n").map((paragraph, idx) =>
+        <p key={idx} className="blog-card-paragraph">{paragraph}</p>
+      )}
+      <CardMedia contents={ contents }/>
+    </div>
+  );
+};
+
+const CardMedia = ({ contents }) => {
+  if (contents.length <= 0) return null;
+  const media = contents[0];
+  return (
+    <div className="blog-card-media-container">
+      { media.is_video ?
+        <video className="blog-card-media" controls>
+          <source src={media.media_url} type="video/mp4"/>
+        </video> :
+        <img className="blog-card-media" src={media.media_url} alt="" />
+      }
     </div>
   );
 };
@@ -88,7 +106,7 @@ class BlogList extends Component {
           <BlogCard
             blog={blog}
             handleReadModal={this.props.handleReadModal}
-            blogTag={ this.getBlogTags(blog, TAGS_PER_BLOG) }
+            blogTags={ this.getBlogTags(blog, TAGS_PER_BLOG) }
           />
         </Col>
       ));

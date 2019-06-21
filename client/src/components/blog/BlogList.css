@@ -2,7 +2,7 @@ div.blog-card {
   margin: auto;
   text-align: left;
   border-radius: 10px;
-  height: 600px;
+  height: 700px;
   margin-bottom: 50px;
 }
 
@@ -31,8 +31,8 @@ div.blog-card {
 }
 
 div.blog-card-body {
-  height: 400px;
-  overflow-y: hidden;
+  height: 500px;
+  overflow-y: auto;
 }
 
 .ant-card-paragraph p.blog-card-paragraph {
@@ -44,4 +44,9 @@ div.blog-card-body {
 
 .blog-tag.tagged {
   height: 16px;
+}
+
+.blog-card-media-container .blog-card-media {
+  max-height: 500px;
+  width: 100%;
 }
