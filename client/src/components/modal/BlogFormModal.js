@@ -353,7 +353,7 @@ class BlogFormModal extends Component {
           fileList={ fileList }
           onRemove={ this.handleMediaRemove }
         >
-          <h6>Only able to upload one image at a time.</h6>
+          <h6>Only able to upload one image/mp4 at a time.</h6>
           <Button>
             <Icon type="upload" /> Upload
           </Button>
