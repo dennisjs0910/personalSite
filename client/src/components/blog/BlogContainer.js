@@ -153,20 +153,19 @@ class BlogContainer extends Component {
     const { isFormVisible, isReadVisible, selectedBlog } = this.state;
     const { blogs, currentUser, deleteBlog, error } = this.props;
     const formProps = this.generateFormProps();
-
     return (
       <Content className="fullscreen blog-container main-img">
+        { this.renderHeader(currentUser) }
         { !isEmpty(error) ?
           <Alert
+            className="blog-alert"
             message="Error"
-            description={error.message}
+            description={ error.message }
             type="error"
             showIcon
             closable
           /> : null
         }
-        { this.renderHeader(currentUser) }
-
         <BlogList blogs={blogs} handleReadModal={ this.handleReadModal }/>
         { isFormVisible ?
           <BlogFormModal {...formProps} />

@@ -2,7 +2,7 @@ div.blog-card {
   margin: auto;
   text-align: left;
   border-radius: 10px;
-  height: 600px;
+  height: 700px;
   margin-bottom: 50px;
 }
 
@@ -30,19 +30,23 @@ div.blog-card {
   background-color: rgba(255,255,255,0.6);
 }
 
-.ant-card-body p.blog-card-body {
-  word-break: break-word;
-  text-overflow: ellipsis;
-  overflow-y: hidden;
-  height: 400px;
+div.blog-card-body {
+  height: 500px;
+  overflow-y: auto;
+}
+
+.ant-card-paragraph p.blog-card-paragraph {
 }
 
 .blog-card-container .ant-card-head-title {
   font-size: 1.25rem;
-  /*white-space: unset;
-  word-break: break-all;*/
 }
 
 .blog-tag.tagged {
   height: 16px;
+}
+
+.blog-card-media-container .blog-card-media {
+  max-height: 500px;
+  width: 100%;
 }

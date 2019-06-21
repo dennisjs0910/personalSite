@@ -1,22 +1,31 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router-dom";
 import { Comment, Form, Button, List, Input, Popconfirm } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CommentAction } from '../../actions';
 import './CommentEditor.css';
 
-const Editor = ({ onChange, onSubmit, value }) => (
-  <div>
-    <Form.Item>
-      <Input.TextArea rows={4} onChange={onChange} value={value} />
-    </Form.Item>
-    <Form.Item>
-      <Button htmlType="submit" onClick={onSubmit} type="primary">
-        Add Comment
-      </Button>
-    </Form.Item>
-  </div>
-);
+const Editor = ({ onChange, onSubmit, value }) => {
+  return (
+    <div>
+      <Form.Item>
+        <Input.TextArea
+          className="comment-input"
+          rows={4}
+          onChange={onChange}
+          value={value}
+        />
+      </Form.Item>
+      <h6>{`${value.length} / 255`}</h6>
+      <Form.Item>
+        <Button htmlType="submit" onClick={onSubmit} type="primary">
+          Add Comment
+        </Button>
+      </Form.Item>
+    </div>
+  )
+};
 
 const CommentList = ({ currentUser, blogId, comments, deleteComment }) => {
   return (
@@ -42,7 +51,7 @@ const CustomComment = ({item, deleteComment, blogId, currentUser}) => (
     content={ item.comment_text }
     datetime={ item.updated_at }
     actions={[
-      !!currentUser && (currentUser.id === item.user_id || currentUser.permission === "ADMIN") ?
+      !!currentUser && (currentUser.id === item.user_id || currentUser.permission === 'admin') ?
       <Popconfirm
         key={ `popup_${item.id}` }
         title="Are you sure you want to delete this comment?"
@@ -60,7 +69,6 @@ class CommentEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      comments: [],
       value: '',
     };
   }
@@ -71,11 +79,17 @@ class CommentEditor extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    const { currentUser, parentId, blogId, history } = this.props;
+    if (!currentUser) {
+      history.push("/login");
+      return;
+    }
+
     this.props.createComment({
       comment_text: this.state.value,
-      blogPost_id: this.props.blogId,
-      parent_id: this.props.parentId,
-      user_id: this.props.currentUser.id
+      blogPost_id: blogId,
+      parent_id: parentId,
+      user_id: currentUser.id
     });
 
     this.setState({ value:'' });
@@ -86,10 +100,9 @@ class CommentEditor extends Component {
     this.props.deleteComment(blogId, id);
   };
 
-  handleChange = e => {
-    this.setState({
-      value: e.target.value,
-    });
+  handleChange = ({ target }) => {
+    const value = target.value.length > 255 ? target.value.substring(0, 255) : target.value;
+    this.setState({ value });
   };
 
   render() {
@@ -135,4 +148,4 @@ const mapStateToProps = ({ comment }) => {
   return { comments: comment.items || [] };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CommentEditor));

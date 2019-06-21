@@ -7,13 +7,52 @@ const PER_PAGINATION = 2;
 const TAGS_PER_BLOG = 5;
 const { Content } = Layout;
 
+const BlogCard = ({blog, handleReadModal, blogTags}) => {
+  return (
+    <Card
+      className="blog-card"
+      title={blog.title}
+      actions={ blogTags }
+      extra={ <Button onClick={() => handleReadModal(blog) }>view</Button> }
+    >
+      <CardBody blog={blog} />
+    </Card>
+  )
+};
+
+const CardBody = ({ blog }) => {
+  const { summary, contents } = blog;
+  return (
+    <div className="blog-card-body">
+      { summary.split("\n").map((paragraph, idx) =>
+        <p key={idx} className="blog-card-paragraph">{paragraph}</p>
+      )}
+      <CardMedia contents={ contents }/>
+    </div>
+  );
+};
+
+const CardMedia = ({ contents }) => {
+  if (contents.length <= 0) return null;
+  const media = contents[0];
+  return (
+    <div className="blog-card-media-container">
+      { media.is_video ?
+        <video className="blog-card-media" controls>
+          <source src={media.media_url} type="video/mp4"/>
+        </video> :
+        <img className="blog-card-media" src={media.media_url} alt="" />
+      }
+    </div>
+  );
+};
+
 class BlogList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       pageMin: 0,
       pageMax: PER_PAGINATION * PER_PAGINATION,
-      curPage: 1
     }
   }
 
@@ -56,30 +95,20 @@ class BlogList extends Component {
         tags.push(<p className="blog-tag tagged"></p>);
       }
     }
-
     return tags;
   };
 
   renderBlogsToCard(blogs) {
     if (blogs && blogs.length > 0) {
-      const toRender = blogs.slice(this.state.pageMin, this.state.pageMax);
-      return toRender.map(blog => {
-        return (
-          <Col span={ROW_NUM / PER_PAGINATION} key={blog.id}>
-            <Card className="blog-card"
-              title={blog.title}
-              extra={
-                <Button onClick={ () => this.props.handleReadModal(blog) } >
-                  view
-                </Button>
-              }
-              actions={this.getBlogTags(blog, TAGS_PER_BLOG)}
-            >
-              <p className="blog-card-body">{ blog.summary }</p>
-            </Card>
-          </Col>
-        );
-      });
+      return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => (
+        <Col span={ROW_NUM / PER_PAGINATION} key={blog.id}>
+          <BlogCard
+            blog={blog}
+            handleReadModal={this.props.handleReadModal}
+            blogTags={ this.getBlogTags(blog, TAGS_PER_BLOG) }
+          />
+        </Col>
+      ));
     }
     return null;
   }
