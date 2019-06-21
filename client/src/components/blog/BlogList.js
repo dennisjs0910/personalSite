@@ -8,7 +8,6 @@ const TAGS_PER_BLOG = 5;
 const { Content } = Layout;
 
 const BlogCard = ({blog, handleReadModal, blogTags}) => {
-  console.log(blogTags);
   return (
     <Card
       className="blog-card"

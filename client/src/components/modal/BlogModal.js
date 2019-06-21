@@ -6,6 +6,56 @@ import "./BlogModal.css";
 
 const ADMIN = "admin";
 
+const ModalHeader = ({title}) => (
+  <div className="blog-modal-header-container">
+    <h2 className="blog-modal-header">{title}</h2>
+  </div>
+);
+
+const BlogSummary = ({ summary }) => (
+  <div className="blog-summary-container">
+    <h3>Summary:</h3>
+    { summary.split("\n").map((paragraph, idx) =>
+      <p key={idx} className="blog-modal-summary">{paragraph}</p>
+    )}
+  </div>
+);
+
+const BlogContents = ({ contents=[] }) => {
+  return contents.map(content => <BlogContent content={content} />);
+};
+
+const BlogContent = ({ content }) => (
+  <div className="blog-content-container" key={content.id}>
+    { content.is_video ?
+      <video className="blog-content-media" controls>
+        <source src={content.media_url} type="video/mp4"/>
+      </video> :
+      <img className="blog-content-media" src={content.media_url} alt="" />
+    }
+    <div className="blog-content-summary-container">{
+      content.summary.split('\n').map((paragraph, idx) => (
+        <p key={`${idx}`} className="blog-content-summary" >{paragraph}</p>
+      ))
+    }</div>
+  </div>
+);
+
+const BlogTags = ({ tags }) => (
+  <div className="blog-tags-container">
+    <h4 className="blog-category-label">Tags:</h4>
+    <TagList tags={ tags }/>
+  </div>
+)
+
+const TagList = ({ tags }) => {
+  return tags.map((tag, idx) => (
+    <Tag key={idx} className="blog-tag">
+      {tag}
+    </Tag>
+  ));
+};
+
 class BlogModal extends Component {
 
   handleDeleteOnClick = () => {
@@ -63,33 +113,12 @@ class BlogModal extends Component {
     return footer;
   };
 
-  renderCategoryElements = ({ category=[] }) => {
+  getCategoryJSX = ({ category=[] }) => {
     return category.map((element, idx) => (
       <Tag key={idx} className="blog-tag">
         {element}
       </Tag>
     ));
-  };
-
-  renderContents = ({ contents=[] }) => {
-    return contents.map(content => {
-      return(
-        <div className="blog-content-container" key={content.id}>
-          {
-            content.is_video ?
-            <video className="blog-content-media" controls>
-              <source src={content.media_url} type="video/mp4"/>
-            </video> :
-            <img className="blog-content-media" src={content.media_url} alt="" />
-          }
-          <div className="blog-content-summary-container">{
-            content.summary.split('\n').map((paragraph, idx) => (
-              <p key={`${idx}`} className="blog-content-summary" >{paragraph}</p>
-            ))
-          }</div>
-        </div>
-      );
-    });
   };
 
   render() {
@@ -99,21 +128,15 @@ class BlogModal extends Component {
     return(
       <Modal
         className="blog-modal-container"
-        width="50rem"
-        title={blog.title}
+        width="70rem"
+        title={<ModalHeader title={blog.title} />}
         visible={ isVisible }
         onCancel={() => handleClose(null) }
         footer={ this.getFooterElements(currentUser, blog, handleClose) }
       >
-        <div className="blog-summary-container">
-          <h3>Summary:</h3>
-          <p>{`${blog.summary}`}</p>
-        </div>
-        { this.renderContents(blog) }
-        <div className="blog-categories">
-          <h4 className="blog-category-label">Tags:</h4>
-          { this.renderCategoryElements(blog) }
-        </div>
+        <BlogSummary summary={ blog.summary }/>
+        <BlogContents contents={blog.contents}/>
+        <BlogTags tags={ blog.category } />
         <CommentEditor blogId={blog.id} parentId={blog.id} currentUser={currentUser}/>
       </Modal>
     );

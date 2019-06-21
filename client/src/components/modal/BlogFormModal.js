@@ -299,7 +299,7 @@ class BlogFormModal extends Component {
         <div className="tag-wrapper-container">
           { tags.map(tag =>
             <Tag
-              className="form-tag"
+              className="blog-tag"
               closable
               onClose={() => this.handleTagClose(tag) }
               key={tag}
