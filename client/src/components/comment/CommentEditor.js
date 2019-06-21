@@ -5,18 +5,26 @@ import { bindActionCreators } from 'redux';
 import { CommentAction } from '../../actions';
 import './CommentEditor.css';
 
-const Editor = ({ onChange, onSubmit, value }) => (
-  <div>
-    <Form.Item>
-      <Input.TextArea rows={4} onChange={onChange} value={value} />
-    </Form.Item>
-    <Form.Item>
-      <Button htmlType="submit" onClick={onSubmit} type="primary">
-        Add Comment
-      </Button>
-    </Form.Item>
-  </div>
-);
+const Editor = ({ onChange, onSubmit, value }) => {
+  return (
+    <div>
+      <Form.Item>
+        <Input.TextArea
+          className="comment-input"
+          rows={4}
+          onChange={onChange}
+          value={value}
+        />
+      </Form.Item>
+      <h6>{`${value.length} / 255`}</h6>
+      <Form.Item>
+        <Button htmlType="submit" onClick={onSubmit} type="primary">
+          Add Comment
+        </Button>
+      </Form.Item>
+    </div>
+  )
+};
 
 const CommentList = ({ currentUser, blogId, comments, deleteComment }) => {
   return (
@@ -60,7 +68,6 @@ class CommentEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      comments: [],
       value: '',
     };
   }
@@ -86,10 +93,9 @@ class CommentEditor extends Component {
     this.props.deleteComment(blogId, id);
   };
 
-  handleChange = e => {
-    this.setState({
-      value: e.target.value,
-    });
+  handleChange = ({ target }) => {
+    const value = target.value.length > 255 ? target.value.substring(0, 255) : target.value;
+    this.setState({ value });
   };
 
   render() {
