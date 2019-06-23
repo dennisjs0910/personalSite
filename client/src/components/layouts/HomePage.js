@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Layout, Row, Col, List, Button, Icon } from 'antd';
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import './HomePage.css';
 import textFile from './data/home-paragraph.json';
