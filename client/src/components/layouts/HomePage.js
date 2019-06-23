@@ -1,8 +1,71 @@
 import React, { Component } from "react";
-import { Layout, Row, Col, List } from 'antd';
+import { Layout, Row, Col, List, Button, Icon } from 'antd';
+import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import './HomePage.css';
 import textFile from './data/home-paragraph.json';
 const { Content } = Layout;
+
+const HomePageLinks = ({ currentUser }) => {
+  let homepageLinks = [];
+  homepageLinks.push(
+    <h3 key="blogs" className="homepage-main">
+      If you want to view blogs please click
+      <Button type="link">
+        <Link to="/blogs">
+          <Icon type="layout" />
+          Blog
+        </Link>
+      </Button>
+    </h3>
+  );
+
+  if (!currentUser) {
+    homepageLinks.push(
+      <h3 key="signup" className="homepage-main">
+        If you want to create a blog and dont have an account, please click
+        <Button type="link">
+          <Link to="/signup">
+            <Icon type="user-add"/>
+            Sign Up
+          </Link>
+        </Button>
+      </h3>
+    );
+
+    homepageLinks.push(
+      <h3 key="login" className="homepage-main">
+        Otherwise, please click
+        <Button type="link">
+          <Link to="/login">
+            <Icon type="login"/>
+            Login
+          </Link>
+        </Button>
+      </h3>
+    );
+  } else {
+    homepageLinks.push(
+      <h3 key="logout" className="homepage-main">
+        To logout, please click
+        <Button type="link">
+          <Link to="/logout">
+            <Icon type="logout"/>
+            Logout
+          </Link>
+        </Button>
+      </h3>
+    );
+  }
+
+  return (
+    <div className="homepage-links">
+      { homepageLinks }
+    </div>
+  )
+};
 
 class HomePage extends Component {
   renderFeaturedResumes() {
@@ -51,6 +114,7 @@ class HomePage extends Component {
   }
 
   render() {
+    const { currentUser } = this.props;
     return (
       <Content className="fullscreen homepage-container main-img">
         <div className="homepage-body">
@@ -59,6 +123,7 @@ class HomePage extends Component {
               <h1 className="homepage-main">jsydennis Blog</h1>
               <p className="homepage-main">{`${textFile.paragraph}`}</p>
               { this.renderTechStack() }
+              <HomePageLinks currentUser={currentUser}/>
             </Col>
           </Row>
         </div>
@@ -67,4 +132,7 @@ class HomePage extends Component {
   }
 }
 
-export default HomePage
+
+const mapStateToProps = state => state.auth;
+
+export default connect(mapStateToProps)(HomePage);
