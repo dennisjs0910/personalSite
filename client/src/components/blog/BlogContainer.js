@@ -100,7 +100,7 @@ class BlogContainer extends Component {
       <div className="blog-header-container main-img">
         {!!currentUser ?
           <div>
-            <h2 className="homepage-main">Click here to create a blog</h2>
+            <h2 className="blogpage-main">Click here to create a blog</h2>
             <Button
               className="blog-create-button"
               type="primary"
@@ -109,10 +109,10 @@ class BlogContainer extends Component {
               Create
             </Button>
           </div>:
-          <h1 className="homepage-main">{ textFile.title }</h1>
+          <h1 className="blogpage-main">{ textFile.title }</h1>
          }
         <div className="release-list-container">
-          <h2 className="homepage-main">{ textFile.paragraphOne }</h2>
+          <h2 className="blogpage-main">{ textFile.paragraphOne }</h2>
           <List className="blog-page-list"
             key={ "releaseList" }
             itemLayout="horizontal"
@@ -121,7 +121,7 @@ class BlogContainer extends Component {
               <List.Item>
                 <List.Item.Meta
                   title={
-                    <p className="homepage-main">{item}</p>
+                    <p className="blogpage-main">{item}</p>
                   }
                 />
               </List.Item>
@@ -129,7 +129,7 @@ class BlogContainer extends Component {
           />
         </div>
         <div className="feature-list-container">
-          <h2 className="homepage-main">{ textFile.paragraphTwo }</h2>
+          <h2 className="blogpage-main">{ textFile.paragraphTwo }</h2>
           <List className="blog-page-list"
             key={ "featureList" }
             itemLayout="horizontal"
@@ -138,7 +138,7 @@ class BlogContainer extends Component {
               <List.Item>
                 <List.Item.Meta
                   title={
-                    <p className="homepage-main">{item}</p>
+                    <p className="blogpage-main">{item}</p>
                   }
                 />
               </List.Item>

@@ -31,7 +31,7 @@ p.homepage-main {
 }
 
 .ant-list-item-meta-title > a.homepage-main {
-  color: #7bfcfa;
+  color: #1890ff;
 }
 
 div.margin-row {
@@ -61,4 +61,9 @@ div.margin-row {
 
 .home-page-list.ant-list {
   margin-top: 2rem;
+}
+
+.homepage-links {
+  text-align: left;
+  margin-top: 50px;
 }

@@ -10,11 +10,12 @@ div.pagination-container {
 .blog-header-container.main-img {
   padding-top: 20px;
   padding-left: 15px;
-  margin-left: 100px;
+  /*margin-left: 100px;*/
   max-width: 37rem;
   min-width: 600px;
   text-align: left;
-  background-image: linear-gradient(135deg, rgba(227, 205, 200, 0.5), rgba(179, 154, 151, 0.2));
+  background-color: rgba(0, 0, 0, 0.3);
+  background-image: linear-gradient(135deg, rgba(209, 171, 154, 0.5), rgba(209, 175, 161, 0.5));
   overflow-y: auto;
 }
 
@@ -22,8 +23,8 @@ div.pagination-container {
   margin-top: 1rem;
 }
 
-.homepage-main {
-  color: #cdf2f4;
+.blogpage-main {
+  color: white;
 }
 
 .ant-btn.blog-create-button.ant-btn-primary {
@@ -32,18 +33,18 @@ div.pagination-container {
   height: 40px;
 }
 
-h1.homepage-main {
+h1.blogpage-main {
   color: #aaf4f7;
   font-size: 2.5rem;
 }
 
-h2.homepage-main {
-  color: #aaf4f7;
+h2.blogpage-main {
+  color: white;
   font-size: 1.5rem;
   margin-bottom: 0.25rem;
 }
 
-p.homepage-main {
+p.blogpage-main {
   font-size: 1rem;
 }
 
