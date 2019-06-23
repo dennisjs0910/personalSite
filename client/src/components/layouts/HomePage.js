@@ -12,7 +12,7 @@ const HomePageLinks = ({ currentUser }) => {
   let homepageLinks = [];
   homepageLinks.push(
     <h3 key="blogs" className="homepage-main">
-      If you want to view blogs please click
+      If you want to view blogs, please click
       <Button type="link">
         <Link to="/blogs">
           <Icon type="layout" />
@@ -42,18 +42,6 @@ const HomePageLinks = ({ currentUser }) => {
           <Link to="/login">
             <Icon type="login"/>
             Login
-          </Link>
-        </Button>
-      </h3>
-    );
-  } else {
-    homepageLinks.push(
-      <h3 key="logout" className="homepage-main">
-        To logout, please click
-        <Button type="link">
-          <Link to="/logout">
-            <Icon type="logout"/>
-            Logout
           </Link>
         </Button>
       </h3>
