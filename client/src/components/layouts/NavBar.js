@@ -12,7 +12,8 @@ const menuItems = {
   "/logout" : "logout",
   "/"       : "home",
   "/blogs"  : "blogs",
-  "/signup" : "signup"
+  "/signup" : "signup",
+  "/resume" : "resume"
 };
 
 class NavBar extends Component {
@@ -102,6 +103,13 @@ class NavBar extends Component {
             <Link to="/blogs">
               <Icon type="layout" />
               Blog
+            </Link>
+          </Menu.Item>
+
+          <Menu.Item key="resume">
+            <Link to="/resume">
+              <Icon type="file-pdf" />
+              Resume
             </Link>
           </Menu.Item>
           { this.renderAuthMenuItem() }
