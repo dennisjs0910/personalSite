@@ -7,6 +7,7 @@ import * as Layouts from "./layouts";
 import { BlogContainer } from "./blog";
 import { LoginContainer } from "./login";
 import { RegistrationContainer } from "./registration";
+import { ResumeContainer } from "./resume";
 
 import { AuthAction } from "../actions";
 // Styling Imports
@@ -50,6 +51,7 @@ class App extends Component {
               <Route key="blogs" exact path= "/blogs" component={ BlogContainer } />
               <Route key="login" exact path= "/login" component={ LoginContainer } />
               <Route key="signup" exact path= "/signup" component={ RegistrationContainer } />
+              <Route key="resume" exact path= "/resume" component={ ResumeContainer } />
               <Route key="page404" path="/*" component={Layouts.Page404} />
             </Switch>
             {/** <Footer>footer</Footer> */}
