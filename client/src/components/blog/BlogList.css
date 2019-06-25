@@ -14,6 +14,7 @@ div.blog-card {
 }
 
 .blog-list-container .blog-card-container {
+  width: 100%;
   padding: 1rem 0;
   background-image: linear-gradient(90deg, rgba(227, 205, 200, 0.75), rgba(65, 153, 154, 0.25));
 }

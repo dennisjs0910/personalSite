@@ -13,13 +13,15 @@ export default class ResumeContainer extends Component {
     const { pageNumber } = this.state;
 
     return (
-      <Content className="resume-container main-img">
-        <Document
-          className="pdf-container"
-          file="https://res.cloudinary.com/dsospjk5r/image/upload/v1561430482/dennisResume_tllpwm.pdf"
-        >
-          <Page pageNumber={pageNumber} width={800}/>
-        </Document>
+      <Content className="fullscreen resume-container main-img">
+        <div className="resume-container-body">
+          <Document
+            className="pdf-container"
+            file="https://res.cloudinary.com/dsospjk5r/image/upload/v1561430482/dennisResume_tllpwm.pdf"
+          >
+            <Page pageNumber={pageNumber} width={800}/>
+          </Document>
+        </div>
       </Content>
     );
   }
