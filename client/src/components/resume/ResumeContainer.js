@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Document, Page } from "react-pdf/dist/entry.webpack";
+import { Document, Page } from "react-pdf";
 import { Layout } from 'antd';
 import "./Resume.css";
 const { Content } = Layout;
