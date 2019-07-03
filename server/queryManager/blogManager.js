@@ -244,4 +244,5 @@ module.exports = {
   createBlog,
   updateBlog,
   deleteBlog,
+  _createBlogPostData, // for testing
 };

@@ -18,7 +18,7 @@
     "@root": "./",
     "@routes": "./routes",
     "@services": "./services",
-    "@qm": "./query_manager"
+    "@qm": "./queryManager"
   },
   "author": "",
   "license": "ISC",
