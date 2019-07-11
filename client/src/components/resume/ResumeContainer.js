@@ -17,7 +17,7 @@ export default class ResumeContainer extends Component {
         <div className="resume-container-body">
           <Document
             className="pdf-container"
-            file="https://res.cloudinary.com/dsospjk5r/image/upload/v1562870502/dennisResume_wxxakn.pdf"
+            file="https://res.cloudinary.com/dsospjk5r/image/upload/v1562879219/dennisResume_ojtxi9.pdf"
           >
             <Page pageNumber={pageNumber} width={800}/>
           </Document>
