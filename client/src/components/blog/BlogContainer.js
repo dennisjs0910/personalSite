@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, Layout, Button, List } from 'antd';
 import BlogList from './BlogList';
+import Header from './Header';
 import { BlogAction } from '../../actions';
 import { BlogFormModal, BlogModal } from '../modal';
 import { connect } from 'react-redux';
@@ -95,67 +96,16 @@ class BlogContainer extends Component {
     }
   }
 
-  renderHeader(currentUser) {
-    return(
-      <div className="blog-header-container main-img">
-        {!!currentUser ?
-          <div>
-            <h2 className="blogpage-main">Click here to create a blog</h2>
-            <Button
-              className="blog-create-button"
-              type="primary"
-              onClick={ () => this.handleCreateModal() }
-            >
-              Create
-            </Button>
-          </div>:
-          <h1 className="blogpage-main">{ textFile.title }</h1>
-         }
-        <div className="release-list-container">
-          <h2 className="blogpage-main">{ textFile.paragraphOne }</h2>
-          <List className="blog-page-list"
-            key={ "releaseList" }
-            itemLayout="horizontal"
-            dataSource={ textFile.releaseList }
-            renderItem={item => (
-              <List.Item>
-                <List.Item.Meta
-                  title={
-                    <p className="blogpage-main">{item}</p>
-                  }
-                />
-              </List.Item>
-            )}
-          />
-        </div>
-        <div className="feature-list-container">
-          <h2 className="blogpage-main">{ textFile.paragraphTwo }</h2>
-          <List className="blog-page-list"
-            key={ "featureList" }
-            itemLayout="horizontal"
-            dataSource={ textFile.featureList }
-            renderItem={item => (
-              <List.Item>
-                <List.Item.Meta
-                  title={
-                    <p className="blogpage-main">{item}</p>
-                  }
-                />
-              </List.Item>
-            )}
-          />
-        </div>
-      </div>
-    );
-  }
-
   render() {
     const { isFormVisible, isReadVisible, selectedBlog } = this.state;
     const { blogs, currentUser, deleteBlog, error } = this.props;
     const formProps = this.generateFormProps();
     return (
       <Content className="fullscreen blog-container main-img">
-        { this.renderHeader(currentUser) }
+        <Header
+          currentUser={ currentUser }
+          handleCreateModal={ this.handleCreateModal }
+        />
         { !isEmpty(error) ?
           <Alert
             className="blog-alert"

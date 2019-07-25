@@ -47,8 +47,7 @@ class App extends Component {
         <Layouts.NavBar />
           <Layout>
             <Switch>
-              <Route key="homepage" exact path= "/" component={ Layouts.HomePage } />
-              <Route key="blogs" exact path= "/blogs" component={ BlogContainer } />
+              <Route key="blogs" exact path= "/" component={ BlogContainer } />
               <Route key="login" exact path= "/login" component={ LoginContainer } />
               <Route key="signup" exact path= "/signup" component={ RegistrationContainer } />
               <Route key="resume" exact path= "/resume" component={ ResumeContainer } />

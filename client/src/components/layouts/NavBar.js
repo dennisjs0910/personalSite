@@ -7,11 +7,11 @@ import { AuthAction } from '../../actions';
 import { ReactComponent as Logo } from "../../assets/logo.svg";
 
 const LOGOUT = "logout";
+
 const menuItems = {
   "/login"  : "login",
-  "/logout" : "logout",
-  "/"       : "home",
-  "/blogs"  : "blogs",
+  "/logout" : LOGOUT,
+  "/"       : "blogs",
   "/signup" : "signup",
   "/resume" : "resume"
 };
@@ -20,7 +20,7 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeMenu: 'home',
+      activeMenu: 'blogs',
       top: 0
     }
 
@@ -30,7 +30,7 @@ class NavBar extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { pathname } = props.location;
-    return { activeMenu: menuItems[pathname] || 'home' };
+    return { activeMenu: menuItems[pathname] || 'blogs' };
   }
 
   handleClick = e => {
@@ -93,16 +93,9 @@ class NavBar extends Component {
           selectedKeys={[this.state.activeMenu]}
           mode="horizontal"
         >
-          <Menu.Item key="home">
+          <Menu.Item key="blogs">
             <Link to="/">
               <Icon component={Logo} />
-            </Link>
-          </Menu.Item>
-
-          <Menu.Item key="blogs">
-            <Link to="/blogs">
-              <Icon type="layout" />
-              Blog
             </Link>
           </Menu.Item>
 

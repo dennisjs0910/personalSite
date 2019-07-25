@@ -13,7 +13,7 @@ const HomePageLinks = ({ currentUser }) => {
     <h3 key="blogs" className="homepage-main">
       If you want to view blogs, please click
       <Button type="link">
-        <Link to="/blogs">
+        <Link to="/">
           <Icon type="layout" />
           Blog
         </Link>
