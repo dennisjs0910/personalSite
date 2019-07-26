@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, List } from 'antd';
+import { Button } from 'antd';
 import { Link } from "react-router-dom";
-import textFile from './data/blog-paragraph.json';
 
 const BlogCreateButton = ({handleCreateModal}) => {
   return (
@@ -18,7 +17,7 @@ const BlogCreateButton = ({handleCreateModal}) => {
   );
 };
 
-const NameResumeContainer = ({}) => {
+const NameResumeContainer = () => {
   return(
     <div>
       <h1 className="blogpage-main">Joonsuk Dennis Yi</h1>

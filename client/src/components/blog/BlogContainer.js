@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Layout, Button, List } from 'antd';
+import { Alert, Layout, Button } from 'antd';
 import BlogList from './BlogList';
 import Header from './Header';
 import BlogSearch from './BlogSearch';
@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { isEmpty } from 'lodash';
 import "./BlogContainer.css";
-import textFile from './data/blog-paragraph.json';
 
 const { Content } = Layout;
 
