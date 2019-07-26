@@ -5,11 +5,21 @@ import './BlogSearch.css';
 const { Option } = AutoComplete;
 const { Search } = Input;
 
+const TagComponent = ({ tags }) => {
+  return(
+    <div className="blogSearch-tags-container">
+      <p className="blogSearch-tag">Tags:</p>
+      { tags.map((item) => <p key={item} className="blogSearch-tag">{item}</p>) }
+    </div>
+  )
+};
+
 export default class BlogSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
       filteredResults : props.data,
+      // searchValue: "",
     }
   };
 
@@ -31,6 +41,7 @@ export default class BlogSearch extends Component {
   onSelect = id => {
     const [blog] = this.state.filteredResults.filter(item => item.id === parseInt(id));
     if (blog) {
+      // this.setState({ searchValue: "" })
       this.props.handleReadModal(blog);
     }
   };
@@ -46,7 +57,6 @@ export default class BlogSearch extends Component {
     return result;
   };
 
-
   /**
    * TODO: Make more informative
    * Transform blog objects into Option Components
@@ -58,8 +68,8 @@ export default class BlogSearch extends Component {
       <Option key={ item.id } text={ item.title }>
         <div className="global-search-item">
           <span className="global-search-item-desc">
-            <p>Title: { item.title }</p>
-            <p>Tags: {item.category}</p>
+            <p className="blogSearch-option-title">Title: { item.title }</p>
+            <TagComponent tags={item.category} />
           </span>
         </div>
       </Option>
@@ -67,7 +77,7 @@ export default class BlogSearch extends Component {
   };
 
   render() {
-    const { filteredResults } = this.state;
+    const { filteredResults, searchResult } = this.state;
     return (
       <div className="blogSearch-container">
       <AutoComplete
@@ -76,7 +86,7 @@ export default class BlogSearch extends Component {
         dataSource={ filteredResults.map(this.renderOption) }
         onSelect={ this.onSelect }
         onSearch={ this.handleSearch }
-        placeholder="Search for blogs"
+        placeholder="Search for blogs with titles"
         optionLabelProp="text"
       >
         <Search className="blogSearch-input"/>
