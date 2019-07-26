@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { AutoComplete, Input } from 'antd';
+import './BlogSearch.css';
 
 const { Option } = AutoComplete;
 const { Search } = Input;
@@ -45,12 +46,21 @@ export default class BlogSearch extends Component {
     return result;
   };
 
+
+  /**
+   * TODO: Make more informative
+   * Transform blog objects into Option Components
+   * @param  {Blog} item
+   * @return {Component}
+   */
   renderOption(item) {
-    console.log(item);
     return(
       <Option key={ item.id } text={ item.title }>
         <div className="global-search-item">
-          { item.title }
+          <span className="global-search-item-desc">
+            <p>Title: { item.title }</p>
+            <p>Tags: {item.category}</p>
+          </span>
         </div>
       </Option>
     )
@@ -59,17 +69,19 @@ export default class BlogSearch extends Component {
   render() {
     const { filteredResults } = this.state;
     return (
+      <div className="blogSearch-container">
       <AutoComplete
-        className="global-search"
+        className="blogSearch-autocomplete"
         size="large"
         dataSource={ filteredResults.map(this.renderOption) }
         onSelect={ this.onSelect }
         onSearch={ this.handleSearch }
-        placeholder="input here"
+        placeholder="Search for blogs"
         optionLabelProp="text"
       >
-        <Search />
+        <Search className="blogSearch-input"/>
       </AutoComplete>
+      </div>
     );
   };
 }
