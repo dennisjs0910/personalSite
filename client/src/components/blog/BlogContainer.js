@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Alert, Layout, Button, List } from 'antd';
+import { Alert, Layout, Button } from 'antd';
 import BlogList from './BlogList';
 import Header from './Header';
+import BlogSearch from './BlogSearch';
 import { BlogAction } from '../../actions';
 import { BlogFormModal, BlogModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { isEmpty } from 'lodash';
 import "./BlogContainer.css";
-import textFile from './data/blog-paragraph.json';
 
 const { Content } = Layout;
 
@@ -116,7 +116,8 @@ class BlogContainer extends Component {
             closable
           /> : null
         }
-        <BlogList blogs={blogs} handleReadModal={ this.handleReadModal }/>
+        <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal } />
+        <BlogList blogs={ blogs } handleReadModal={ this.handleReadModal }/>
         { isFormVisible ?
           <BlogFormModal {...formProps} />
           : null

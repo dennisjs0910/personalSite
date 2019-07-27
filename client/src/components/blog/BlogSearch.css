@@ -1,0 +1,36 @@
+div.blogSearch-container {
+  margin-top: 1.5rem;
+  display: inline-block;
+  width: 66%;
+}
+
+div.blogSearch-autocomplete {
+  display: inline-block;
+  margin-left: 1rem;
+  width: 100%;
+}
+
+span.blogSearch-input > input.ant-input {
+  border-radius: 4px;
+  border: 1px solid black;
+}
+
+.blogSearch-option-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+}
+
+.blogSearch-tags-container {
+  display: inline-block;
+}
+
+.blogSearch-tag {
+  display: inline-block;
+  margin-left: 2px;
+  color: #1890ff;
+}
+
+.global-search-item {
+  border-bottom: 1px solid #c4c4c4;
+}
