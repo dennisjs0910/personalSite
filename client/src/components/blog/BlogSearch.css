@@ -9,10 +9,6 @@ div.blogSearch-autocomplete {
   width: 75%;
 }
 
-span.blogSearch-input > input.ant-input {
-
-}
-
 div.blogSearch-select div.ant-select-selection {
   background-color: #1890ff;
   color: white;
@@ -36,8 +32,8 @@ div.blogSearch-select > div.ant-select-selection div.ant-select-selection-select
   display: inline-block;
 }
 
-.blogSearch-inputGroup {
-  width: 25%;
+.blogSearch-inputGroup.ant-input-group.ant-input-group-compact {
+  display: inline-block;
 }
 
 .blogSearch-tag {
