@@ -10,9 +10,20 @@ div.blogSearch-autocomplete {
 }
 
 span.blogSearch-input > input.ant-input {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid black;
+
+}
+
+div.blogSearch-select div.ant-select-selection {
+  background-color: #1890ff;
+  color: white;
+}
+
+div.blogSearch-select span.ant-select-arrow {
+  color: white;
+}
+
+div.blogSearch-select > div.ant-select-selection div.ant-select-selection-selected-value {
+  line-height: 36px;
 }
 
 .blogSearch-option-title {

@@ -92,7 +92,11 @@ export default class BlogSearch extends Component {
     return (
       <div className="blogSearch-container">
         <InputGroup compact size="large" className="blogSearch-inputGroup">
-          <Select defaultValue={ DEFAULT_SEARCH } onChange={ this.handleSearchChange } >
+          <Select
+            className="blogSearch-select"
+            defaultValue={ DEFAULT_SEARCH }
+            onChange={ this.handleSearchChange }
+          >
             <Option value="title">Title</Option>
             <Option value="tag">Tag</Option>
           </Select>
@@ -105,7 +109,7 @@ export default class BlogSearch extends Component {
             placeholder="Search for blogs with title or tag"
             optionLabelProp="text"
           >
-            <Search />
+            <Search className="blogSearch-input" />
           </AutoComplete>
         </InputGroup>
       </div>
