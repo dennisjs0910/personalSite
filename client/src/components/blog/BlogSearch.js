@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { AutoComplete, Input } from 'antd';
+import { AutoComplete, Input, Select } from 'antd';
 import './BlogSearch.css';
 
+const InputGroup = Input.Group;
 const { Option } = AutoComplete;
 const { Search } = Input;
+const DEFAULT_SEARCH = "title";
 
 const TagComponent = ({ tags }) => {
   return(
@@ -19,7 +21,7 @@ export default class BlogSearch extends Component {
     super(props);
     this.state = {
       filteredResults : props.data,
-      searchValue: "",
+      searchField: DEFAULT_SEARCH,
     }
   };
 
@@ -29,9 +31,16 @@ export default class BlogSearch extends Component {
    */
   handleSearch = value => {
     this.setState({
-      searchResult: value ? value : "",
       filteredResults: value ? this.searchResult(value) : this.props.data
     });
+  };
+
+  /**
+   * Changes search field when user selects a search option
+   * @param  {String} value [search field string value]
+   */
+  handleSearchChange = (value) => {
+    this.setState({ searchField: value });
   };
 
   /**
@@ -47,14 +56,16 @@ export default class BlogSearch extends Component {
   };
 
   /**
-   * TODO: search on tag (category)
-   * Searches through item's title.
-   * @param  {String} query [query to filter on]
-   * @return {Blog[]}       [filtered blog array]
+   * Searches through blog's search field.
+   * @param  {String} query       [query to filter on]
+   * @return {Blog[]}             [filtered blog array]
    */
-  searchResult = query => {
-    const result = this.props.data.filter((item) => item.title.toLowerCase().includes(query));
-    return result;
+  searchResult = (query) => {
+    return this.state.searchField === DEFAULT_SEARCH ?
+      this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
+      this.props.data.filter(
+        (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
+      );
   };
 
   /**
@@ -77,21 +88,26 @@ export default class BlogSearch extends Component {
   };
 
   render() {
-    const { filteredResults, searchResult } = this.state;
+    const { filteredResults } = this.state;
     return (
       <div className="blogSearch-container">
-      <AutoComplete
-        className="blogSearch-autocomplete"
-        size="large"
-        dataSource={ filteredResults.map(this.renderOption) }
-        onSelect={ this.onSelect }
-        onSearch={ this.handleSearch }
-        placeholder="Search for blogs with titles"
-        optionLabelProp="text"
-        value={ searchResult }
-      >
-        <Search className="blogSearch-input" />
-      </AutoComplete>
+        <InputGroup compact size="large" className="blogSearch-inputGroup">
+          <Select defaultValue={ DEFAULT_SEARCH } onChange={ this.handleSearchChange } >
+            <Option value="title">Title</Option>
+            <Option value="tag">Tag</Option>
+          </Select>
+          <AutoComplete
+            className="blogSearch-autocomplete"
+            size="large"
+            dataSource={ filteredResults.map(this.renderOption) }
+            onSelect={ this.onSelect }
+            onSearch={ this.handleSearch }
+            placeholder="Search for blogs with title or tag"
+            optionLabelProp="text"
+          >
+            <Search />
+          </AutoComplete>
+        </InputGroup>
       </div>
     );
   };
