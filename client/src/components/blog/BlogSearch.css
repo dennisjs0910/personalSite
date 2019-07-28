@@ -1,18 +1,29 @@
 div.blogSearch-container {
   margin-top: 1.5rem;
   display: inline-block;
-  width: 66%;
+  width: 75%;
 }
 
 div.blogSearch-autocomplete {
   display: inline-block;
-  margin-left: 1rem;
-  width: 100%;
+  width: 75%;
 }
 
 span.blogSearch-input > input.ant-input {
-  border-radius: 4px;
-  border: 1px solid black;
+
+}
+
+div.blogSearch-select div.ant-select-selection {
+  background-color: #1890ff;
+  color: white;
+}
+
+div.blogSearch-select span.ant-select-arrow {
+  color: white;
+}
+
+div.blogSearch-select > div.ant-select-selection div.ant-select-selection-selected-value {
+  line-height: 36px;
 }
 
 .blogSearch-option-title {
@@ -23,6 +34,10 @@ span.blogSearch-input > input.ant-input {
 
 .blogSearch-tags-container {
   display: inline-block;
+}
+
+.blogSearch-inputGroup {
+  width: 25%;
 }
 
 .blogSearch-tag {

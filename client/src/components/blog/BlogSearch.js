@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { AutoComplete, Input } from 'antd';
+import { AutoComplete, Input, Select } from 'antd';
 import './BlogSearch.css';
 
+const InputGroup = Input.Group;
 const { Option } = AutoComplete;
 const { Search } = Input;
+const DEFAULT_SEARCH = "title";
 
 const TagComponent = ({ tags }) => {
   return(
@@ -19,18 +21,26 @@ export default class BlogSearch extends Component {
     super(props);
     this.state = {
       filteredResults : props.data,
-      // searchValue: "",
+      searchField: DEFAULT_SEARCH,
     }
   };
 
   /**
-   * if value is not null set state with filtered results, otherwise all the data
+   * if value is not null set state with filtered results and search string, otherwise all the data and empty string
    * @param  {String} value [search string that is passed from Autocomplete component]
    */
   handleSearch = value => {
     this.setState({
       filteredResults: value ? this.searchResult(value) : this.props.data
     });
+  };
+
+  /**
+   * Changes search field when user selects a search option
+   * @param  {String} value [search field string value]
+   */
+  handleSearchChange = (value) => {
+    this.setState({ searchField: value });
   };
 
   /**
@@ -41,20 +51,21 @@ export default class BlogSearch extends Component {
   onSelect = id => {
     const [blog] = this.state.filteredResults.filter(item => item.id === parseInt(id));
     if (blog) {
-      // this.setState({ searchValue: "" })
       this.props.handleReadModal(blog);
     }
   };
 
   /**
-   * TODO: search on tag (category)
-   * Searches through item's title.
-   * @param  {String} query [query to filter on]
-   * @return {Blog[]}       [filtered blog array]
+   * Searches through blog's search field.
+   * @param  {String} query       [query to filter on]
+   * @return {Blog[]}             [filtered blog array]
    */
-  searchResult = query => {
-    const result = this.props.data.filter((item) => item.title.toLowerCase().includes(query));
-    return result;
+  searchResult = (query) => {
+    return this.state.searchField === DEFAULT_SEARCH ?
+      this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
+      this.props.data.filter(
+        (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
+      );
   };
 
   /**
@@ -77,20 +88,30 @@ export default class BlogSearch extends Component {
   };
 
   render() {
-    const { filteredResults, searchResult } = this.state;
+    const { filteredResults } = this.state;
     return (
       <div className="blogSearch-container">
-      <AutoComplete
-        className="blogSearch-autocomplete"
-        size="large"
-        dataSource={ filteredResults.map(this.renderOption) }
-        onSelect={ this.onSelect }
-        onSearch={ this.handleSearch }
-        placeholder="Search for blogs with titles"
-        optionLabelProp="text"
-      >
-        <Search className="blogSearch-input"/>
-      </AutoComplete>
+        <InputGroup compact size="large" className="blogSearch-inputGroup">
+          <Select
+            className="blogSearch-select"
+            defaultValue={ DEFAULT_SEARCH }
+            onChange={ this.handleSearchChange }
+          >
+            <Option value="title">Title</Option>
+            <Option value="tag">Tag</Option>
+          </Select>
+          <AutoComplete
+            className="blogSearch-autocomplete"
+            size="large"
+            dataSource={ filteredResults.map(this.renderOption) }
+            onSelect={ this.onSelect }
+            onSearch={ this.handleSearch }
+            placeholder="Search for blogs with title or tag"
+            optionLabelProp="text"
+          >
+            <Search className="blogSearch-input" />
+          </AutoComplete>
+        </InputGroup>
       </div>
     );
   };
