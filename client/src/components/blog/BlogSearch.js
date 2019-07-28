@@ -19,16 +19,17 @@ export default class BlogSearch extends Component {
     super(props);
     this.state = {
       filteredResults : props.data,
-      // searchValue: "",
+      searchValue: "",
     }
   };
 
   /**
-   * if value is not null set state with filtered results, otherwise all the data
+   * if value is not null set state with filtered results and search string, otherwise all the data and empty string
    * @param  {String} value [search string that is passed from Autocomplete component]
    */
   handleSearch = value => {
     this.setState({
+      searchResult: value ? value : "",
       filteredResults: value ? this.searchResult(value) : this.props.data
     });
   };
@@ -41,7 +42,6 @@ export default class BlogSearch extends Component {
   onSelect = id => {
     const [blog] = this.state.filteredResults.filter(item => item.id === parseInt(id));
     if (blog) {
-      // this.setState({ searchValue: "" })
       this.props.handleReadModal(blog);
     }
   };
@@ -88,8 +88,9 @@ export default class BlogSearch extends Component {
         onSearch={ this.handleSearch }
         placeholder="Search for blogs with titles"
         optionLabelProp="text"
+        value={ searchResult }
       >
-        <Search className="blogSearch-input"/>
+        <Search className="blogSearch-input" />
       </AutoComplete>
       </div>
     );
