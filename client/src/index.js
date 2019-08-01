@@ -8,6 +8,7 @@ import reduxThunk from "redux-thunk";
 import reducers from "./reducers";
 import * as serviceWorker from "./serviceWorker";
 import { pdfjs } from 'react-pdf';
+import "semantic-ui-css/semantic.min.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
