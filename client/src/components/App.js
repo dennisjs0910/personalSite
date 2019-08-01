@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from "lodash";
 
 // import * as Layouts from "./layouts";
+import NavBar from './layouts/NavBar';
 import { BlogContainer } from "./blog";
 // import { LoginContainer } from "./login";
 // import { RegistrationContainer } from "./registration";
@@ -43,7 +44,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App" style={{ height: "100%" }}>
-          {/** <Layouts.NavBar /> */}
+          <NavBar />
           <Container>
             <Switch>
               <Route key="blogs" exact path= "/" component={ BlogContainer } />
