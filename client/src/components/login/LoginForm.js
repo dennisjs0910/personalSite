@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import { Form, Input, Button } from 'semantic-ui-react'
 
+//TODO: send info to backend
 class LoginFormTemplate extends Component {
   constructor(props) {
     super(props);
