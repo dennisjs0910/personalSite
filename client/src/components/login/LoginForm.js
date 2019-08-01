@@ -1,66 +1,54 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
-import { Form, Icon, Input, Button } from 'antd';
-import "./login.css";
+import { Form, Input, Button } from 'semantic-ui-react'
 
 class LoginFormTemplate extends Component {
-
-  handleSubmit = e => {
-    e.preventDefault();
-    const { validateFields } = this.props.form;
-    const { loginUser, history } = this.props;
-    validateFields((err, values) => {
-      if (!err) {
-        loginUser(values, history);
-      }
-    });
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+    };
   };
 
-  render() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <div className="login-form-container">
-        <h2 className="form-header">Login</h2>
-        <Form onSubmit={this.handleSubmit}>
-          <h3 className="input-label required">E-mail</h3>
-          <Form.Item className="login-input-container">
-            {getFieldDecorator('email', {
-              rules: [{
-                type: 'email',
-                message: 'The input is not valid E-mail!',
-              },{
-                required: true, message: 'Please input your E-mail!'
-              }],
-            })(
-              <Input
-                className="login-input"
-                prefix={<Icon type="user" />}
-              />,
-            )}
-          </Form.Item>
+  handleSubmit = e => {
+    const {email, password} = this.state;
+    console.log(email, password);
+  };
 
-          <h3 className="input-label required">Password</h3>
-          <Form.Item className="login-input-container password-container">
-            {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Please input your Password!' }],
-            })(
-              <Input
-                className="login-input"
-                prefix={<Icon type="lock" />}
-                type="password"
-              />,
-            )}
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button">
-              Log in
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+  handleChange = (e, { value }, key) => {
+    this.setState({ [key] : value });
+  };
+
+  isValidEmail = () => {
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!regex.test(this.state.email)) {
+      return {
+        content: "Please input a valid email address",
+        pointing: "above"
+      }
+    } else {
+      return false;
+    }
+  }
+
+  render() {
+    return(
+      <Form onSubmit={ this.handleSubmit } >
+        <Form.Input
+          error={ this.isValidEmail() }
+          label='Email'
+          onChange={(e, data) => this.handleChange(e, data, "email") }
+        />
+        <Form.Input
+          label='Password'
+          type='password'
+          onChange={(e, data) => this.handleChange(e, data, "password") }
+        />
+        <Button primary type='submit'>Submit</Button>
+      </Form>
     );
   }
 }
 
-const LoginForm = Form.create()(LoginFormTemplate);
-export default withRouter(LoginForm);
+export default withRouter(LoginFormTemplate);

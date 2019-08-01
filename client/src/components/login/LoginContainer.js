@@ -4,10 +4,9 @@ import { bindActionCreators } from 'redux';
 import LoginForm from "./LoginForm";
 import { AuthAction } from '../../actions';
 import { isEmpty } from 'lodash';
-import { Layout, Alert } from 'antd';
-import "./login.css";
-
-const { Content } = Layout;
+// Styling
+// import { Layout, Alert } from 'antd';
+// import "./login.css";
 
 class LoginContainer extends Component {
   generateErrorDescription = error => {
@@ -17,19 +16,19 @@ class LoginContainer extends Component {
   render() {
     const { loginUser, error } = this.props;
     return (
-      <Content className="fullscreen main-img login-container">
-        { !isEmpty(error) ?
+      <div className="fullscreen main-img login-container">
+        { /**!isEmpty(error) ?
           <Alert
             message="Error"
             description={ this.generateErrorDescription(error) }
             type="error"
             showIcon
           /> : null
-        }
+        */ }
         <div className="login-container">
           <LoginForm loginUser={loginUser}/>
         </div>
-      </Content>
+      </div>
     );
   }
 }
