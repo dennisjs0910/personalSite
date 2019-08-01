@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { AutoComplete, Input, Select } from 'antd';
-import './BlogSearch.css';
+// import { AutoComplete, Input, Select } from 'antd';
+// import './BlogSearch.css';
 
-const InputGroup = Input.Group;
-const { Option } = AutoComplete;
-const { Search } = Input;
+// const InputGroup = Input.Group;
+// const { Option } = AutoComplete;
+// const { Search } = Input;
+
+// Styling
+import { Search, Grid, Header, Segment } from 'semantic-ui-react'
+
+
 const DEFAULT_SEARCH = "title";
 
 const TagComponent = ({ tags }) => {
@@ -20,8 +25,9 @@ export default class BlogSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filteredResults : props.data,
+      results : [],
       searchField: DEFAULT_SEARCH,
+      value: "",
     }
   };
 
@@ -34,12 +40,23 @@ export default class BlogSearch extends Component {
       filteredResults: value ? this.searchResult(value) : this.props.data
     });
   };
+  /**
+   * This function sets the input value to component's state value
+   * @param  {Event} e              [Javascript Event Object]
+   * @param  {String} options.value [String value that is passed from input]
+   */
+  handleSearchChange = (e, { value }) => {
+    this.setState({
+      value,
+      results: value !== "" ? this.searchResult(value) : []
+    });
+  };
 
   /**
    * Changes search field when user selects a search option
    * @param  {String} value [search field string value]
    */
-  handleSearchChange = (value) => {
+  handleSearchValueChange = (value) => {
     this.setState({ searchField: value });
   };
 
@@ -61,11 +78,14 @@ export default class BlogSearch extends Component {
    * @return {Blog[]}             [filtered blog array]
    */
   searchResult = (query) => {
-    return this.state.searchField === DEFAULT_SEARCH ?
-      this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
-      this.props.data.filter(
-        (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
-      );
+    // return this.state.searchField === DEFAULT_SEARCH ?
+    //   this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
+    //   this.props.data.filter(
+    //     (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
+    //   );
+
+    console.log(query, this.props.data);
+    return [];
   };
 
   /**
@@ -74,45 +94,57 @@ export default class BlogSearch extends Component {
    * @param  {Blog} item
    * @return {Component}
    */
-  renderOption(item) {
-    return(
-      <Option key={ item.id } text={ item.title }>
-        <div className="global-search-item">
-          <span className="global-search-item-desc">
-            <p className="blogSearch-option-title">Title: { item.title }</p>
-            <TagComponent tags={item.category} />
-          </span>
-        </div>
-      </Option>
-    )
-  };
+  // renderOption(item) {
+  //   return(
+  //     <Option key={ item.id } text={ item.title }>
+  //       <div className="global-search-item">
+  //         <span className="global-search-item-desc">
+  //           <p className="blogSearch-option-title">Title: { item.title }</p>
+  //           <TagComponent tags={item.category} />
+  //         </span>
+  //       </div>
+  //     </Option>
+  //   )
+  // };
+
+  // render() {
+  //   const { filteredResults } = this.state;
+  //   return (
+  //     <div className="blogSearch-container">
+  //       <InputGroup compact size="large" className="blogSearch-inputGroup">
+  //         <Select
+  //           className="blogSearch-select"
+  //           defaultValue={ DEFAULT_SEARCH }
+  //           onChange={ this.handleSearchValueChange }
+  //         >
+  //           <Option value="title">Title</Option>
+  //           <Option value="tag">Tag</Option>
+  //         </Select>
+  //         <AutoComplete
+  //           className="blogSearch-autocomplete"
+  //           size="large"
+  //           dataSource={ filteredResults.map(this.renderOption) }
+  //           onSelect={ this.onSelect }
+  //           onSearch={ this.handleSearch }
+  //           placeholder="Search for blogs with title or tag"
+  //           optionLabelProp="text"
+  //         >
+  //           <Search className="blogSearch-input" />
+  //         </AutoComplete>
+  //       </InputGroup>
+  //     </div>
+  //   );
+  // };
 
   render() {
-    const { filteredResults } = this.state;
-    return (
-      <div className="blogSearch-container">
-        <InputGroup compact size="large" className="blogSearch-inputGroup">
-          <Select
-            className="blogSearch-select"
-            defaultValue={ DEFAULT_SEARCH }
-            onChange={ this.handleSearchChange }
-          >
-            <Option value="title">Title</Option>
-            <Option value="tag">Tag</Option>
-          </Select>
-          <AutoComplete
-            className="blogSearch-autocomplete"
-            size="large"
-            dataSource={ filteredResults.map(this.renderOption) }
-            onSelect={ this.onSelect }
-            onSearch={ this.handleSearch }
-            placeholder="Search for blogs with title or tag"
-            optionLabelProp="text"
-          >
-            <Search className="blogSearch-input" />
-          </AutoComplete>
-        </InputGroup>
-      </div>
+    const { value, results } = this.state;
+    return(
+      <Search
+        fluid
+        onSearchChange={ this.handleSearchChange }
+        value={ value }
+        results={ results }
+      />
     );
-  };
+  }
 }
