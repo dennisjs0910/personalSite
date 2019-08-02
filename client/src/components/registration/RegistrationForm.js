@@ -100,7 +100,7 @@ class RegistrationForm extends Component {
 
 
   isFormError = (confirmPass) => {
-    return (
+    return !!(
       this.validateEmail() ||
       this.validateFirstName() ||
       this.validateLastName() ||

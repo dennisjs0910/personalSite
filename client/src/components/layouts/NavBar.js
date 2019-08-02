@@ -6,28 +6,19 @@ import { AuthAction } from '../../actions';
 import { ReactComponent as Logo } from "../../assets/logo.svg";
 
 import { Menu, Image, Icon } from 'semantic-ui-react';
-
-const LOGOUT = "logout";
-
-const menuItems = {
-  "/login"  : "login",
-  "/logout" : LOGOUT,
-  "/"       : "blogs",
-  "/signup" : "signup",
-  "/resume" : "resume"
-};
+import { LOGOUT, LOGIN, HOME, SIGNUP, RESUME, URI_ITEM_MAP } from "./Constants.js"
 
 const AuthMenuItem = ({ currentUser, hasLoggedIn, handleClick, activeMenu }) => {
   if (!!!currentUser && !hasLoggedIn) {
     return(
-      <Menu.Item name="login" onClick={ handleClick } active={activeMenu === 'login'}>
+      <Menu.Item name="login" onClick={ handleClick } active={activeMenu === LOGIN}>
         <Icon name="sign-in"/>
         Login
       </Menu.Item>
     )
   } else {
     return(
-      <Menu.Item name="logout" onClick={ handleClick } active={activeMenu === 'logout'}>
+      <Menu.Item name="logout" onClick={ handleClick } active={activeMenu === LOGOUT}>
         <Icon name="sign-out"/>
         Logout
       </Menu.Item>
@@ -36,14 +27,12 @@ const AuthMenuItem = ({ currentUser, hasLoggedIn, handleClick, activeMenu }) => 
 };
 
 
-const SignUpGreetingMenuItem = ({ currentUser, hasLoggedIn }) => {
+const SignUpGreetingMenuItem = ({ currentUser, hasLoggedIn, handleClick, activeMenu }) => {
   if (!!!currentUser && !hasLoggedIn) {
     return(
-      <Menu.Item name="signup">
-        <Link to="/signup">
-          <Icon name="user plus"/>
-          Sign Up
-        </Link>
+      <Menu.Item name="signup" onClick={ handleClick } active={activeMenu === SIGNUP}>
+        <Icon name="user plus"/>
+        Sign Up
       </Menu.Item>
     )
   } else {
@@ -63,22 +52,44 @@ class NavBar extends Component {
       activeMenu: 'home',
       top: 0
     }
-  }
+  };
 
-  // static getDerivedStateFromProps(props, state) {
-  //   const { pathname } = props.location;
-  //   return { activeMenu: menuItems[pathname] || 'home' };
-  // }
+  static getDerivedStateFromProps(props, state) {
+    const { pathname } = props.location;
+    console.log(pathname, URI_ITEM_MAP);
+    return { activeMenu: URI_ITEM_MAP[new String(pathname)] || 'home' };
+  };
 
   handleClick = (e, { name }) => {
     const { logoutUser, history } = this.props;
+    this.handlePageSwitch(name, history);
     if (name === LOGOUT) {
       logoutUser(history);
       this.setState({ activeMenu: 'login'});
       return;
     }
     this.setState({ activeMenu: name });
-  }
+  };
+
+  handlePageSwitch = (name, history) => {
+    switch (name) {
+      case LOGIN:
+        history.push("/login");
+        return;
+      case HOME:
+        history.push("/");
+        return;
+      case RESUME:
+        history.push("/resume");
+        return;
+      case SIGNUP:
+        history.push("/signup");
+        return;
+      default:
+        history.push("/login");
+        return;
+    }
+  };
 
   render() {
     const { activeMenu } = this.state;

@@ -45,7 +45,7 @@ export default class AuthAction {
     };
   };
 
-  static logoutUser = (history) => {
+  static logoutUser = () => {
     return async (dispatch) => {
       try {
         await axios.delete("/api/user/session");
@@ -57,7 +57,6 @@ export default class AuthAction {
             error: null
           }
         });
-        history.push("/login");
       } catch (err) {
         dispatch({
           type: AUTH_ACTION.LOGOUT_FAILURE,
