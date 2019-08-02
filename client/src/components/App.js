@@ -7,7 +7,7 @@ import { isEmpty } from "lodash";
 import NavBar from './layouts/NavBar';
 import { BlogContainer } from "./blog";
 import { LoginContainer } from "./login";
-// import { RegistrationContainer } from "./registration";
+import { RegistrationContainer } from "./registration";
 // import { ResumeContainer } from "./resume";
 
 import { AuthAction } from "../actions";
@@ -49,8 +49,8 @@ class App extends Component {
             <Switch>
               <Route key="blogs" exact path= "/" component={ BlogContainer } />
               <Route key="login" exact path= "/login" component={ LoginContainer } />
+              <Route key="signup" exact path= "/signup" component={ RegistrationContainer } />
               {/**
-                <Route key="signup" exact path= "/signup" component={ RegistrationContainer } />
                 <Route key="resume" exact path= "/resume" component={ ResumeContainer } />
                 <Route key="page404" path="/*" component={Layouts.Page404} />
               */ }

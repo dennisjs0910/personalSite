@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import { Form, Input, Button } from 'semantic-ui-react'
 
-//TODO: send info to backend
 class LoginFormTemplate extends Component {
   constructor(props) {
     super(props);
@@ -14,14 +13,18 @@ class LoginFormTemplate extends Component {
 
   handleSubmit = e => {
     const {email, password} = this.state;
-    console.log(email, password);
+    this.props.loginUser(email, password, this.props.history);
   };
 
   handleChange = (e, { value }, key) => {
     this.setState({ [key] : value });
   };
 
-  isValidEmail = () => {
+  /**
+   * Checks validity of email
+   * @return {Boolean|| Object} [returns false if valid email otherwise the error message and placement]
+   */
+  validateEmail = () => {
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!regex.test(this.state.email)) {
       return {
@@ -37,7 +40,7 @@ class LoginFormTemplate extends Component {
     return(
       <Form onSubmit={ this.handleSubmit } >
         <Form.Input
-          error={ this.isValidEmail() }
+          error={ this.validateEmail() }
           label='Email'
           onChange={(e, data) => this.handleChange(e, data, "email") }
         />

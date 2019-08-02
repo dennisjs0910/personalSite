@@ -23,7 +23,7 @@ export default class AuthAction {
     };
   };
 
-  static loginUser = ({ email, password }, history) => {
+  static loginUser = (email, password, history) => {
     return async (dispatch) => {
       try {
         const res = await axios.post("/api/user/session", { email, password });

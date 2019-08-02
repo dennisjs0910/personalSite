@@ -71,14 +71,13 @@ class NavBar extends Component {
   // }
 
   handleClick = (e, { name }) => {
+    const { logoutUser, history } = this.props;
+    if (name === LOGOUT) {
+      logoutUser(history);
+      this.setState({ activeMenu: 'login'});
+      return;
+    }
     this.setState({ activeMenu: name });
-    // const { logoutUser, history } = this.props;
-    // if (e.key === LOGOUT) {
-    //   logoutUser(history);
-    //   this.setState({ activeMenu: 'login'});
-    //   return;
-    // }
-    // this.setState({ activeMenu: e.key });
   }
 
   render() {
