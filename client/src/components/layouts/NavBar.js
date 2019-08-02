@@ -95,7 +95,7 @@ class NavBar extends Component {
     const { activeMenu } = this.state;
 
     return(
-      <Menu stackable>
+      <Menu>
         <Menu.Item
           name="home"
           onClick={ this.handleClick }
