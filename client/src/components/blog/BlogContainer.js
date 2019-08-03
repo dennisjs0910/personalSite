@@ -5,6 +5,7 @@ import { BlogAction } from '../../actions';
 // import { isEmpty } from 'lodash';
 
 import BlogSearch from './BlogSearch';
+import { BlogFormModal } from '../modal';
 // TODO
 
 // import BlogList from './BlogList';
@@ -160,6 +161,7 @@ class BlogContainer extends Component {
             />
           </Grid.Column>
         </Grid.Row>
+        <BlogFormModal {...formProps} />
       </Grid>
     );
   }

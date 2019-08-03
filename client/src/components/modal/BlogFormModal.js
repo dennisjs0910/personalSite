@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Modal, Button, Form, Input, Tag, Icon, Upload, Popconfirm } from 'antd';
+// import { Modal, Button, Form, Input, Tag, Icon, Upload, Popconfirm } from 'antd';
+import { Button, TextArea, Input, Form, Modal, Dropdown } from 'semantic-ui-react'
 import { BlogAction } from '../../actions';
 import { isEqual } from 'lodash';
 
@@ -7,6 +8,7 @@ const INITIAL_STATE = {
   title: "",
   summary: "",
   tags: [],
+  options: [], // used for tag dropdown options
   inputVisible: false,
   tagInputValue: '',
   fileList: [],
@@ -15,6 +17,20 @@ const INITIAL_STATE = {
   isPreviewVisible: false,
   previewImage: ""
 };
+
+const TitleForm = ({ handleTextInputChange }) => (
+  <Form.Field required>
+    <label>Blog Title</label>
+    <Input onChange={(e, data) => handleTextInputChange(data, "title") } />
+  </Form.Field>
+);
+
+const SummaryForm = ({ handleTextInputChange }) => (
+  <Form.Field required>
+    <label>Blog Summary</label>
+    <TextArea onChange={(e, data) => handleTextInputChange(data, "summary") } />
+  </Form.Field>
+);
 
 class BlogFormModal extends Component {
   constructor(props) {
@@ -41,8 +57,8 @@ class BlogFormModal extends Component {
       this.state = INITIAL_STATE;
     }
 
-    this.renderTagContainer = this.renderTagContainer.bind(this);
-    this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
+    // this.renderTagContainer = this.renderTagContainer.bind(this);
+    // this.renderMediaContentForm = this.renderMediaContentForm.bind(this);
   }
 
   _getFilesAndText = ({contents=[]}) => {
@@ -257,11 +273,12 @@ class BlogFormModal extends Component {
   };
 
   /**
-   * This function sets the input value to what the user is typing.
-   * @param  {Event} e
+   * This function store appropriate values to this.state[key]
+   * @param  {String} options.value [value of user input]
+   * @param  {String} key           [dynamic object key from input type]
    */
-  handleTextInputChange = ({target}, key) => {
-    this.setState({ [key]: target.value });
+  handleTextInputChange = ({ value }, key) => {
+    this.setState({ [key] : value });
   };
 
   handleMediaTextChange = ({ target }) => {
@@ -288,194 +305,234 @@ class BlogFormModal extends Component {
     return title === "" || summary === "";
   };
 
-  renderTagContainer() {
-    const { inputVisible, tagInputValue, tags } = this.state;
-    return(
-      <Form.Item label="Tags"
-        labelCol={{span: 3}}
-        wrapperCol={{span: 21}}
-      >
-        { this.renderTagInput(inputVisible, tagInputValue) }
-        <div className="tag-wrapper-container">
-          { tags.map(tag =>
-            <Tag
-              className="blog-tag"
-              closable
-              onClose={() => this.handleTagClose(tag) }
-              key={tag}
-            >
-              {tag}
-            </Tag>
-          )}
-        </div>
-      </Form.Item>
-    );
-  };
+  // renderTagContainer() {
+  //   const { inputVisible, tagInputValue, tags } = this.state;
+  //   return(
+  //     <Form.Item label="Tags"
+  //       labelCol={{span: 3}}
+  //       wrapperCol={{span: 21}}
+  //     >
+  //       { this.renderTagInput(inputVisible, tagInputValue) }
+  //       <div className="tag-wrapper-container">
+  //         { tags.map(tag =>
+  //           <Tag
+  //             className="blog-tag"
+  //             closable
+  //             onClose={() => this.handleTagClose(tag) }
+  //             key={tag}
+  //           >
+  //             {tag}
+  //           </Tag>
+  //         )}
+  //       </div>
+  //     </Form.Item>
+  //   );
+  // };
 
-  renderTagInput(inputVisible, tagInputValue) {
-    if (inputVisible) {
-      return(
-        <Input
-          className="form-tag-input"
-          ref={ this.saveInputRef }
-          type="text"
-          value={ tagInputValue }
-          onChange={(e) => this.handleTextInputChange(e, "tagInputValue") }
-          onBlur={ this.handleTagConfirm }
-          onPressEnter={ this.handleTagConfirm }
-        />);
-    } else {
-      return(
-        <Tag
-          className="form-add-tag form-tag-input"
-          onClick={ this.showTagInput }
-          color="blue"
-        >
-          <Icon type="plus" /> New Tag
-        </Tag>
-      );
-    }
-  };
+  // renderTagInput(inputVisible, tagInputValue) {
+  //   if (inputVisible) {
+  //     return(
+  //       <Input
+  //         className="form-tag-input"
+  //         ref={ this.saveInputRef }
+  //         type="text"
+  //         value={ tagInputValue }
+  //         onChange={(e) => this.handleTextInputChange(e, "tagInputValue") }
+  //         onBlur={ this.handleTagConfirm }
+  //         onPressEnter={ this.handleTagConfirm }
+  //       />);
+  //   } else {
+  //     return(
+  //       <Tag
+  //         className="form-add-tag form-tag-input"
+  //         onClick={ this.showTagInput }
+  //         color="blue"
+  //       >
+  //         <Icon type="plus" /> New Tag
+  //       </Tag>
+  //     );
+  //   }
+  // };
 
-  renderMediaContentForm() {
-    const { fileList } = this.state;
-    return(
-      <Form.Item label="Media"
-        labelCol={{span: 3}}
-        wrapperCol={{span: 21}}
-      >
-        <Upload
-          className='upload-list-inline'
-          listType="picture-card"
-          customRequest={ this.handleMediaUpload }
-          onChange={ this.handleMediaChange }
-          onPreview={ this.handlePreview }
-          fileList={ fileList }
-          onRemove={ this.handleMediaRemove }
-        >
-          <h6>Only able to upload one image/mp4 at a time.</h6>
-          <Button>
-            <Icon type="upload" /> Upload
-          </Button>
-        </Upload>
-      </Form.Item>
-    )
-  };
+  // renderMediaContentForm() {
+  //   const { fileList } = this.state;
+  //   return(
+  //     <Form.Item label="Media"
+  //       labelCol={{span: 3}}
+  //       wrapperCol={{span: 21}}
+  //     >
+  //       <Upload
+  //         className='upload-list-inline'
+  //         listType="picture-card"
+  //         customRequest={ this.handleMediaUpload }
+  //         onChange={ this.handleMediaChange }
+  //         onPreview={ this.handlePreview }
+  //         fileList={ fileList }
+  //         onRemove={ this.handleMediaRemove }
+  //       >
+  //         <h6>Only able to upload one image/mp4 at a time.</h6>
+  //         <Button>
+  //           <Icon type="upload" /> Upload
+  //         </Button>
+  //       </Upload>
+  //     </Form.Item>
+  //   )
+  // };
 
-  renderTitleForm(title) {
-    return(
-      <Form.Item label="Blog Title"
-        required
-        labelCol={{span: 3}}
-        wrapperCol={{span: 21}}
-      >
-        <Input value={title} onChange={(e) => this.handleTextInputChange(e, "title") }>
-        </Input>
-      </Form.Item>
-    );
-  };
+  // renderTitleForm(title) {
+  //   return(
+  //     <Form.Item label="Blog Title"
+  //       required
+  //       labelCol={{span: 3}}
+  //       wrapperCol={{span: 21}}
+  //     >
+  //       <Input value={title} onChange={(e) => this.handleTextInputChange(e, "title") }>
+  //       </Input>
+  //     </Form.Item>
+  //   );
+  // };
 
-  renderBlogSummaryForm(summary) {
-    return(
-      <Form.Item label="Summary"
-        required
-        labelCol={{span: 3}}
-        wrapperCol={{span: 21}}
-      >
-        <Input.TextArea
-          value={summary}
-          autosize={{ minRows: 6, maxRows: 20 }}
-          onChange={(e) => this.handleTextInputChange(e, "summary") }
-        >
-        </Input.TextArea>
-      </Form.Item>
-    );
-  }
+  // renderBlogSummaryForm(summary) {
+  //   return(
+  //     <Form.Item label="Summary"
+  //       required
+  //       labelCol={{span: 3}}
+  //       wrapperCol={{span: 21}}
+  //     >
+  //       <Input.TextArea
+  //         value={summary}
+  //         autosize={{ minRows: 6, maxRows: 20 }}
+  //         onChange={(e) => this.handleTextInputChange(e, "summary") }
+  //       >
+  //       </Input.TextArea>
+  //     </Form.Item>
+  //   );
+  // }
 
-  renderInputTextBoxes() {
-    const { mediaText } = this.state;
-    return mediaText.map((val, idx) => {
-      return(
-        <Form.Item label={`Media Summary ${idx + 1}`} key={idx} >
-          <Input.TextArea
-            autosize={{ minRows: 6, maxRows: 20 }}
-            data-id={idx}
-            value={ val }
-            onChange={ this.handleMediaTextChange }
-          >
-          </Input.TextArea>
-        </Form.Item>
-      )
-    });
-  };
+  // renderInputTextBoxes() {
+  //   const { mediaText } = this.state;
+  //   return mediaText.map((val, idx) => {
+  //     return(
+  //       <Form.Item label={`Media Summary ${idx + 1}`} key={idx} >
+  //         <Input.TextArea
+  //           autosize={{ minRows: 6, maxRows: 20 }}
+  //           data-id={idx}
+  //           value={ val }
+  //           onChange={ this.handleMediaTextChange }
+  //         >
+  //         </Input.TextArea>
+  //       </Form.Item>
+  //     )
+  //   });
+  // };
 
   /**
    * This function returns the footor of a main mondal component
    * @return {ReactComponent[]}     [List of ReactComponent buttons]
    */
-  getFooterElements = () => {
-    const { title, summary } = this.state;
-    const { isUpdate } = this.props;
-    const buttonClassName = isUpdate ? "warning-button" : "ant-btn-primary";
-    const buttonText = isUpdate ? "Update" : "Submit";
-    return [
-      <Popconfirm
-        key="popup"
-        title="Are you sure you want to reset this blog? Closing the blog after will not change the contents"
-        onConfirm={ this.handleStateReset }
-        okText="Yes"
-        cancelText="No"
-      >
-        <Button
-          key="clear"
-          type="danger"
-        >
-          Clear
-        </Button>
-      </Popconfirm>,
-      <Button key="close" onClick={(e) => this.handleModalClose(e, false) }>
-        Close
-      </Button>,
-      <Button
-        key="submit"
-        className={ buttonClassName }
-        htmlType="submit"
-        onClick={ this.handleFormSubmit }
-        disabled= {this.isSubmitDisabled(title, summary)}
-      >
-        { buttonText }
-      </Button>,
-    ];
+  // getFooterElements = () => {
+  //   const { title, summary } = this.state;
+  //   const { isUpdate } = this.props;
+  //   const buttonClassName = isUpdate ? "warning-button" : "ant-btn-primary";
+  //   const buttonText = isUpdate ? "Update" : "Submit";
+  //   return [
+  //     <Popconfirm
+  //       key="popup"
+  //       title="Are you sure you want to reset this blog? Closing the blog after will not change the contents"
+  //       onConfirm={ this.handleStateReset }
+  //       okText="Yes"
+  //       cancelText="No"
+  //     >
+  //       <Button
+  //         key="clear"
+  //         type="danger"
+  //       >
+  //         Clear
+  //       </Button>
+  //     </Popconfirm>,
+  //     <Button key="close" onClick={(e) => this.handleModalClose(e, false) }>
+  //       Close
+  //     </Button>,
+  //     <Button
+  //       key="submit"
+  //       className={ buttonClassName }
+  //       htmlType="submit"
+  //       onClick={ this.handleFormSubmit }
+  //       disabled= {this.isSubmitDisabled(title, summary)}
+  //     >
+  //       { buttonText }
+  //     </Button>,
+  //   ];
+  // };
+
+  // render() {
+  //   const { isVisible, isUpdate } = this.props;
+  //   const { title, summary, isPreviewVisible, previewImage } = this.state;
+  //   const modalTitle = isUpdate ? "Blog Update Form" : "Blog Create Form";
+  //   return (
+  //     <div>
+  //       <Modal
+  //         width="66%"
+  //         visible={ isVisible }
+  //         title={ modalTitle }
+  //         onOk={ this.handleFormSubmit }
+  //         onCancel={ (e) => this.handleModalClose(e, false) }
+  //         footer={ this.getFooterElements() }
+  //       >
+  //         <Form onSubmit={this.handleFormSubmit} className="bp-form-container" labelAlign='left'>
+  //           { this.renderTitleForm(title)} done
+  //           { this.renderBlogSummaryForm(summary)} done
+  //           { this.renderTagContainer() }
+  //           { this.renderMediaContentForm() }
+  //           { this.renderInputTextBoxes() }
+  //         </Form>
+  //         <Modal visible={isPreviewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+  //           <img alt="example" style={{ width: '100%' }} src={previewImage} />
+  //         </Modal>
+  //       </Modal>
+  //     </div>
+  //   );
+  // }
+  //
+  handleTagAddition = (e, { value }) => {
+    const { options } = this.state;
+    this.setState({
+      options: [ {text: value, value}, ... options ]
+    });
   };
 
-  render() {
-    const { isVisible, isUpdate } = this.props;
-    const { title, summary, isPreviewVisible, previewImage } = this.state;
-    const modalTitle = isUpdate ? "Blog Update Form" : "Blog Create Form";
-    return (
-      <div>
-        <Modal
-          width="66%"
-          visible={ isVisible }
-          title={ modalTitle }
-          onOk={ this.handleFormSubmit }
-          onCancel={ (e) => this.handleModalClose(e, false) }
-          footer={ this.getFooterElements() }
-        >
-          <Form onSubmit={this.handleFormSubmit} className="bp-form-container" labelAlign='left'>
-            { this.renderTitleForm(title)}
-            { this.renderBlogSummaryForm(summary)}
-            { this.renderTagContainer() }
-            { this.renderMediaContentForm() }
-            { this.renderInputTextBoxes() }
-          </Form>
-          <Modal visible={isPreviewVisible} footer={null} onCancel={this.handlePreviewCancel}>
-            <img alt="example" style={{ width: '100%' }} src={previewImage} />
-          </Modal>
-        </Modal>
-      </div>
-    );
+  handleTagChange = (e, { value }) => {
+    this.setState({ tags: value });
   }
+
+  render() {
+    const { title, summary, tags, options } = this.state;
+    const { isVisible, handleClose } = this.props;
+    return (
+      <Modal open={ isVisible } onClose={ handleClose }>
+        <Modal.Content>
+          <Form>
+            <TitleForm handleTextInputChange={ this.handleTextInputChange } />
+            <SummaryForm handleTextInputChange={ this.handleTextInputChange } />
+            <Form.Field>
+              <Dropdown
+                options={ options }
+                placeholder="Add Tags"
+                search
+                selection
+                fluid
+                multiple
+                allowAdditions
+                value={ tags }
+                onAddItem={ this.handleTagAddition }
+                onChange={ this.handleTagChange }
+              />
+            </Form.Field>
+          </Form>
+        </Modal.Content>
+      </Modal>
+    );
+  };
 }
 
 export default BlogFormModal;
