@@ -17,7 +17,7 @@ import { BlogAction } from '../../actions';
 // import { Alert, Layout, Button } from 'antd';
 // import "./BlogContainer.css";
 
-import { Grid, Image } from 'semantic-ui-react'
+import { Grid, Image, Button } from 'semantic-ui-react'
 
 class BlogContainer extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class BlogContainer extends Component {
     this.handleCreateModal = this.handleCreateModal.bind(this);
     this.handleReadModal = this.handleReadModal.bind(this);
     this.handleUpdateModal = this.handleUpdateModal.bind(this);
-    // this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
+    this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
   };
 
   componentDidMount() {
@@ -92,16 +92,16 @@ class BlogContainer extends Component {
     return formProps;
   };
 
-  // renderCreateBlogPostButton() {
-  //   const { currentUser } = this.props;
-  //   if (!!currentUser) {
-  //     return(
-  //       <Button type="primary" onClick={ this.handleCreateModal }>CREATE +</Button>
-  //     )
-  //   } else {
-  //     return null;
-  //   }
-  // }
+  renderCreateBlogPostButton() {
+    const { currentUser } = this.props;
+    if (!!currentUser) {
+      return(
+        <Button primary onClick={ this.handleCreateModal }>CREATE +</Button>
+      )
+    } else {
+      return null;
+    }
+  }
 
   // render() {
   //   const { isFormVisible, isReadVisible, selectedBlog } = this.state;
@@ -150,18 +150,13 @@ class BlogContainer extends Component {
     const formProps = this.generateFormProps();
 
     return(
-      <Grid celled='internally'>
+      <Grid>
         <Grid.Row>
-          <Grid.Column width={2}>
-            Empty Stub
-          </Grid.Column>
-
-          <Grid.Column width={12}>
+          <Grid.Column width={13}>
             <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal } />
           </Grid.Column>
-
-          <Grid.Column width={2}>
-            Empty Stub
+          <Grid.Column width={3}>
+            { this.renderCreateBlogPostButton() }
           </Grid.Column>
         </Grid.Row>
       </Grid>

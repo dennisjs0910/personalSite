@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
-// import { AutoComplete, Input, Select } from 'antd';
 // import './BlogSearch.css';
 
-// const InputGroup = Input.Group;
-// const { Option } = AutoComplete;
-// const { Search } = Input;
-
 // Styling
-import { Search, Grid, Header, Segment } from 'semantic-ui-react'
-
-
+import { Search, Container, Header, Segment, Select } from 'semantic-ui-react'
 const DEFAULT_SEARCH = "title";
 
 const TagComponent = ({ tags }) => {
@@ -83,8 +76,6 @@ export default class BlogSearch extends Component {
     //   this.props.data.filter(
     //     (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
     //   );
-
-    console.log(query, this.props.data);
     return [];
   };
 
@@ -136,15 +127,19 @@ export default class BlogSearch extends Component {
   //   );
   // };
 
+  // TODO: options for Select : Title (default), Tag
   render() {
     const { value, results } = this.state;
     return(
-      <Search
-        fluid
-        onSearchChange={ this.handleSearchChange }
-        value={ value }
-        results={ results }
-      />
+      <Container>
+        <Select options={[]} placeholder='Select your country'/>
+        <Search
+          onSearchChange={ this.handleSearchChange }
+          value={ value }
+          results={ results }
+        >
+        </Search>
+      </Container>
     );
   }
 }
