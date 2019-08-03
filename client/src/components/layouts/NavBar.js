@@ -56,7 +56,6 @@ class NavBar extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { pathname } = props.location;
-    console.log(pathname, URI_ITEM_MAP);
     return { activeMenu: URI_ITEM_MAP[new String(pathname)] || 'home' };
   };
 

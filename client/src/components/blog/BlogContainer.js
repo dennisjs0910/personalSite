@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { BlogAction } from '../../actions';
 // import { isEmpty } from 'lodash';
 
 import BlogSearch from './BlogSearch';
@@ -11,13 +12,22 @@ import BlogSearch from './BlogSearch';
 // import { BlogFormModal, BlogModal } from '../modal';
 // END TODO
 
-import { BlogAction } from '../../actions';
+
 
 // Styling imports
-// import { Alert, Layout, Button } from 'antd';
 // import "./BlogContainer.css";
 
 import { Grid, Image, Button } from 'semantic-ui-react'
+
+const CreateBlogButton = ({ currentUser, handleCreateModal }) => {
+  if (!!currentUser) {
+    return(
+      <Button primary onClick={ handleCreateModal }>CREATE +</Button>
+    )
+  } else {
+    return null;
+  }
+};
 
 class BlogContainer extends Component {
   constructor(props) {
@@ -32,7 +42,6 @@ class BlogContainer extends Component {
     this.handleCreateModal = this.handleCreateModal.bind(this);
     this.handleReadModal = this.handleReadModal.bind(this);
     this.handleUpdateModal = this.handleUpdateModal.bind(this);
-    this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
   };
 
   componentDidMount() {
@@ -92,17 +101,6 @@ class BlogContainer extends Component {
     return formProps;
   };
 
-  renderCreateBlogPostButton() {
-    const { currentUser } = this.props;
-    if (!!currentUser) {
-      return(
-        <Button primary onClick={ this.handleCreateModal }>CREATE +</Button>
-      )
-    } else {
-      return null;
-    }
-  }
-
   // render() {
   //   const { isFormVisible, isReadVisible, selectedBlog } = this.state;
   //   const { blogs, currentUser, deleteBlog, error } = this.props;
@@ -156,7 +154,10 @@ class BlogContainer extends Component {
             <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal } />
           </Grid.Column>
           <Grid.Column width={3}>
-            { this.renderCreateBlogPostButton() }
+            <CreateBlogButton
+              currentUser={ currentUser }
+              handleCreateModal={ this.handleCreateModal }
+            />
           </Grid.Column>
         </Grid.Row>
       </Grid>
