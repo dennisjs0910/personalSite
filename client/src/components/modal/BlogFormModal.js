@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 // import { Modal, Button, Form, Input, Tag, Icon, Upload, Popconfirm } from 'antd';
-import { Button, TextArea, Input, Form, Modal, Dropdown } from 'semantic-ui-react'
+import { Button, TextArea, Input, Form, Modal, Dropdown, Label } from 'semantic-ui-react'
 import { BlogAction } from '../../actions';
+import { UploadButton } from '../button';
 import { isEqual } from 'lodash';
+import * as uuid from 'uuid';
 
 const INITIAL_STATE = {
   title: "",
@@ -32,9 +34,28 @@ const SummaryForm = ({ handleTextInputChange }) => (
   </Form.Field>
 );
 
+const TagsForm = ({ options, tags, handleTagAddition, handleTagChange }) => (
+  <Form.Field>
+    <label>Tags</label>
+    <Dropdown
+      options={ options }
+      placeholder="Add Tags"
+      search
+      selection
+      fluid
+      multiple
+      allowAdditions
+      value={ tags }
+      onAddItem={ handleTagAddition }
+      onChange={ handleTagChange }
+    />
+  </Form.Field>
+)
+
 class BlogFormModal extends Component {
   constructor(props) {
     super(props);
+    this.id = uuid.v1();
 
     const { blog, isVisible, isUpdate } = props;
     this.ogImageSet = new Set();
@@ -120,27 +141,6 @@ class BlogFormModal extends Component {
     const tags = this.state.tags.filter(tag =>  tag !== removedTag );
     this.tagSet.delete(removedTag);
     this.setState({ tags });
-  };
-
-  /**
-   * Custom Request to upload an image to Cloudinary.
-   * It is used to obtain a secure url to pass to the server in the future.
-   * When it is successful
-   * @param  { File } file
-   * @param  { callback fn } onSuccess
-   * @param  { callback fn } onError (currently removed)
-   */
-  handleMediaUpload = async ({ file, onSuccess, onError }) => {
-    try {
-      let data = new FormData();
-      data.append('file', file);
-      const imageRes = await BlogAction.postImage(data);
-      this.addTextBox();
-      // this.imageSet.add(imageRes.data.response[0].public_id);
-      onSuccess(imageRes.data, file);
-    } catch(err) {
-      onError(err);
-    }
   };
 
   /**
@@ -493,7 +493,12 @@ class BlogFormModal extends Component {
   //     </div>
   //   );
   // }
-  //
+
+  /**
+   * When tag is added it updates state's option as well.
+   * @param  {Event} e             [Javascript event object]
+   * @param  {String} options.value [Tag added by user input]
+   */
   handleTagAddition = (e, { value }) => {
     const { options } = this.state;
     this.setState({
@@ -501,32 +506,65 @@ class BlogFormModal extends Component {
     });
   };
 
+  /**
+   * If tag is added, update state.tags otherwise filter removed tag from options
+   * @param  {Event} e                [Javascript Event Object]
+   * @param  {String[]} options.value [Array of user input tags]
+   */
   handleTagChange = (e, { value }) => {
-    this.setState({ tags: value });
-  }
+    const { tags, options } = this.state;
+    if (tags.length > value.length) {
+      const keySet = new Set(value);
+      const filteredOptions = this.state.options.filter(item => keySet.has(item.value));
+      this.setState({
+        tags: value,
+        options: filteredOptions
+      });
+    } else {
+      this.setState({ tags: value });
+    }
+  };
+
+  /**
+   * Custom Request to upload an image to Cloudinary.
+   * It is used to obtain a secure url to pass to the server in the future.
+   * When it is successful
+   * @param  { File } file
+   * @param  { callback fn } onSuccess
+   * @param  { callback fn } onError (currently removed)
+   */
+  handleMediaUpload = async ({ file, onSuccess, onError }) => {
+    try {
+      let data = new FormData();
+      data.append('file', file);
+      const imageRes = await BlogAction.postImage(data);
+      this.addTextBox();
+      // this.imageSet.add(imageRes.data.response[0].public_id);
+      onSuccess(imageRes.data, file);
+    } catch(err) {
+      onError(err);
+    }
+  };
 
   render() {
     const { title, summary, tags, options } = this.state;
     const { isVisible, handleClose } = this.props;
+
     return (
       <Modal open={ isVisible } onClose={ handleClose }>
         <Modal.Content>
           <Form>
             <TitleForm handleTextInputChange={ this.handleTextInputChange } />
             <SummaryForm handleTextInputChange={ this.handleTextInputChange } />
+            <TagsForm
+              options={ options }
+              tags={ tags }
+              handleTagAddition={ this.handleTagAddition.bind(this) }
+              handleTagChange={ this.handleTagChange.bind(this) }
+            />
             <Form.Field>
-              <Dropdown
-                options={ options }
-                placeholder="Add Tags"
-                search
-                selection
-                fluid
-                multiple
-                allowAdditions
-                value={ tags }
-                onAddItem={ this.handleTagAddition }
-                onChange={ this.handleTagChange }
-              />
+              <label>Images and videos</label>
+              <UploadButton />
             </Form.Field>
           </Form>
         </Modal.Content>
