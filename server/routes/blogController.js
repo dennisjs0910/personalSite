@@ -13,8 +13,8 @@ routes.get('/', async (req, res) => {
 });
 
 routes.post('/', async (req, res) => {
-  const { title, summary, tags, user_id, fileList, mediaText } = req.body;
-  const data = await blogManager.createBlog(title, summary, tags, user_id, fileList, mediaText);
+  const { title, summary, tags, user_id, mediaList } = req.body;
+  const data = await blogManager.createBlog(title, summary, tags, user_id, mediaList);
   if (!!!data) {
     res.sendStatus(404);
     return;
@@ -24,7 +24,7 @@ routes.post('/', async (req, res) => {
 });
 
 routes.put('/', async (req, res) => {
-  const { title, summary, tags, user_id, fileList, mediaText, blog } = req.body;
+  const { title, summary, tags, user_id, fileList, mediaList, blog } = req.body;
   const data = await blogManager.updateBlog(req.body);
 
   if (!!!data) {

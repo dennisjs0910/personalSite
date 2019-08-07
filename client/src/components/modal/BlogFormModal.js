@@ -116,36 +116,15 @@ class BlogFormModal extends Component {
     return res;
   };
 
-  handlePreviewCancel = () => this.setState({ isPreviewVisible: false });
+  // handlePreviewCancel = () => this.setState({ isPreviewVisible: false });
 
-  handlePreview = file => {
-    const url = (file.response && file.response.length === 1 && file.response[0].secure_url) || "";
-    this.setState({
-      previewImage: url,
-      isPreviewVisible: true,
-    });
-  };
-
-  handleFormSubmit = e => {
-    e.preventDefault();
-    const { title, summary, tags, fileList, mediaText } = this.state;
-    const { currentUser, handleSubmit, blog } = this.props;
-
-    handleSubmit(Object.assign({
-      title, summary, tags, fileList, mediaText, user_id: currentUser.id, blog
-    }));
-
-    this.handleModalClose(e, true);
-  };
-
-  handleModalClose = (e, isSubmitted) => {
-    e.preventDefault();
-    this.deleteUnusedImages(isSubmitted);
-    delete this.input;
-    delete this.tagSet;
-    delete this.ogImageSet;
-    this.props.handleClose(null);
-  };
+  // handlePreview = file => {
+  //   const url = (file.response && file.response.length === 1 && file.response[0].secure_url) || "";
+  //   this.setState({
+  //     previewImage: url,
+  //     isPreviewVisible: true,
+  //   });
+  // };
 
   /**
    * When isUpdate=true and isSubmitted=false, it is a modal close so we do not delete original images
@@ -217,6 +196,7 @@ class BlogFormModal extends Component {
     return title === "" || summary === "";
   };
 
+  // Start of new code =============================================
   /**
    * When tag is added it updates state's option as well.
    * @param  {Event} e             [Javascript event object]
@@ -271,7 +251,7 @@ class BlogFormModal extends Component {
   insertMediaItem = ({ public_id, secure_url, resource_type }) => {
     const { mediaList } = this.state;
     this.setState({
-      mediaList: [...mediaList, { public_id, secure_url, summary: "", resource_type }]
+      mediaList: [...mediaList, { public_id, media_url : secure_url, summary: "", resource_type }]
     });
   };
 
@@ -313,6 +293,25 @@ class BlogFormModal extends Component {
     await BlogAction.deleteImage(item);
   };
 
+  handleModalClose = (e, isSubmitted) => {
+    this.deleteUnusedImages(isSubmitted);
+    delete this.input;
+    delete this.tagSet;
+    delete this.ogImageSet;
+    this.props.handleClose(null);
+  };
+
+  handleFormSubmit = e => {
+    const { title, summary, tags, mediaList } = this.state;
+    const { currentUser, handleSubmit, blog } = this.props;
+
+    handleSubmit(Object.assign({
+      title, summary, tags, mediaList, user_id: currentUser.id, blog
+    }));
+
+    this.handleModalClose(e, true);
+  };
+
   render() {
     const { title, summary, tags, options, mediaList } = this.state;
     const { isVisible, handleClose } = this.props;
@@ -340,7 +339,13 @@ class BlogFormModal extends Component {
 
         <Modal.Actions>
           <Button negative onClick={ handleClose }>Close</Button>
-          <Button positive icon='checkmark' labelPosition='right' content='Submit' />
+          <Button
+            positive
+            icon='checkmark'
+            labelPosition='right'
+            content='Submit'
+            onClick={ this.handleFormSubmit }
+          />
         </Modal.Actions>
       </Modal>
     );
