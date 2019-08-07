@@ -1,5 +1,5 @@
-import CommentEditor from './CommentEditor';
+import CommentContainer from './CommentContainer';
 
 export {
-  CommentEditor,
+  CommentContainer,
 };

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Modal, Container, Image } from 'semantic-ui-react'
 import { BlogAction } from '../../actions';
-
-// import { CommentEditor } from '../comment';
+import { CommentContainer } from '../comment';
 // import "./BlogModal.css";
 const ADMIN = "admin";
 
@@ -60,12 +59,18 @@ const ItemParagraph = ({ summary }) => {
 class BlogModal extends Component {
   render() {
     const { isVisible, blog, handleClose, currentUser } = this.props;
+    if (!isVisible) return null;
     return (
       <Modal open={ isVisible }>
-        <Modal.Header content={ blog ? blog.title : ""} />
+        <Modal.Header content={ blog.title } />
         <Modal.Content>
           <Summary blog={ blog } />
-          <BlogMediaContents contents={ blog ? blog.contents : [] } />
+          <BlogMediaContents contents={ blog.contents || [] } />
+          <CommentContainer
+            blogId={ blog.id }
+            parentId={ blog.id }
+            currentUser={ currentUser }
+          />
         </Modal.Content>
         <Footer blog={ blog } handleClose={ handleClose } currentUser={ currentUser } />
       </Modal>
