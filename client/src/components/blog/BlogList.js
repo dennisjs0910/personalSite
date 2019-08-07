@@ -1,140 +1,20 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col, Button, Card, Pagination } from 'antd';
+import { List } from 'semantic-ui-react'
+import BlogItem from './BlogItem';
 import "./BlogList.css";
 
-const ROW_NUM = 24;
-const PER_PAGINATION = 2;
-const TAGS_PER_BLOG = 5;
-const { Content } = Layout;
 
-const BlogCard = ({blog, handleReadModal, blogTags}) => {
-  return (
-    <Card
-      className="blog-card"
-      title={blog.title}
-      actions={ blogTags }
-      extra={ <Button onClick={() => handleReadModal(blog) }>view</Button> }
-    >
-      <CardBody blog={blog} />
-    </Card>
-  )
-};
-
-const CardBody = ({ blog }) => {
-  const { summary, contents } = blog;
-  return (
-    <div className="blog-card-body">
-      { summary.split("\n").map((paragraph, idx) =>
-        <p key={idx} className="blog-card-paragraph">{paragraph}</p>
-      )}
-      <CardMedia contents={ contents }/>
-    </div>
-  );
-};
-
-const CardMedia = ({ contents }) => {
-  if (contents.length <= 0) return null;
-  const media = contents[0];
-  return (
-    <div className="blog-card-media-container">
-      { media.is_video ?
-        <video className="blog-card-media" controls>
-          <source src={media.media_url} type="video/mp4"/>
-        </video> :
-        <img className="blog-card-media" src={media.media_url} alt="" />
-      }
-    </div>
-  );
+const ListItems = ({ blogs }) => {
+  return blogs.map((item) => <BlogItem key={ item.id } item={item}/>);
 };
 
 class BlogList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pageMin: 0,
-      pageMax: PER_PAGINATION * PER_PAGINATION,
-    }
-  }
-
-  /**
-   * Shortens image_text of blog that is to be displayed.
-   * @param  {String} text
-   * @return {String}    first 197 chars of image_text appended with ...;
-   */
-  shortenImageDescription = (text) => {
-    if (text && text.length <= 920) return text;
-    const end = Math.min(text.length, 917);
-    return text.substring(0, end) + "...";
-  };
-
-  /**
-   * When user clicks on < or > it will recalculate indexes that are to be shown.
-   * @param  {int} value [page number]
-   */
-  handlePaginationChange = value => {
-    const perPageSquare = (PER_PAGINATION * PER_PAGINATION);
-    if (value <= 1) {
-      this.setState({
-        pageMin: 0,
-        pageMax: perPageSquare
-      });
-    } else {
-      this.setState({
-        pageMin: Math.max(1, value - 1) * perPageSquare,
-        pageMax: Math.min(Math.max(1, value) * perPageSquare)
-      });
-    }
-  };
-
-  getBlogTags = (blog, tagNum) => {
-    let tags = [];
-    for (let i = 0; i < tagNum; i++) {
-      if (!!blog.category[i]) {
-        tags.push(<p className="blog-tag tagged">{blog.category[i]}</p>);
-      } else {
-        tags.push(<p className="blog-tag tagged"></p>);
-      }
-    }
-    return tags;
-  };
-
-  renderBlogsToCard(blogs) {
-    if (blogs && blogs.length > 0) {
-      return blogs.slice(this.state.pageMin, this.state.pageMax).map(blog => (
-        <Col span={ROW_NUM / PER_PAGINATION} key={blog.id}>
-          <BlogCard
-            blog={blog}
-            handleReadModal={this.props.handleReadModal}
-            blogTags={ this.getBlogTags(blog, TAGS_PER_BLOG) }
-          />
-        </Col>
-      ));
-    }
-    return null;
-  }
-
   render() {
     const { blogs } = this.props;
-    return(
-      <Content className="blog-list-container">
-        <h2 className="blog-list-header">View All Blogs</h2>
-        <div className="blog-card-container">
-          <div className="wrapper-content-margin">
-            <Row gutter={16}>
-              { this.renderBlogsToCard(blogs) }
-            </Row>
-          </div>
-
-          <div className="pagination-container">
-            <Pagination
-              defaultCurrent={1}
-              defaultPageSize={4}
-              onChange={ this.handlePaginationChange }
-              total={ blogs.length }
-            />
-          </div>
-        </div>
-      </Content>
+    return (
+      <List divided verticalAlign='middle' size='large'>
+        <ListItems blogs={ blogs } />
+      </List>
     );
   }
 }

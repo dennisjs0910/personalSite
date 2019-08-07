@@ -1,4 +1,21 @@
-div.blog-card {
+.ui.list > .item > .content > .header.blog-item-header {
+  margin: 0.75rem auto;
+}
+
+.blog-item-media {
+  width: 70%;
+  margin: 0.5rem auto;
+  display: block;
+}
+
+@media only screen and (max-width: 767px) {
+  .ui.container {
+    width: 50%;
+    margin: 0.5rem auto;
+    display: block;
+  }
+}
+/*div.blog-card {
   margin: auto;
   text-align: left;
   border-radius: 10px;
@@ -50,4 +67,4 @@ div.blog-card-body {
 .blog-card-media-container .blog-card-media {
   max-height: 500px;
   width: 100%;
-}
+}*/

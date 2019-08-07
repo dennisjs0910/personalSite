@@ -6,17 +6,12 @@ import { BlogAction } from '../../actions';
 
 import BlogSearch from './BlogSearch';
 import { BlogFormModal } from '../modal';
-// TODO
+import BlogList from './BlogList';
 
-// import BlogList from './BlogList';
+// TODO
 // import Header from './Header';
 // import { BlogFormModal, BlogModal } from '../modal';
 // END TODO
-
-
-
-// Styling imports
-// import "./BlogContainer.css";
 
 import { Grid, Image, Button } from 'semantic-ui-react'
 
@@ -150,6 +145,7 @@ class BlogContainer extends Component {
 
     return(
       <Grid>
+        <BlogFormModal {...formProps} />
         <Grid.Row>
           <Grid.Column width={13}>
             <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal } />
@@ -161,7 +157,7 @@ class BlogContainer extends Component {
             />
           </Grid.Column>
         </Grid.Row>
-        <BlogFormModal {...formProps} />
+        <BlogList blogs={ blogs } handleReadModal={ this.handleReadModal }/>
       </Grid>
     );
   }
