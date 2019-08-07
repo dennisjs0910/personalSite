@@ -1,7 +1,7 @@
 import BlogFormModal from './BlogFormModal';
-// import BlogModal from './BlogModal';
+import BlogModal from './BlogModal';
 
 export {
   BlogFormModal,
-  // BlogModal,
+  BlogModal,
 };

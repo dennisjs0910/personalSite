@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Image, List, Container, Button } from 'semantic-ui-react'
 
-const ItemHeader = ({ title }) => (
+const ItemHeader = ({ item, handleReadModal }) => (
   <List.Header
     as='h3'
-    onClick={() => console.log("todo open modal!") }
+    onClick={() => handleReadModal(item) }
     className="blog-item-header"
-  >{ title }
-  </List.Header>
+    content={ item.title }
+  />
 );
 
 const ItemBody = ({ content, summary }) => (
@@ -41,11 +41,14 @@ const ItemParagraph = ({ summary }) => {
 
 class BlogItem extends Component {
   render() {
-    const { item } = this.props;
+    const { item, handleReadModal } = this.props;
     return (
       <List.Item>
         <List.Content>
-          <ItemHeader title={ item.title } />
+          <ItemHeader
+            item={ item }
+            handleReadModal={ handleReadModal }
+          />
           <ItemBody
             content={ item.contents && item.contents[0] }
             summary={ item.summary }

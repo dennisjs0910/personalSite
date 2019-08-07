@@ -8,13 +8,13 @@
   display: block;
 }
 
+/*Mobile layout of blog item media*/
 @media only screen and (max-width: 767px) {
-  .ui.container {
-    width: 50%;
-    margin: 0.5rem auto;
-    display: block;
+  .blog-item-media {
+    width: 100%;
   }
 }
+
 /*div.blog-card {
   margin: auto;
   text-align: left;

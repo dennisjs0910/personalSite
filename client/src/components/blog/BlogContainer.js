@@ -5,13 +5,9 @@ import { BlogAction } from '../../actions';
 // import { isEmpty } from 'lodash';
 
 import BlogSearch from './BlogSearch';
-import { BlogFormModal } from '../modal';
+import { BlogFormModal, BlogModal } from '../modal';
 import BlogList from './BlogList';
-
-// TODO
 // import Header from './Header';
-// import { BlogFormModal, BlogModal } from '../modal';
-// END TODO
 
 import { Grid, Image, Button } from 'semantic-ui-react'
 
@@ -157,7 +153,16 @@ class BlogContainer extends Component {
             />
           </Grid.Column>
         </Grid.Row>
-        <BlogList blogs={ blogs } handleReadModal={ this.handleReadModal }/>
+        <BlogList
+          blogs={ blogs }
+          handleReadModal={ this.handleReadModal }
+        />
+        <BlogModal
+          isVisible={ isReadVisible }
+          handleClose={ this.handleReadModal }
+          currentUser={ currentUser }
+          blog={ selectedBlog }
+        />
       </Grid>
     );
   }

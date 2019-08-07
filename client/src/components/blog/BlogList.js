@@ -4,16 +4,16 @@ import BlogItem from './BlogItem';
 import "./BlogList.css";
 
 
-const ListItems = ({ blogs }) => {
-  return blogs.map((item) => <BlogItem key={ item.id } item={item}/>);
+const ListItems = ({ blogs, handleReadModal }) => {
+  return blogs.map((item) => <BlogItem key={ item.id } item={item} handleReadModal={handleReadModal} />);
 };
 
 class BlogList extends Component {
   render() {
-    const { blogs } = this.props;
+    const { blogs, handleReadModal } = this.props;
     return (
       <List divided verticalAlign='middle' size='large'>
-        <ListItems blogs={ blogs } />
+        <ListItems blogs={ blogs } handleReadModal={ handleReadModal } />
       </List>
     );
   }
