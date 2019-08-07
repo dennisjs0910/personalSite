@@ -1,68 +1,17 @@
 import React, { Component } from 'react';
-// import { Modal, Button, Tag, Popconfirm } from 'antd';
-// import { CommentEditor } from '../comment';
 import { Button, Modal, Container, Image } from 'semantic-ui-react'
 import { BlogAction } from '../../actions';
-import "./BlogModal.css";
 
+// import { CommentEditor } from '../comment';
+// import "./BlogModal.css";
 const ADMIN = "admin";
 
-// const ModalHeader = ({title}) => (
-//   <div className="blog-modal-header-container">
-//     <h2 className="blog-modal-header">{title}</h2>
-//   </div>
-// );
-
-// const BlogSummary = ({ summary }) => (
-//   <div className="blog-summary-container">
-//     <h3>Summary:</h3>
-//     { summary.split("\n").map((paragraph, idx) =>
-//       <p key={idx} className="blog-modal-summary">{paragraph}</p>
-//     )}
-//   </div>
-// );
-
-// const BlogContents = ({ contents=[] }) => {
-//   return contents.map(content => <BlogContent content={content} />);
-// };
-
-// const BlogContent = ({ content }) => (
-//   <div className="blog-content-container" key={content.id}>
-//     { content.is_video ?
-//       <video className="blog-content-media" controls>
-//         <source src={content.media_url} type="video/mp4"/>
-//       </video> :
-//       <img className="blog-content-media" src={content.media_url} alt="" />
-//     }
-//     <div className="blog-content-summary-container">{
-//       content.summary.split('\n').map((paragraph, idx) => (
-//         <p key={`${idx}`} className="blog-content-summary" >{paragraph}</p>
-//       ))
-//     }</div>
-//   </div>
-// );
-
-// const BlogTags = ({ tags }) => (
-//   <div className="blog-tags-container">
-//     <h4 className="blog-category-label">Tags:</h4>
-//     <TagList tags={ tags }/>
-//   </div>
-// )
-
-// const TagList = ({ tags }) => {
-//   return tags.map((tag, idx) => (
-//     <Tag key={idx} className="blog-tag">
-//       {tag}
-//     </Tag>
-//   ));
-// };
-//
 const Footer = ({ blog, handleClose, currentUser }) => {
   return (
     <Modal.Actions>
-      <Button negative onClick={ handleClose } content='Delete' />
+      <Button negative content='Delete' />
       <Button color='orange' content='Update' />
-      <Button content='Close' />
+      <Button  onClick={() => handleClose(null) } content='Close' />
     </Modal.Actions>
   )
 };
@@ -75,6 +24,9 @@ const Summary = ({ blog }) => {
   );
 };
 
+const BlogMediaContents = ({ contents }) => {
+  return contents.map((content, idx) => <ItemBody key={ idx } content={ content }/>);
+};
 
 const ItemMedia = ({ content }) => {
   if (!content) return null;
@@ -89,6 +41,13 @@ const ItemMedia = ({ content }) => {
   }
 };
 
+const ItemBody = ({ content }) => (
+  <Container className="blog-item-body">
+    <ItemMedia content={ content } />
+    <ItemParagraph summary={ content.summary } />
+  </Container>
+);
+
 const ItemParagraph = ({ summary }) => {
   const paragraphs = summary.split("\n");
   return (
@@ -102,10 +61,11 @@ class BlogModal extends Component {
   render() {
     const { isVisible, blog, handleClose, currentUser } = this.props;
     return (
-      <Modal open={ isVisible } onClose={() => handleClose(null)} >
+      <Modal open={ isVisible }>
         <Modal.Header content={ blog ? blog.title : ""} />
         <Modal.Content>
           <Summary blog={ blog } />
+          <BlogMediaContents contents={ blog ? blog.contents : [] } />
         </Modal.Content>
         <Footer blog={ blog } handleClose={ handleClose } currentUser={ currentUser } />
       </Modal>
