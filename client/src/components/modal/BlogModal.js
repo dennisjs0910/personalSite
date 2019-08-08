@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Container, Image } from 'semantic-ui-react'
+import { Button, Modal, Container, Confirm } from 'semantic-ui-react'
 import { BlogAction } from '../../actions';
 import { CommentContainer } from '../comment';
 import { BlogMediaContents, BlogSummary } from '../blog';
@@ -7,24 +7,40 @@ import ModalFooter from './ModalFooter';
 
 // TODO: <Tag>
 class BlogModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDeleteConfimVisible: false,
+    };
+  }
+
   /**
-   * Deletes blog.
+   * When user confirms delete blog, it calls props.handleDelete as well as close confirm
    */
-  handleDeleteOnClick = () => {
+  handleDeleteConfirm = () => {
     const { handleDeleteBlog, handleClose, blog } = this.props;
-    handleDeleteBlog(blog);
+    // this.setState({ isDeleteConfimVisible: false });
+    // handleDeleteBlog(blog);
     handleClose();
+  };
+
+  /**
+   * Opens and closes when user clicks on Delete Button or cancel Delete Button
+   */
+  handleDeleteConfirmVisibility = () => {
+    this.setState({ isDeleteConfimVisible: !this.state.isDeleteConfimVisible });
   };
 
   /**
    * Update Blog.
    */
-  handleUpdateOnClick = () => {
+  handleUpdateButton = () => {
     const { handleUpdateBlog, blog } = this.props;
     handleUpdateBlog(blog);
   };
 
   render() {
+    const { isDeleteConfimVisible } = this.state;
     const { isVisible, blog, handleClose, handleUpdateBlog, currentUser } = this.props;
     if (!isVisible) return null;
     return (
@@ -42,9 +58,16 @@ class BlogModal extends Component {
         <ModalFooter
           blog={ blog }
           handleClose={ handleClose }
-          handleDelete={ this.handleDeleteOnClick.bind(this) }
-          handleUpdateOnClick={ this.handleUpdateOnClick.bind(this) }
+          handleDelete={ this.handleDeleteConfirmVisibility.bind(this) }
+          handleUpdateButton={ this.handleUpdateButton.bind(this) }
           currentUser={ currentUser }
+        />
+        <Confirm
+          content='Are you sure? Blog will be deleted forever'
+          open={ isDeleteConfimVisible }
+          confirmButton={<Button negative content="Delete"/>}
+          onCancel={ this.handleDeleteConfirmVisibility }
+          onConfirm={ this.handleDeleteConfirm.bind(this) }
         />
       </Modal>
     );
