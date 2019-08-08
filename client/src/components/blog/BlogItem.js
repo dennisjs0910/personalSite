@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, List, Container, Button } from 'semantic-ui-react'
-import ItemMedia from '../modal/ItemMedia';
-import ItemParagraph from '../modal/ItemParagraph';
+import MediaItem from './MediaItem';
+import ParagraphContainer from './ParagraphContainer';
 
 const MEDIA_SUMMARY_LIMIT = 1000;
 
@@ -16,8 +16,8 @@ const ItemHeader = ({ item, handleReadModal }) => (
 
 const ItemBody = ({ content, summary }) => (
   <Container className="blog-item-body">
-    <ItemMedia content={ content } />
-    <ItemParagraph summary={ summary } limit={ MEDIA_SUMMARY_LIMIT } />
+    <MediaItem content={ content } />
+    <ParagraphContainer summary={ summary } limit={ MEDIA_SUMMARY_LIMIT } />
   </Container>
 );
 

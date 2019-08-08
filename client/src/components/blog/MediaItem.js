@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image } from 'semantic-ui-react'
 
-export default class ItemMedia extends Component {
+export default class MediaItem extends Component {
   render() {
     const { content } = this.props;
     if (!content) return null;

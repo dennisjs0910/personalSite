@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Modal, Container, Image } from 'semantic-ui-react'
-import ItemParagraph from './ItemParagraph';
-import ItemMedia from './ItemMedia';
+import { ParagraphContainer, MediaItem } from './';
 
 const ItemBody = ({ content }) => (
   <Container className="blog-item-body">
-    <ItemMedia content={ content } />
-    <ItemParagraph summary={ content.summary } />
+    <MediaItem content={ content } />
+    <ParagraphContainer summary={ content.summary } />
   </Container>
 );
 

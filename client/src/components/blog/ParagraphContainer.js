@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container } from 'semantic-ui-react'
 
-export default class ItemParagraph extends Component {
+export default class ParagraphContainer extends Component {
   render() {
     const { summary, limit } = this.props;
     let paragraphs = summary.split("\n");

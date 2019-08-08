@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Button, Modal, Container, Image } from 'semantic-ui-react'
 import { BlogAction } from '../../actions';
 import { CommentContainer } from '../comment';
-import BlogMediaContents from './BlogMediaContents';
-import BlogSummary from './BlogSummary';
+import { BlogMediaContents, BlogSummary } from '../blog';
 import ModalFooter from './ModalFooter';
 
 // TODO: <Tag>
