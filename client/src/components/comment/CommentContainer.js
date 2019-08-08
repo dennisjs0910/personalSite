@@ -7,7 +7,7 @@ import { CommentAction } from '../../actions';
 import CommentList from './CommentList';
 import CommentEditor from './CommentEditor';
 
-import { Button, Comment, Form, Header } from 'semantic-ui-react';
+import { Comment, Header } from 'semantic-ui-react';
 
 class CommentContainer extends Component {
   constructor(props) {

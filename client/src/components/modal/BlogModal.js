@@ -8,7 +8,6 @@ import ModalFooter from './ModalFooter';
 
 // TODO: <Tag>
 class BlogModal extends Component {
-
   handleUpdateOnClick = () => {
     const { handleUpdateModal, blog } = this.props;
     handleUpdateModal(blog);

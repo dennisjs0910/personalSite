@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Button, TextArea, Input, Form, Modal, Dropdown, Label, Image } from 'semantic-ui-react'
-import { BlogAction } from '../../actions';
-import { UploadButton } from '../button';
-import MediaInputBox from './MediaInputBox';
 import { isEqual } from 'lodash';
+
+import { BlogAction } from '../../actions';
+import { TitleForm, SummaryForm, TagsForm, UploadMediaForm, MediaTextAreaList } from '../form';
 
 const INITIAL_STATE = {
   title: "",
@@ -18,57 +18,6 @@ const INITIAL_STATE = {
   filesToDelete: [],
   isPreviewVisible: false,
   previewImage: ""
-};
-
-const TitleForm = ({ handleTextInputChange }) => (
-  <Form.Field required>
-    <label>Blog Title</label>
-    <Input onChange={(e, data) => handleTextInputChange(data, "title") } />
-  </Form.Field>
-);
-
-const SummaryForm = ({ handleTextInputChange }) => (
-  <Form.Field required>
-    <label>Blog Summary</label>
-    <TextArea onChange={(e, data) => handleTextInputChange(data, "summary") } />
-  </Form.Field>
-);
-
-const TagsForm = ({ options, tags, handleTagAddition, handleTagChange }) => (
-  <Form.Field>
-    <label>Tags</label>
-    <Dropdown
-      options={ options }
-      placeholder="Add Tags"
-      search
-      selection
-      fluid
-      multiple
-      allowAdditions
-      value={ tags }
-      onAddItem={ handleTagAddition }
-      onChange={ handleTagChange }
-    />
-  </Form.Field>
-);
-
-const UploadMediaForm = ({ handleFileUpload }) => (
-  <Form.Field>
-    <label>Images and videos</label>
-    <UploadButton handleFileUpload={ handleFileUpload }/>
-  </Form.Field>
-);
-
-const MediaInputBoxes = ({ mediaList, handleMediaTextChange, handleMediaRemove }) => {
-  return mediaList.map((item, idx) => (
-    <MediaInputBox
-      key={ idx }
-      idx={ idx }
-      item={ item }
-      handleMediaTextChange={ handleMediaTextChange }
-      handleMediaRemove={ handleMediaRemove }
-    />
-  ));
 };
 
 class BlogFormModal extends Component {
@@ -329,7 +278,7 @@ class BlogFormModal extends Component {
               handleTagChange={ this.handleTagChange.bind(this) }
             />
             <UploadMediaForm handleFileUpload={ this.handleMediaUpload.bind(this) }/>
-            <MediaInputBoxes
+            <MediaTextAreaList
               mediaList={ mediaList }
               handleMediaTextChange={ this.handleMediaTextChange.bind(this) }
               handleMediaRemove={ this.handleMediaRemove.bind(this) }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextArea, Form, Image, Container, Button } from 'semantic-ui-react'
-import './MediaInputBox.css';
+import './MediaTextArea.css';
 
 const VIDEO = 'video';
 
@@ -16,7 +16,7 @@ const MediaContainer = ({ item }) => {
   }
 }
 
-class MediaInputBox extends Component {
+class MediaTextArea extends Component {
   render() {
     const { item, idx, handleMediaTextChange, handleMediaRemove } = this.props;
     return(
@@ -36,4 +36,4 @@ class MediaInputBox extends Component {
   };
 }
 
-export default MediaInputBox;
+export default MediaTextArea;
