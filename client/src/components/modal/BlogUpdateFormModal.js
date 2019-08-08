@@ -4,91 +4,53 @@ import { BlogAction } from '../../actions';
 import { TitleForm, SummaryForm, TagsForm, UploadMediaForm, MediaTextAreaList } from '../form';
 import { Button, TextArea, Input, Form, Modal, Dropdown, Label, Image, Confirm } from 'semantic-ui-react'
 
+const INIT_STATE = {
+  title: "",
+  summary: "",
+  tags: [],
+  options: [], // used for tag dropdown options
+  mediaList: [],
+  isConfirmOpen: false,
+}
 
 class BlogUpdateFormModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      title: "",
-      summary: "",
-      tags: [],
-      options: [], // used for tag dropdown options
-      mediaList: [],
-      isConfirmOpen: false,
-    };
+    this.state = INIT_STATE;
   };
 
   componentDidMount() {
-    console.log(this.props);
-    this.setState({title:"adsfaa"});
+    const { blog } = this.props;
+    this.setState({
+      title: blog.title,
+      summary: blog.summary,
+      tags: blog.category,
+      options: this.parseTagsToOptions(blog.category),
+      mediaList: this.parseContentsToMediaList(blog.contents),
+    });
   };
 
-  _getFilesAndText = ({contents=[]}) => {
-    let res = { files: [], texts: []};
-    contents.forEach((content, idx) => {
-      this.ogImageSet.add(content.public_id);
-      res.files.push({
-        uid: `${idx}`,
-        name: `${idx}_image`,
-        status: 'done',
-        response: [{
-          public_id: content.public_id,
-          secure_url: content.media_url,
-          resource_type: content.is_video ? "video" : "image"
-        }]
-      });
-      res.texts.push(content.summary);
-    });
-    return res;
+  componentWillUnmount() {
+    this.setState(INIT_STATE);
   };
 
   /**
-   * When isUpdate=true and isSubmitted=false, it is a modal close so we do not delete original images
-   * If it is sumbitted we delete all filesThat need to be deleted from cloudinary.
-   * Otherwise, delete all media files from cloudinary.
-   * @param  {Boolean} isSubmitted [description]
-   * @return {[type]}              [description]
+   * Parses tags to semantic-ui-react dependent options [ {text: "String", value: "String"} ...]
+   * @param  {String[]} tags [ blog's tags ]
+   * @return {Object[]}      [ array of objects = {text: "String", value: "String"} ]
    */
-  deleteUnusedImages = (isSubmitted) => {
-    const { isUpdate } = this.props;
-    // case: update blog closed modal
-    if (isUpdate && !isSubmitted) {
-      let idList = [];
-      // put all files that were added to the idList O(n)
-      this.state.fileList.forEach(file => {
-        if (!this.ogImageSet.has(file.response[0].public_id)) {
-          idList.push({
-            public_id: file.response[0].public_id,
-            resource_type: file.response[0].resource_type
-          });
-        }
-      });
+  parseTagsToOptions = (tags) => {
+    return tags.map(value => ({ text: value, value }));
+  };
 
-      // keep original files that belong to the blog and put others in idList O(n)
-      this.state.filesToDelete.forEach(file => {
-        if (!this.ogImageSet.has(file.public_id)) {
-          idList.push({
-            public_id: file.public_id,
-            resource_type: file.resource_type
-          });
-        }
-      });
-      //delete all files in idList
-      idList.forEach(file => BlogAction.deleteImage(file));
-      return;
-    };
-    // case: update blog and submit, create blog and sumbit, create blog and close
-    // for create we want to delete all files in filesToDelete since they don't belong to any content
-    this.state.filesToDelete.forEach(file => BlogAction.deleteImage(file));
-
-    // case: create blog and close, delete everything that is left.
-    if (!isSubmitted) {
-      this.state.fileList.forEach(file => {
-        if (!!file.response) {
-          BlogAction.deleteImage(file.response[0]);
-        }
-      });
-    }
+  parseContentsToMediaList = (contents) => {
+    return contents.map(content => ({
+      id: content.id,
+      public_id: content.public_id,
+      media_url: content.media_url,
+      summary: content.summary,
+      resource_type: content.is_video ? "video" : "image"
+    }));
   };
 
   /**
@@ -195,11 +157,7 @@ class BlogUpdateFormModal extends Component {
     await BlogAction.deleteImage(item);
   };
 
-  handleModalClose = (e, isSubmitted) => {
-    this.deleteUnusedImages(isSubmitted);
-    delete this.input;
-    delete this.tagSet;
-    delete this.ogImageSet;
+  handleModalClose = (e) => {
     this.props.handleClose(null);
   };
 
@@ -211,19 +169,18 @@ class BlogUpdateFormModal extends Component {
       title, summary, tags, mediaList, user_id: currentUser.id, blog
     }));
 
-    this.handleModalClose(e, true);
+    this.handleModalClose(e);
   };
 
   render() {
     const { title, summary, tags, options, mediaList, isConfirmOpen } = this.state;
     const { isVisible, handleClose } = this.props;
-
     return (
       <Modal open={ isVisible } >
         <Modal.Content>
           <Form>
             <TitleForm handleTextInputChange={ this.handleTextInputChange } value={ title }/>
-            <SummaryForm handleTextInputChange={ this.handleTextInputChange } />
+            <SummaryForm handleTextInputChange={ this.handleTextInputChange } value={ summary }/>
             <TagsForm
               options={ options }
               tags={ tags }
@@ -256,7 +213,7 @@ class BlogUpdateFormModal extends Component {
           open={ isConfirmOpen }
           confirmButton={<Button negative content="Clear"/>}
           onCancel={ this.handleConfirmVisibility }
-          onConfirm={(e) => this.handleModalClose(false) }
+          onConfirm={ this.handleModalClose }
         />
       </Modal>
     );

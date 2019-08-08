@@ -105,13 +105,13 @@ class BlogContainer extends Component {
 
   //TODO: Error handling
   render() {
-    const { isReadVisible, selectedBlog } = this.state;
+    const { isReadVisible, selectedBlog, isFormVisible, isUpdateVisible } = this.state;
     const { blogs, currentUser } = this.props;
 
     return(
       <Grid>
-        <BlogFormModal { ...this.getBlogReadProps() } />
-        <BlogUpdateFormModal { ...this.getBlogUpdateProps() } />
+        { isFormVisible && <BlogFormModal { ...this.getBlogReadProps() } /> }
+        { isUpdateVisible && <BlogUpdateFormModal { ...this.getBlogUpdateProps() } /> }
 
         <Grid.Row>
           <Grid.Column width={13}>

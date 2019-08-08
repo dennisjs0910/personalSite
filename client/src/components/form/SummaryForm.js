@@ -1,10 +1,13 @@
 import React from 'react';
 import { Form, TextArea } from 'semantic-ui-react'
 
-const SummaryForm = ({ handleTextInputChange }) => (
+const SummaryForm = ({ handleTextInputChange, value }) => (
   <Form.Field required>
     <label>Blog Summary</label>
-    <TextArea onChange={(e, data) => handleTextInputChange(data, "summary") } />
+    <TextArea
+      value={ !!value ? value : "" }
+      onChange={(e, data) => handleTextInputChange(data, "summary") }
+    />
   </Form.Field>
 );
 

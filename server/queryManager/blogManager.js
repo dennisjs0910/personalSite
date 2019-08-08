@@ -19,11 +19,38 @@ let _createBlogPostData = (title, summary, tags, user_id) => {
 };
 
 
-// public_id: 'dev/jc5pprlrnumx81bbywju',
-// secure_url: 'https://res.cloudinary.com/dsospjk5r/image/upload/v1565137618/dev/jc5pprlrnumx81bbywju.jpg',
-// summary: 'chelsea',
-// resource_type: 'image'
-let _createContentData = (blogPost_id, mediaList=[], contentIds=[]) => {
+
+/**
+ * This function creates Object to be fed into postgresql lib.
+ * @param  {Integer}         blogPost_id         [Blog Post row's id]
+ * @param  {Blog Content[]}  mediaList           [array of user input objects]
+ * @return {Blog Content[]}                      [array of Blog Content schema like objects]
+ */
+let _createContentData = (blogPost_id, mediaList) => {
+  let res = [];
+  for (let idx = 0; idx < mediaList.length; idx++) {
+    const { media_url, resource_type, summary, public_id } = mediaList[idx];
+    res.push({
+      blogPost_id,
+      is_video : resource_type === 'video',
+      public_id,
+      media_url,
+      summary,
+      sequence: idx
+    });
+  }
+  return res;
+};
+
+/**
+ * This function creates Object to be fed into postgresql lib.
+ * It updates exisiting rows in the database and saves space by reusing exisiting rows.
+ * @param  {Integer}         blogPost_id         [Blog Post row's id]
+ * @param  {Blog Content[]}  mediaList           [array of user input objects]
+ * @param  {Integer[]}       contentIds          [Blog Content row ids that can be reused]
+ * @return {Blog Content[]}                      [array of Blog Content schema like objects]
+ */
+let _createUpdateContentData = (blogPost_id, mediaList, contentIds) => {
   let res = [];
   for (let idx = 0; idx < mediaList.length; idx++) {
     const { media_url, resource_type, summary, public_id } = mediaList[idx];
@@ -182,9 +209,9 @@ let createBlog = async (title, summary, tags, user_id, mediaList) => {
   }
 };
 
-let updateBlog = async ({title, summary, tags, user_id, fileList, mediaList, blog}) => {
+let updateBlog = async (title, summary, tags, user_id, mediaList, blog) => {
   const {id, contentIds} = getBlogAndContentsIds(blog);
-  const contentDatas = _createContentData(id, fileList, mediaList, contentIds);
+  const contentDatas = _createUpdateContentData(id, mediaList, contentIds);
 
   try {
     const isUserAdmin = await userManager.isUserAdmin({ id: user_id });

@@ -5,7 +5,7 @@ const TitleForm = ({ handleTextInputChange, value }) => (
   <Form.Field required>
     <label>Blog Title</label>
     <Input
-      value={ value ? value : "" }
+      value={ !!value ? value : "" }
       onChange={(e, data) => handleTextInputChange(data, "title") }
     />
   </Form.Field>
