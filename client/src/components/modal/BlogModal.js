@@ -7,11 +7,6 @@ import ModalFooter from './ModalFooter';
 
 // TODO: <Tag>
 class BlogModal extends Component {
-  handleUpdateOnClick = () => {
-    const { handleUpdateModal, blog } = this.props;
-    handleUpdateModal(blog);
-  };
-
   /**
    * Deletes blog.
    */
@@ -21,8 +16,16 @@ class BlogModal extends Component {
     handleClose();
   };
 
+  /**
+   * Update Blog.
+   */
+  handleUpdateOnClick = () => {
+    const { handleUpdateBlog, blog } = this.props;
+    handleUpdateBlog(blog);
+  };
+
   render() {
-    const { isVisible, blog, handleClose, currentUser } = this.props;
+    const { isVisible, blog, handleClose, handleUpdateBlog, currentUser } = this.props;
     if (!isVisible) return null;
     return (
       <Modal open={ isVisible }>
@@ -40,6 +43,7 @@ class BlogModal extends Component {
           blog={ blog }
           handleClose={ handleClose }
           handleDelete={ this.handleDeleteOnClick.bind(this) }
+          handleUpdateOnClick={ this.handleUpdateOnClick.bind(this) }
           currentUser={ currentUser }
         />
       </Modal>

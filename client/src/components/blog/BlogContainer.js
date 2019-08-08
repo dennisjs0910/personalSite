@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { BlogAction } from '../../actions';
-// import { isEmpty } from 'lodash';
 
 import BlogSearch from './BlogSearch';
-import { BlogFormModal, BlogModal } from '../modal';
+import { BlogFormModal, BlogUpdateFormModal, BlogModal } from '../modal';
 import BlogList from './BlogList';
 import { CreateBlogButton } from '../button';
 // import Header from './Header';
 
-import { Grid, Image, Button } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 
 class BlogContainer extends Component {
   constructor(props) {
@@ -18,44 +17,13 @@ class BlogContainer extends Component {
     this.state = {
       isFormVisible: false,
       isReadVisible: false,
-      isUpdate: false,
+      isUpdateVisible: false,
       selectedBlog: null,
     };
-
-    this.handleCreateModal = this.handleCreateModal.bind(this);
-    this.handleReadModal = this.handleReadModal.bind(this);
-    this.handleUpdateModal = this.handleUpdateModal.bind(this);
   };
 
   componentDidMount() {
     this.props.getBlogs();
-  };
-
-  handleUpdateModal = (blog) => {
-    this.setState({
-      isReadVisible: false,
-      isFormVisible: !this.state.isFormVisible,
-      isUpdate: !this.state.isUpdate,
-      selectedBlog: blog,
-    });
-  };
-
-  generateFormProps = () => {
-    const { isFormVisible, isUpdate, selectedBlog } = this.state;
-    const { currentUser, createBlog, updateBlog } = this.props;
-    let formProps = {
-      currentUser,
-      isUpdate,
-      isVisible: isFormVisible,
-      blog: selectedBlog,
-      handleClose: this.handleCreateModal,
-      handleSubmit: createBlog,
-    };
-    if (isUpdate) {
-      formProps.handleClose = this.handleUpdateModal;
-      formProps.handleSubmit = updateBlog;
-    }
-    return formProps;
   };
 
   /**
@@ -65,7 +33,7 @@ class BlogContainer extends Component {
     this.setState({
       isReadVisible: false,
       isFormVisible: !this.state.isFormVisible,
-      isUpdate: false,
+      isUpdateVisible: false,
       selectedBlog: null,
     });
   };
@@ -79,7 +47,16 @@ class BlogContainer extends Component {
     this.setState({
       isReadVisible: !this.state.isReadVisible,
       isFormVisible: false,
-      isUpdate: false,
+      isUpdateVisible: false,
+      selectedBlog: blog,
+    });
+  };
+
+  handleUpdateModal = (blog) => {
+    this.setState({
+      isReadVisible: false,
+      isFormVisible: false,
+      isUpdateVisible: !this.state.isUpdateVisible,
       selectedBlog: blog,
     });
   };
@@ -94,17 +71,51 @@ class BlogContainer extends Component {
     }
   };
 
+  /**
+   * Genereates Blog Read properties
+   * @return {Properties Object} [React props object]
+   */
+  getBlogReadProps = () => {
+    const { isFormVisible, selectedBlog } = this.state;
+    const { currentUser, createBlog } = this.props;
+    return {
+      currentUser,
+      isVisible: isFormVisible,
+      blog: selectedBlog,
+      handleClose: this.handleCreateModal.bind(this),
+      handleSubmit: createBlog,
+    };
+  };
+
+  /**
+   * Genereates Blog Update properties
+   * @return {Properties Object} [React props object]
+   */
+  getBlogUpdateProps = () => {
+    const { isUpdateVisible, selectedBlog } = this.state;
+    const { currentUser, updateBlog } = this.props;
+    return {
+      currentUser,
+      isVisible: isUpdateVisible,
+      blog: selectedBlog,
+      handleClose: this.handleUpdateModal.bind(this),
+      handleSubmit: updateBlog,
+    };
+  }
+
+  //TODO: Error handling
   render() {
-    const { isFormVisible, isReadVisible, selectedBlog } = this.state;
-    const { blogs, currentUser, deleteBlog, error } = this.props;
-    const formProps = this.generateFormProps();
+    const { isReadVisible, selectedBlog } = this.state;
+    const { blogs, currentUser } = this.props;
 
     return(
       <Grid>
-        <BlogFormModal {...formProps} />
+        <BlogFormModal { ...this.getBlogReadProps() } />
+        <BlogUpdateFormModal { ...this.getBlogUpdateProps() } />
+
         <Grid.Row>
           <Grid.Column width={13}>
-            <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal } />
+            <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal.bind(this) } />
           </Grid.Column>
           <Grid.Column width={3}>
             <CreateBlogButton
@@ -113,13 +124,16 @@ class BlogContainer extends Component {
             />
           </Grid.Column>
         </Grid.Row>
+
         <BlogList
           blogs={ blogs }
           handleReadModal={ this.handleReadModal.bind(this) }
         />
+
         <BlogModal
           isVisible={ isReadVisible }
           handleClose={ this.handleReadModal.bind(this) }
+          handleUpdateBlog={ this.handleUpdateModal.bind(this) }
           handleDeleteBlog={ this.handleDeleteBlog.bind(this) }
           currentUser={ currentUser }
           blog={ selectedBlog }
@@ -127,50 +141,6 @@ class BlogContainer extends Component {
       </Grid>
     );
   }
-
-
-  // render() {
-  //   const { isFormVisible, isReadVisible, selectedBlog } = this.state;
-  //   const { blogs, currentUser, deleteBlog, error } = this.props;
-  //   const formProps = this.generateFormProps();
-  //   return (
-  //     <Content className="fullscreen blog-container main-img">
-  //       <Header
-  //         currentUser={ currentUser }
-  //         handleCreateModal={ this.handleCreateModal }
-  //       />
-  //       { !isEmpty(error) ?
-  //         <Alert
-  //           className="blog-alert"
-  //           message="Error"
-  //           description={ error.message }
-  //           type="error"
-  //           showIcon
-  //           closable
-  //         /> : null
-  //       }
-  //       <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal } />
-  //       <BlogList blogs={ blogs } handleReadModal={ this.handleReadModal }/>
-  //       { isFormVisible ?
-  //         <BlogFormModal {...formProps} />
-  //         : null
-  //       }
-  //       {
-  //         isReadVisible && selectedBlog !== null ?
-  //         <BlogModal
-  //           isVisible={ isReadVisible }
-  //           handleClose={ this.handleReadModal }
-  //           currentUser={ currentUser }
-  //           blog={ selectedBlog }
-  //           deleteBlog={ deleteBlog }
-  //           handleUpdateModal={ this.handleUpdateModal }
-  //         /> :
-  //         null
-  //       }
-  //     </Content>
-  //   );
-  // }
-
 }
 
 const mapDispatchToProps = dispatch => {

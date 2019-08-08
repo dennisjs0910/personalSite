@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Modal, Button, Confirm } from 'semantic-ui-react';
 
 const DeleteButton = ({ isOwner, handleConfirmVisibility }) => (
-  isOwner && <Button onClick={ handleConfirmVisibility } negative content='Delete' />
+  isOwner && <Button negative content='Delete' onClick={ handleConfirmVisibility } />
 );
 
-const UpdateButton = ({ isOwner }) => (
-  isOwner && <Button color='orange' content='Update' />
+const UpdateButton = ({ isOwner, handleUpdateOnClick }) => (
+  isOwner && <Button color='orange' content='Update' onClick={ handleUpdateOnClick } />
 );
 
 const CloseButton = ({ handleClose }) => (
@@ -36,8 +36,9 @@ export default class ModalFooter extends Component {
     this.setState({ isOpen: false });
   };
 
+
   render() {
-    const { blog, handleClose, currentUser } = this.props;
+    const { blog, handleClose, currentUser, handleUpdateOnClick } = this.props;
     const { isOpen } = this.state;
     const isOwner = currentUser && currentUser.id === blog.user_id;
     return (
@@ -48,9 +49,11 @@ export default class ModalFooter extends Component {
         />
         <UpdateButton
           isOwner={ isOwner }
+          handleUpdateOnClick={ handleUpdateOnClick }
         />
         <CloseButton handleClose={ handleClose } />
         <Confirm
+          content='Are you sure? Blog will be deleted forever'
           open={ isOpen }
           confirmButton={<Button negative content="Delete"/>}
           onCancel={ this.handleConfirmVisibility }
