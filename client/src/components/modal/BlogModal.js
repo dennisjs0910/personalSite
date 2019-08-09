@@ -1,200 +1,78 @@
 import React, { Component } from 'react';
-// import { Modal, Button, Tag, Popconfirm } from 'antd';
-// import { CommentEditor } from '../comment';
-import { Button, Modal, Container, Image } from 'semantic-ui-react'
-import { BlogAction } from '../../actions';
-import "./BlogModal.css";
+import { Button, Modal, Confirm } from 'semantic-ui-react'
+import { CommentContainer } from '../comment';
+import { BlogMediaContents, BlogSummary } from '../blog';
+import { TagsContainer } from '../tag';
+import ModalFooter from './ModalFooter';
 
-const ADMIN = "admin";
-
-// const ModalHeader = ({title}) => (
-//   <div className="blog-modal-header-container">
-//     <h2 className="blog-modal-header">{title}</h2>
-//   </div>
-// );
-
-// const BlogSummary = ({ summary }) => (
-//   <div className="blog-summary-container">
-//     <h3>Summary:</h3>
-//     { summary.split("\n").map((paragraph, idx) =>
-//       <p key={idx} className="blog-modal-summary">{paragraph}</p>
-//     )}
-//   </div>
-// );
-
-// const BlogContents = ({ contents=[] }) => {
-//   return contents.map(content => <BlogContent content={content} />);
-// };
-
-// const BlogContent = ({ content }) => (
-//   <div className="blog-content-container" key={content.id}>
-//     { content.is_video ?
-//       <video className="blog-content-media" controls>
-//         <source src={content.media_url} type="video/mp4"/>
-//       </video> :
-//       <img className="blog-content-media" src={content.media_url} alt="" />
-//     }
-//     <div className="blog-content-summary-container">{
-//       content.summary.split('\n').map((paragraph, idx) => (
-//         <p key={`${idx}`} className="blog-content-summary" >{paragraph}</p>
-//       ))
-//     }</div>
-//   </div>
-// );
-
-// const BlogTags = ({ tags }) => (
-//   <div className="blog-tags-container">
-//     <h4 className="blog-category-label">Tags:</h4>
-//     <TagList tags={ tags }/>
-//   </div>
-// )
-
-// const TagList = ({ tags }) => {
-//   return tags.map((tag, idx) => (
-//     <Tag key={idx} className="blog-tag">
-//       {tag}
-//     </Tag>
-//   ));
-// };
-//
-const Footer = ({ blog, handleClose, currentUser }) => {
-  return (
-    <Modal.Actions>
-      <Button negative onClick={ handleClose } content='Delete' />
-      <Button color='orange' content='Update' />
-      <Button content='Close' />
-    </Modal.Actions>
-  )
-};
-
-const Summary = ({ blog }) => {
-  return(
-    <Container className="blog-item-body">
-      <ItemParagraph summary={ blog.summary } />
-    </Container>
-  );
-};
-
-
-const ItemMedia = ({ content }) => {
-  if (!content) return null;
-  if (content.is_video) {
-    return (
-      <video controls className="blog-item-media">
-        <source src={ content.media_url } type="video/mp4"/>
-      </video>
-    );
-  } else {
-    return (<Image className="blog-item-media" src={ content.media_url } />);
-  }
-};
-
-const ItemParagraph = ({ summary }) => {
-  const paragraphs = summary.split("\n");
-  return (
-    <Container>
-     { paragraphs.map((paragraph, idx) => <p key={ idx }>{ paragraph }</p>) }
-    </Container>
-  );
-};
-
+// TODO: <Tag>
 class BlogModal extends Component {
-  render() {
-    const { isVisible, blog, handleClose, currentUser } = this.props;
-    return (
-      <Modal open={ isVisible } onClose={() => handleClose(null)} >
-        <Modal.Header content={ blog ? blog.title : ""} />
-        <Modal.Content>
-          <Summary blog={ blog } />
-        </Modal.Content>
-        <Footer blog={ blog } handleClose={ handleClose } currentUser={ currentUser } />
-      </Modal>
-    );
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDeleteConfimVisible: false,
+    };
+  }
 
-  handleDeleteOnClick = () => {
-    const { deleteBlog, handleClose, blog} = this.props;
-    blog.contents.forEach(content => BlogAction.deleteImage({
-      public_id: content.public_id,
-      resource_type: content.is_video ? 'video' : 'image'
-    }));
-    deleteBlog(blog);
+  /**
+   * When user confirms delete blog, it calls props.handleDelete as well as close confirm
+   */
+  handleDeleteConfirm = () => {
+    const { handleDeleteBlog, handleClose, blog } = this.props;
+    this.setState({ isDeleteConfimVisible: false });
+    handleDeleteBlog(blog);
     handleClose();
   };
 
-  handleUpdateOnClick = () => {
-    const { handleUpdateModal, blog } = this.props;
-    handleUpdateModal(blog);
+  /**
+   * Opens and closes when user clicks on Delete Button or cancel Delete Button
+   */
+  handleDeleteConfirmVisibility = () => {
+    this.setState({ isDeleteConfimVisible: !this.state.isDeleteConfimVisible });
   };
 
   /**
-   * This function returns the footor of a main mondal component.
-   * If blog belongs to current_user, it will also show Update and Delete Buttons.
-   * @param  {Function} handleClose [function that closes modal]
-   * @return {ReactComponent[]}     [List of ReactComponent buttons]
+   * Update Blog.
    */
-  // getFooterElements = (currentUser={}, {user_id}, handleClose) => {
-  //   let footer = [];
-  //   if (!!currentUser && (currentUser.id === user_id  || currentUser.permission === ADMIN)) {
-  //     footer.push(
-  //       (<Popconfirm
-  //         key="popup"
-  //         title="Are you sure you want to delete this blog?"
-  //         onConfirm={ this.handleDeleteOnClick }
-  //         okText="Yes"
-  //         cancelText="No"
-  //       >
-  //         <Button
-  //           type="danger"
-  //           key="delete">
-  //           Delete
-  //         </Button>
-  //       </Popconfirm>),
-  //       (<Button
-  //         onClick={ this.handleUpdateOnClick }
-  //         className="warning-button"
-  //         key="update">
-  //         Update
-  //       </Button>)
-  //     );
-  //   }
+  handleUpdateButton = () => {
+    const { handleUpdateBlog, blog } = this.props;
+    handleUpdateBlog(blog);
+  };
 
-  //   footer.push(
-  //     (<Button key="back" onClick={ handleClose }>
-  //       Close
-  //     </Button>)
-  //   );
-  //   return footer;
-  // };
-
-  // getCategoryJSX = ({ category=[] }) => {
-  //   return category.map((element, idx) => (
-  //     <Tag key={idx} className="blog-tag">
-  //       {element}
-  //     </Tag>
-  //   ));
-  // };
-
-  // render() {
-  //   const { isVisible, handleClose, blog, currentUser } = this.props;
-  //   if (!blog) return null;
-
-  //   return(
-  //     <Modal
-  //       className="blog-modal-container"
-  //       width="70rem"
-  //       title={<ModalHeader title={blog.title} />}
-  //       visible={ isVisible }
-  //       onCancel={() => handleClose(null) }
-  //       footer={ this.getFooterElements(currentUser, blog, handleClose) }
-  //     >
-  //       <BlogSummary summary={ blog.summary }/>
-  //       <BlogContents contents={blog.contents}/>
-  //       <BlogTags tags={ blog.category } />
-  //       <CommentEditor blogId={blog.id} parentId={blog.id} currentUser={currentUser}/>
-  //     </Modal>
-  //   );
-  // };
+  render() {
+    const { isDeleteConfimVisible } = this.state;
+    const { isVisible, blog, handleClose, currentUser } = this.props;
+    if (!isVisible) return null;
+    return (
+      <Modal open={ isVisible }>
+        <Modal.Header content={ blog.title } />
+        <Modal.Content>
+          <BlogSummary blog={ blog } />
+          <BlogMediaContents contents={ blog.contents || [] } />
+          <TagsContainer category={ blog.category } size={ 'large' } />
+          <CommentContainer
+            blogId={ blog.id }
+            parentId={ blog.id }
+            currentUser={ currentUser }
+          />
+        </Modal.Content>
+        <ModalFooter
+          blog={ blog }
+          handleClose={ handleClose }
+          handleDelete={ this.handleDeleteConfirmVisibility.bind(this) }
+          handleUpdateButton={ this.handleUpdateButton.bind(this) }
+          currentUser={ currentUser }
+        />
+        <Confirm
+          content='Are you sure? Blog will be deleted forever'
+          open={ isDeleteConfimVisible }
+          confirmButton={<Button negative content="Delete"/>}
+          onCancel={ this.handleDeleteConfirmVisibility }
+          onConfirm={ this.handleDeleteConfirm.bind(this) }
+        />
+      </Modal>
+    );
+  };
 }
 
 export default BlogModal;

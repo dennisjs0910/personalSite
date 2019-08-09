@@ -1,0 +1,43 @@
+.blog-search-container {
+  min-width: 175px;
+}
+
+.blog-search-container .ui.fluid.search.blog-search-input-container {
+  display: inline;
+}
+
+.blog-search-container .ui.selection.dropdown.blog-search-dropdown {
+  text-align: center;
+  min-width: 75px;
+  width: 15%;
+  border-top-left-radius: 500rem;
+  border-bottom-left-radius: 500rem;
+  background-color: #2185d0;
+  color: #fff;
+  text-shadow: none;
+  background-image: none;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+}
+
+.blog-search-container .ui.fluid.search.blog-search-input-container > .ui.icon.input {
+  min-width: 100px;
+  width: 80%;
+  top: 2px;
+}
+
+.blog-search-container .ui.fluid.search.blog-search-input-container > .ui.icon.input > input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+@media only screen and (max-width: 767px) {
+  .blog-search-container .ui.fluid.search.blog-search-input-container > .ui.icon.input {
+    max-width: 70%;
+  }
+
+  .ui.grid > .row > .column.blog-grid-create-button-container {
+    margin-top: 2rem;
+  }
+}

@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { Button, ButtonProps, Label } from 'semantic-ui-react';
+import { Button, Label } from 'semantic-ui-react';
 
 class UploadButton extends Component {
-  constructor(props) {
-    super(props);
-  };
-
   /**
    * TODO: support multiple file upload in future
    * When user uploads file, gets the file and sends off to prop function handleFileUpload

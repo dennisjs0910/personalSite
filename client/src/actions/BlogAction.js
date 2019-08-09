@@ -32,6 +32,11 @@ export default class BlogAction {
     }
   };
 
+  /**
+   * Creates and stores blogPost, and blogContents in database
+   * @param  {Object} data           [data of blog to store in database]
+   * @return { async function }      [fn for redux thunk]
+   */
   static createBlog = (data) => {
      return async (dispatch) => {
        try {
@@ -49,6 +54,11 @@ export default class BlogAction {
     }
   };
 
+  /**
+   * Todo: limit due to scalability and consider integrating redis
+   * Retrives all blogs from database
+   * @return { async function }      [fn for redux thunk]
+   */
   static getBlogs = () => {
     return async (dispatch) => {
       try{
@@ -83,13 +93,23 @@ export default class BlogAction {
     }
   };
 
-  static deleteBlog = ({id}) => {
+  /**
+   * Deletes all media of blog from storage as well as delete them from database
+   * @param  {Blog Object} blog
+   * @return { async function }      [fn for redux thunk]
+   */
+  static deleteBlog = (blog) => {
+    blog.contents.forEach(content => this.deleteImage({
+      public_id: content.public_id,
+      resource_type: content.is_video ? 'video' : 'image'
+    }));
+
     return async (dispatch) => {
       try{
-        await axios.delete(`/api/blog/${id}`);
+        await axios.delete(`/api/blog/${blog.id}`);
         dispatch({
           type: BLOG_ACTION.DELETE_BLOG_SUCCESS,
-          payload: { id }
+          payload: { id: blog.id }
         });
       } catch (err) {
         dispatch({

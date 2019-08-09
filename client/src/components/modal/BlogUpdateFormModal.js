@@ -1,20 +1,58 @@
 import React, { Component } from 'react';
 import { BlogAction } from '../../actions';
 import { TitleForm, SummaryForm, TagsForm, UploadMediaForm, MediaTextAreaList } from '../form';
-import { Button, Form, Modal, Confirm } from 'semantic-ui-react'
+import { Button, Form, Modal, Confirm } from 'semantic-ui-react';
 
-class BlogFormModal extends Component {
+const CLOSE = "close";
+const SUBMIT = "submit";
+
+const CONFIRM_MESSAGE = {
+  close: "Are you sure you want to close? Blog will not be saved.",
+  submit: "Are you sure you want to update your blog?"
+};
+
+const ConfirmPrimaryButton = ({ confirmType, ...rest }) => {
+  if (confirmType === SUBMIT) {
+    return (<Button {...rest} positive icon='checkmark' labelPosition='right'content="Submit"/>);
+  } else if (confirmType === CLOSE) {
+    return (<Button {...rest} negative content="Yes"/>);
+  }
+  return null;
+}
+
+class BlogUpdateFormModal extends Component {
   constructor(props) {
     super(props);
+    const { blog } = props;
     this.state = {
-      title: "",
-      summary: "",
-      tags: [],
-      options: [], // used for tag dropdown options
-      mediaList: [],
+      title: blog.title,
+      summary: blog.summary,
+      tags: blog.category,
+      options: this.parseTagsToOptions(blog.category),
+      mediaList: this.parseContentsToMediaList(blog.contents),
       isConfirmOpen: false,
+      confirmType: null,
     };
-  }
+  };
+
+  /**
+   * Parses tags to semantic-ui-react dependent options [ {text: "String", value: "String"} ...]
+   * @param  {String[]} tags [ blog's tags ]
+   * @return {Object[]}      [ array of objects = {text: "String", value: "String"} ]
+   */
+  parseTagsToOptions = (tags) => {
+    return tags.map(value => ({ text: value, value }));
+  };
+
+  parseContentsToMediaList = (contents) => {
+    return contents.map(content => ({
+      id: content.id,
+      public_id: content.public_id,
+      media_url: content.media_url,
+      summary: content.summary,
+      resource_type: content.is_video ? "video" : "image"
+    }));
+  };
 
   /**
    * Returns true if title of summary is an empty string
@@ -23,6 +61,7 @@ class BlogFormModal extends Component {
     return title === "" || summary === "";
   };
 
+  // Start of new code =============================================
   /**
    * When tag is added it updates state's option as well.
    * @param  {Event} e             [Javascript event object]
@@ -30,7 +69,7 @@ class BlogFormModal extends Component {
    */
   handleTagAddition = (e, { value }) => {
     const { options } = this.state;
-    this.setState({ options: [ {text: value, value}, ...options ] });
+    this.setState({ options: [{text: value, value}, ...options]});
   };
 
   /**
@@ -107,7 +146,7 @@ class BlogFormModal extends Component {
    * @param  {Integer} idx [index of the item to be deleted]
    */
   handleMediaRemove = (idx) => {
-    this.deleteMedia(this.state.mediaList[idx]);
+    this.deleteRemovedMedia(this.state.mediaList[idx]);
     const mediaList = this.state.mediaList.filter((item, i) => i !== idx);
     this.setState({ mediaList });
   };
@@ -116,7 +155,7 @@ class BlogFormModal extends Component {
    * Deletes removed media from storage
    * @param  {Media Object} item
    */
-  deleteMedia = async (item) => {
+  deleteRemovedMedia = async (item) => {
     BlogAction.deleteImage(item);
   };
 
@@ -124,25 +163,24 @@ class BlogFormModal extends Component {
    * if not submitted and closing, remove all media content from storage
    * @param  {Boolean} isSubmitted [is modal closing beause it was submitted]
    */
-  handleModalClose = (isSubmitted) => {
-    if (!isSubmitted) {
-      this.state.mediaList.forEach(item => this.deleteMedia(item) );
-    }
+  handleModalClose = () => {
+    this.setState({ isConfirmOpen: false });
     this.props.handleClose(null);
   };
 
   /**
    * Opens and closes blog close confirm popup
    */
-  handleConfirmVisibility = () => {
-    this.setState({ isConfirmOpen : !this.state.isConfirmOpen });
+  handleConfirmVisibility = (confirmType) => {
+    this.setState({ isConfirmOpen : !this.state.isConfirmOpen, confirmType });
   };
 
   /**
    * Gets all user input and send data through props.handleSubmit fn and close modal
+   * May throw error because of confirmAcceptHandler as event is not being passed.
    * @param  {Event} e
    */
-  handleFormSubmit = e => {
+  handleFormSubmit = (e) => {
     const { title, summary, tags, mediaList } = this.state;
     const { currentUser, handleSubmit, blog } = this.props;
 
@@ -150,18 +188,28 @@ class BlogFormModal extends Component {
       title, summary, tags, mediaList, user_id: currentUser.id, blog
     }));
 
-    this.handleModalClose(true);
+    this.handleModalClose();
   };
 
-  render() {
-    const { title, summary, tags, options, mediaList, isConfirmOpen } = this.state;
-    const { isVisible } = this.props;
+  /**
+   * Changes confirm's behavior depending on confirm type
+   * @param  {enum String} type [CLOSE || SUBMIT]
+   */
+  confirmAcceptHandler = (type) => {
+    if (type === CLOSE) {
+      this.handleModalClose();
+    } else if (type === SUBMIT) {
+      this.handleFormSubmit(); //becareful as event is not being passed.
+    }
+  }
 
+  render() {
+    const { title, summary, tags, options, mediaList, isConfirmOpen, confirmType } = this.state;
     return (
-      <Modal open={ isVisible } >
+      <Modal open={ this.props.isVisible } >
         <Modal.Content>
           <Form>
-            <TitleForm handleTextInputChange={ this.handleTextInputChange } value={ title } />
+            <TitleForm handleTextInputChange={ this.handleTextInputChange } value={ title }/>
             <SummaryForm handleTextInputChange={ this.handleTextInputChange } value={ summary }/>
             <TagsForm
               options={ options }
@@ -182,7 +230,7 @@ class BlogFormModal extends Component {
           <Button
             negative
             content="Close"
-            onClick={ this.handleConfirmVisibility }
+            onClick={ this.handleConfirmVisibility.bind(this, CLOSE) }
           />
           <Button
             disabled={ this.isSubmitDisabled(title, summary) }
@@ -190,20 +238,21 @@ class BlogFormModal extends Component {
             icon='checkmark'
             labelPosition='right'
             content='Submit'
-            onClick={ this.handleFormSubmit }
+            onClick={ this.handleConfirmVisibility.bind(this, SUBMIT) }
           />
         </Modal.Actions>
+
         <Confirm
-          content='Are you sure you want to close? Blog will not be saved.'
+          content={ CONFIRM_MESSAGE[confirmType] }
           open={ isConfirmOpen }
-          confirmButton={<Button negative content="Yes"/>}
+          confirmButton={<ConfirmPrimaryButton confirmType={ confirmType } />}
           cancelButton={<Button content="No" />}
-          onCancel={ this.handleConfirmVisibility }
-          onConfirm={(e) => this.handleModalClose(false) }
+          onCancel={ this.handleConfirmVisibility.bind(this, null) }
+          onConfirm={ this.confirmAcceptHandler.bind(this, confirmType) }
         />
       </Modal>
     );
   };
 }
 
-export default BlogFormModal;
+export default BlogUpdateFormModal;

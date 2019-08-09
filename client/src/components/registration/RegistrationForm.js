@@ -1,6 +1,7 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
-import { Form, Input, Button } from 'semantic-ui-react'
+import { Form, Button } from 'semantic-ui-react'
 import { EMAIL, FIRSTNAME, LASTNAME, PASSWORD, CONFIRM_PASSWORD } from './Constants';
 
 class RegistrationForm extends Component {

@@ -24,8 +24,8 @@ routes.post('/', async (req, res) => {
 });
 
 routes.put('/', async (req, res) => {
-  const { title, summary, tags, user_id, fileList, mediaList, blog } = req.body;
-  const data = await blogManager.updateBlog(req.body);
+  const { title, summary, tags, user_id, mediaList, blog } = req.body;
+  const data = await blogManager.updateBlog(title, summary, tags, user_id, mediaList, blog);
 
   if (!!!data) {
     res.sendStatus(404);

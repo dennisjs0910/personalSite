@@ -1,12 +1,14 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AuthAction } from '../../actions';
-import { ReactComponent as Logo } from "../../assets/logo.svg";
-
-import { Menu, Image, Icon } from 'semantic-ui-react';
+import { Menu, Icon } from 'semantic-ui-react';
 import { LOGOUT, LOGIN, HOME, SIGNUP, RESUME, URI_ITEM_MAP } from "./Constants.js"
+/**
+ * favicon logo, integrate in future if needed.
+ * import { ReactComponent as Logo } from "../../assets/logo.svg";
+ */
 
 const AuthMenuItem = ({ currentUser, hasLoggedIn, handleClick, activeMenu }) => {
   if (!!!currentUser && !hasLoggedIn) {
@@ -56,7 +58,7 @@ class NavBar extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { pathname } = props.location;
-    return { activeMenu: URI_ITEM_MAP[new String(pathname)] || 'home' };
+    return { activeMenu: URI_ITEM_MAP[`${pathname}`] || 'home' };
   };
 
   handleClick = (e, { name }) => {

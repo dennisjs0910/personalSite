@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { Image, List, Container, Button } from 'semantic-ui-react'
+import { List, Container, Button } from 'semantic-ui-react'
+import MediaItem from './MediaItem';
+import ParagraphContainer from './ParagraphContainer';
+import { TagsContainer } from '../tag';
+
+const MEDIA_SUMMARY_LIMIT = 1000;
 
 const ItemHeader = ({ item, handleReadModal }) => (
   <List.Header
@@ -10,34 +15,13 @@ const ItemHeader = ({ item, handleReadModal }) => (
   />
 );
 
-const ItemBody = ({ content, summary }) => (
+const ItemBody = ({ content, summary, category }) => (
   <Container className="blog-item-body">
-    <ItemMedia content={ content } />
-    <ItemParagraph summary={ summary} />
+    <MediaItem content={ content } />
+    <ParagraphContainer summary={ summary } limit={ MEDIA_SUMMARY_LIMIT } />
+    <TagsContainer category={ category } size={ 'large' } />
   </Container>
 );
-
-const ItemMedia = ({ content }) => {
-  if (!content) return null;
-  if (content.is_video) {
-    return (
-      <video controls className="blog-item-media">
-        <source src={ content.media_url } type="video/mp4"/>
-      </video>
-    );
-  } else {
-    return (<Image className="blog-item-media" src={ content.media_url } />);
-  }
-};
-
-const ItemParagraph = ({ summary }) => {
-  const paragraphs = summary.substring(0, Math.min(1000, summary.length)).split("\n");
-  return (
-    <Container>
-     { paragraphs.map((paragraph, idx) => <p key={ idx }>{ paragraph }</p>) }
-    </Container>
-  );
-};
 
 class BlogItem extends Component {
   render() {
@@ -52,8 +36,9 @@ class BlogItem extends Component {
           <ItemBody
             content={ item.contents && item.contents[0] }
             summary={ item.summary }
+            category={ item.category }
           />
-          <Button>view</Button>
+
         </List.Content>
       </List.Item>
     );
