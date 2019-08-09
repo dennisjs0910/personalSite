@@ -3,12 +3,22 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import RegistrationForm from "./RegistrationForm";
 import { UserAction } from '../../actions';
+import { Message } from 'semantic-ui-react'
+import { isEmpty } from 'lodash';
 
 class RegistrationContainer extends Component {
   render() {
-    const { registerUser } = this.props;
+    const { registerUser, error } = this.props;
     return (
       <div className="registration-container-body">
+        { !isEmpty(error) &&
+          <Message
+            icon='warning sign'
+            warning
+            header="Something"
+            content={ error.message }
+          />
+        }
         <RegistrationForm registerUser={registerUser}/>
       </div>
     );
@@ -17,6 +27,11 @@ class RegistrationContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({ registerUser: UserAction.registerUser }, dispatch);
-}
+};
 
-export default connect(null, mapDispatchToProps)(RegistrationContainer);
+const mapStateToProps = ({ user }) => {
+  const { error } = user;
+  return { error };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationContainer);

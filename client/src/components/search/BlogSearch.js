@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Search, Container, Dropdown, Label, List, Image } from 'semantic-ui-react'
+import { Search, Dropdown } from 'semantic-ui-react'
 import ResultItem from './ResultItem';
 import './BlogSearch.css';
 

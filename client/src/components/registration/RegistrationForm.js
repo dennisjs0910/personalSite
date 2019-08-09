@@ -99,20 +99,24 @@ class RegistrationForm extends Component {
     };
   };
 
-
-  isFormError = (confirmPass) => {
+  /**
+   * Validates that all required fields are filled in and confirm password matches original password
+   * @param  {Boolean} isEqualPassword   [this.state.password === this.state.confirmPass]
+   * @return {Boolean}                   [True if form not valid else false]
+   */
+  isSubmitDisabled = (isEqualPassword) => {
     return !!(
       this.validateEmail() ||
       this.validateFirstName() ||
       this.validateLastName() ||
-      this.compareTwoPasswords(confirmPass)
+      isEqualPassword
     );
   }
 
   render() {
     const { confirmPass } = this.state;
-    // const isNameError = this.iValidNames(firstName, lastName);
     const isEqualPassword = this.compareTwoPasswords(confirmPass);
+
     return(
       <Form>
         <Form.Input
@@ -151,7 +155,7 @@ class RegistrationForm extends Component {
           type="submit"
           primary
           onClick={ this.handleSubmit }
-          disabled={ this.isFormError(confirmPass) }
+          disabled={ this.isSubmitDisabled(isEqualPassword) }
         >
           Submit
         </Button>

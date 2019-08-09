@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Label, List, Image } from 'semantic-ui-react'
+import React from 'react';
+import { List, Image } from 'semantic-ui-react'
 import { TagsContainer } from '../tag';
 const TAG_LIMIT = 10;
 

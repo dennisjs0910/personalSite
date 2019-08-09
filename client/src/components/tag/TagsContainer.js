@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Label, List, Image } from 'semantic-ui-react'
 import TagItem from './TagItem';
 
 const getTagsList = (list, limit) => {

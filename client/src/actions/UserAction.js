@@ -12,9 +12,10 @@ export default class UserAction {
         history.push("/login");
       } catch (err) {
         dispatch({
+          payload: { error: err.response.data },
           type: USER_ACTION.REGISTER_FAILURE,
         });
       }
     };
   };
-}
+};
