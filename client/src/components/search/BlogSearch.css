@@ -1,0 +1,18 @@
+.blog-search-container .ui.fluid.search.blog-search-input-container {
+  display: inline;
+}
+
+.blog-search-container .ui.selection.dropdown.blog-search-select {
+  width: 15%;
+  border-top-left-radius: 500rem;
+  border-bottom-left-radius: 500rem;
+}
+
+.blog-search-container .ui.fluid.search.blog-search-input-container > .ui.icon.input {
+  width: 70%;
+}
+
+.blog-search-container .ui.fluid.search.blog-search-input-container > .ui.icon.input > input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}

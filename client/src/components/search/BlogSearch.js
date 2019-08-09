@@ -1,18 +1,40 @@
 import React, { Component } from 'react';
-// import './BlogSearch.css';
+import { Search, Container, Select, Label } from 'semantic-ui-react'
+// import ResultItem from './ResultItem';
+import './BlogSearch.css';
 
-// Styling
-import { Search, Container, Header, Segment, Select } from 'semantic-ui-react'
 const DEFAULT_SEARCH = "title";
+const TAG_SEARCH = "tag";
+// const TagComponent = ({ tags }) => {
+//   return(
+//     <div className="blogSearch-tags-container">
+//       <p className="blogSearch-tag">Tags:</p>
+//       { tags.map((item) => <p key={item} className="blogSearch-tag">{item}</p>) }
+//     </div>
+//   )
+// };
 
-const TagComponent = ({ tags }) => {
+const SelectOptions = [
+  {
+    key: DEFAULT_SEARCH,
+    value: DEFAULT_SEARCH,
+    text: "Title"
+  },
+  {
+    key: TAG_SEARCH,
+    value: TAG_SEARCH,
+    text: "Tag"
+  }
+];
+
+const resultRenderer = ({ title, summary, content }) => {
   return(
-    <div className="blogSearch-tags-container">
-      <p className="blogSearch-tag">Tags:</p>
-      { tags.map((item) => <p key={item} className="blogSearch-tag">{item}</p>) }
+    <div>
+      <Label content={title}/>
+      <p>{ summary }</p>
     </div>
-  )
-};
+  );
+}
 
 export default class BlogSearch extends Component {
   constructor(props) {
@@ -67,16 +89,15 @@ export default class BlogSearch extends Component {
 
   /**
    * Searches through blog's search field.
-   * @param  {String} query       [query to filter on]
+   * @param  {String} value       [value to match and filter on]
    * @return {Blog[]}             [filtered blog array]
    */
   searchResult = (query) => {
-    // return this.state.searchField === DEFAULT_SEARCH ?
-    //   this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
-    //   this.props.data.filter(
-    //     (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
-    //   );
-    return [];
+    return this.state.searchField === DEFAULT_SEARCH ?
+      this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
+      this.props.data.filter(
+        (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
+      );
   };
 
   /**
@@ -98,48 +119,26 @@ export default class BlogSearch extends Component {
   //   )
   // };
 
-  // render() {
-  //   const { filteredResults } = this.state;
-  //   return (
-  //     <div className="blogSearch-container">
-  //       <InputGroup compact size="large" className="blogSearch-inputGroup">
-  //         <Select
-  //           className="blogSearch-select"
-  //           defaultValue={ DEFAULT_SEARCH }
-  //           onChange={ this.handleSearchValueChange }
-  //         >
-  //           <Option value="title">Title</Option>
-  //           <Option value="tag">Tag</Option>
-  //         </Select>
-  //         <AutoComplete
-  //           className="blogSearch-autocomplete"
-  //           size="large"
-  //           dataSource={ filteredResults.map(this.renderOption) }
-  //           onSelect={ this.onSelect }
-  //           onSearch={ this.handleSearch }
-  //           placeholder="Search for blogs with title or tag"
-  //           optionLabelProp="text"
-  //         >
-  //           <Search className="blogSearch-input" />
-  //         </AutoComplete>
-  //       </InputGroup>
-  //     </div>
-  //   );
-  // };
-
   // TODO: options for Select : Title (default), Tag
   render() {
     const { value, results } = this.state;
+
     return(
-      <Container>
-        <Select options={[]} placeholder='Select your country'/>
+      <div className="blog-search-container">
+        <Select
+          className="blog-search-select"
+          options={SelectOptions}
+          placeholder='Select Search Type'
+        />
         <Search
+          className="blog-search-input-container"
           onSearchChange={ this.handleSearchChange }
           value={ value }
           results={ results }
-        >
-        </Search>
-      </Container>
+          fluid
+          resultRenderer={ resultRenderer }
+        />
+      </div>
     );
   }
 }

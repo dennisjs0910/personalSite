@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { BlogAction } from '../../actions';
 
-import BlogSearch from './BlogSearch';
+import { BlogSearch } from '../search';
 import { BlogFormModal, BlogUpdateFormModal, BlogModal } from '../modal';
 import BlogList from './BlogList';
 import { CreateBlogButton } from '../button';
