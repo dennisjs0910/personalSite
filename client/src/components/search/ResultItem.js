@@ -12,7 +12,7 @@ const ResultItem = ({ id, title, summary, contents, category }) => {
         }
         <List.Header as='h4'>{ title }</List.Header>
         <List.Description>{ summary }</List.Description>
-        <TagsContainer category={ category } limit={ TAG_LIMIT } />
+        <TagsContainer category={ category } limit={ TAG_LIMIT } size={'medium'} />
       </List.Content>
     </List.Item>
   );

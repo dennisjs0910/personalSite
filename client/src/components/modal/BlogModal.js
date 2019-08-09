@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Modal, Confirm } from 'semantic-ui-react'
 import { CommentContainer } from '../comment';
 import { BlogMediaContents, BlogSummary } from '../blog';
+import { TagsContainer } from '../tag';
 import ModalFooter from './ModalFooter';
 
 // TODO: <Tag>
@@ -48,6 +49,7 @@ class BlogModal extends Component {
         <Modal.Content>
           <BlogSummary blog={ blog } />
           <BlogMediaContents contents={ blog.contents || [] } />
+          <TagsContainer category={ blog.category } size={ 'large' } />
           <CommentContainer
             blogId={ blog.id }
             parentId={ blog.id }

@@ -7,11 +7,12 @@ const getRandomInt = () => {
   return Math.floor(Math.random() * Math.floor(COLOR_ENUMS.length));
 };
 
-const TagItem = ({ value }) => (
+const TagItem = ({ value, size }) => (
   <Label
     className="tag-label"
     color={ COLOR_ENUMS[ getRandomInt() ] }
     content={ value }
+    size={ size }
   />
 );
 export default TagItem;
