@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
-import { Search, Container, Select, Label } from 'semantic-ui-react'
-// import ResultItem from './ResultItem';
+import { Search, Container, Dropdown, Label, List, Image } from 'semantic-ui-react'
+import ResultItem from './ResultItem';
 import './BlogSearch.css';
 
 const DEFAULT_SEARCH = "title";
 const TAG_SEARCH = "tag";
-// const TagComponent = ({ tags }) => {
-//   return(
-//     <div className="blogSearch-tags-container">
-//       <p className="blogSearch-tag">Tags:</p>
-//       { tags.map((item) => <p key={item} className="blogSearch-tag">{item}</p>) }
-//     </div>
-//   )
-// };
-
-const SelectOptions = [
+const DropdownOptions = [
   {
     key: DEFAULT_SEARCH,
     value: DEFAULT_SEARCH,
@@ -27,14 +18,7 @@ const SelectOptions = [
   }
 ];
 
-const resultRenderer = ({ title, summary, content }) => {
-  return(
-    <div>
-      <Label content={title}/>
-      <p>{ summary }</p>
-    </div>
-  );
-}
+const renderItems = (props) => <ResultItem { ...props } />;
 
 export default class BlogSearch extends Component {
   constructor(props) {
@@ -47,15 +31,6 @@ export default class BlogSearch extends Component {
   };
 
   /**
-   * if value is not null set state with filtered results and search string, otherwise all the data and empty string
-   * @param  {String} value [search string that is passed from Autocomplete component]
-   */
-  handleSearch = value => {
-    this.setState({
-      filteredResults: value ? this.searchResult(value) : this.props.data
-    });
-  };
-  /**
    * This function sets the input value to component's state value
    * @param  {Event} e              [Javascript Event Object]
    * @param  {String} options.value [String value that is passed from input]
@@ -63,7 +38,7 @@ export default class BlogSearch extends Component {
   handleSearchChange = (e, { value }) => {
     this.setState({
       value,
-      results: value !== "" ? this.searchResult(value) : []
+      results: value !== "" ? this.filterResults(value) : []
     });
   };
 
@@ -76,23 +51,11 @@ export default class BlogSearch extends Component {
   };
 
   /**
-   * When item is selected, search through filteredResults to obtains actual object where item.id === key
-   * After finding appropriate data, call handleReadModal to show modal.
-   * @param  {String} id [Dom Key based off of item's id]
-   */
-  onSelect = id => {
-    const [blog] = this.state.filteredResults.filter(item => item.id === parseInt(id));
-    if (blog) {
-      this.props.handleReadModal(blog);
-    }
-  };
-
-  /**
    * Searches through blog's search field.
    * @param  {String} value       [value to match and filter on]
    * @return {Blog[]}             [filtered blog array]
    */
-  searchResult = (query) => {
+  filterResults = (query) => {
     return this.state.searchField === DEFAULT_SEARCH ?
       this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
       this.props.data.filter(
@@ -101,42 +64,42 @@ export default class BlogSearch extends Component {
   };
 
   /**
-   * TODO: Make more informative
-   * Transform blog objects into Option Components
-   * @param  {Blog} item
-   * @return {Component}
+   * Calls callback fn when user clicks on search item
+   * @param  {Event} event
+   * @param  {Blog Object} options.result [Blog Object = { title, summary, contents, ...}]
    */
-  // renderOption(item) {
-  //   return(
-  //     <Option key={ item.id } text={ item.title }>
-  //       <div className="global-search-item">
-  //         <span className="global-search-item-desc">
-  //           <p className="blogSearch-option-title">Title: { item.title }</p>
-  //           <TagComponent tags={item.category} />
-  //         </span>
-  //       </div>
-  //     </Option>
-  //   )
-  // };
+  handleSearchSelect = (event, { result }) => {
+    this.props.handleSelect(result);
+  };
 
-  // TODO: options for Select : Title (default), Tag
+  /**
+   * Sets search field to value
+   * @param  {Event} e
+   * @param  {String} options.value [User dropdown select]
+   */
+  handleDropDownChange = (e, { value }) => {
+    this.setState({ searchField: value });
+  }
+
   render() {
     const { value, results } = this.state;
-
     return(
       <div className="blog-search-container">
-        <Select
-          className="blog-search-select"
-          options={SelectOptions}
-          placeholder='Select Search Type'
+        <Dropdown
+          defaultValue={DEFAULT_SEARCH}
+          selection
+          className="blog-search-dropdown"
+          options={ DropdownOptions }
+          onChange={ this.handleDropDownChange.bind(this) }
         />
         <Search
           className="blog-search-input-container"
-          onSearchChange={ this.handleSearchChange }
+          onSearchChange={ this.handleSearchChange.bind(this) }
           value={ value }
           results={ results }
           fluid
-          resultRenderer={ resultRenderer }
+          resultRenderer={ renderItems }
+          onResultSelect={ this.handleSearchSelect.bind(this) }
         />
       </div>
     );

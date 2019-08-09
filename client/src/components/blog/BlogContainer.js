@@ -11,6 +11,21 @@ import { CreateBlogButton } from '../button';
 
 import { Grid } from 'semantic-ui-react'
 
+const VIEW_OPTION_MAP = {
+  search: {
+    computer:  13,
+    mobile: 14,
+    tablet: 13,
+    widescreen: 13,
+  },
+  button: {
+    computer: 3,
+    mobile: 4,
+    tablet: 3,
+    widescreen: 3
+  }
+};
+
 class BlogContainer extends Component {
   constructor(props) {
     super(props);
@@ -112,12 +127,16 @@ class BlogContainer extends Component {
       <Grid>
         { isFormVisible && <BlogFormModal { ...this.getBlogReadProps() } /> }
         { isUpdateVisible && <BlogUpdateFormModal { ...this.getBlogUpdateProps() } /> }
-
         <Grid.Row>
-          <Grid.Column width={13}>
-            <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal.bind(this) } />
+          <Grid.Column { ...VIEW_OPTION_MAP.search }
+          >
+            <BlogSearch
+              data={ blogs }
+              handleReadModal={ this.handleReadModal.bind(this) }
+              handleSelect={ this.handleReadModal.bind(this) }
+            />
           </Grid.Column>
-          <Grid.Column width={3}>
+          <Grid.Column className="blog-grid-create-button-container" { ...VIEW_OPTION_MAP.button }>
             <CreateBlogButton
               currentUser={ currentUser }
               handleCreateModal={ this.handleCreateModal.bind(this) }
