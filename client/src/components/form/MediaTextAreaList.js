@@ -1,5 +1,4 @@
 import React from 'react';
-import { Form, TextArea } from 'semantic-ui-react'
 import MediaTextArea from './MediaTextArea';
 
 const MediaTextAreaList = ({ mediaList, handleMediaTextChange, handleMediaRemove }) => {

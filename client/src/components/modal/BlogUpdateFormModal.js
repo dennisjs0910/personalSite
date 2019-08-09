@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
 import { BlogAction } from '../../actions';
-import { BlogUpdateConfirm } from '../confirm';
 import { TitleForm, SummaryForm, TagsForm, UploadMediaForm, MediaTextAreaList } from '../form';
-import { Button, TextArea, Input, Form, Modal, Dropdown, Label, Image, Confirm } from 'semantic-ui-react';
+import { Button, Form, Modal, Confirm } from 'semantic-ui-react';
 
 const CLOSE = "close";
 const SUBMIT = "submit";
@@ -71,9 +69,7 @@ class BlogUpdateFormModal extends Component {
    */
   handleTagAddition = (e, { value }) => {
     const { options } = this.state;
-    this.setState({
-      options: [ {text: value, value}, ... options ]
-    });
+    this.setState({ options: [{text: value, value}, ...options]});
   };
 
   /**
@@ -85,7 +81,7 @@ class BlogUpdateFormModal extends Component {
     const { tags, options } = this.state;
     if (tags.length > value.length) {
       const keySet = new Set(value);
-      const filteredOptions = this.state.options.filter(item => keySet.has(item.value));
+      const filteredOptions = options.filter(item => keySet.has(item.value));
       this.setState({
         tags: value,
         options: filteredOptions
@@ -209,9 +205,8 @@ class BlogUpdateFormModal extends Component {
 
   render() {
     const { title, summary, tags, options, mediaList, isConfirmOpen, confirmType } = this.state;
-    const { isVisible, handleClose } = this.props;
     return (
-      <Modal open={ isVisible } >
+      <Modal open={ this.props.isVisible } >
         <Modal.Content>
           <Form>
             <TitleForm handleTextInputChange={ this.handleTextInputChange } value={ title }/>

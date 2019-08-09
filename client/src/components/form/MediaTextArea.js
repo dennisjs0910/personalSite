@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextArea, Form, Image, Container, Button, Confirm } from 'semantic-ui-react'
+import { TextArea, Form, Image, Button, Confirm } from 'semantic-ui-react'
 import './MediaTextArea.css';
 
 const VIDEO = 'video';
@@ -35,7 +35,7 @@ class MediaTextArea extends Component {
   };
 
   render() {
-    const { item, idx, handleMediaTextChange, handleMediaRemove } = this.props;
+    const { item, idx, handleMediaTextChange } = this.props;
     const { isOpen } = this.state;
     return(
       <Form.Field >

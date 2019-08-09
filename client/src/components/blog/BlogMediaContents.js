@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Container, Image } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
 import { ParagraphContainer, MediaItem } from './';
 
 const ItemBody = ({ content }) => (

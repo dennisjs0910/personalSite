@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Confirm } from 'semantic-ui-react';
+import { Modal, Button } from 'semantic-ui-react';
 
 const DeleteButton = ({ isOwner, handleDelete }) => (
   isOwner && <Button negative content='Delete' onClick={ handleDelete } />

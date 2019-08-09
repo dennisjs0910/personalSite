@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Container, Confirm } from 'semantic-ui-react'
-import { BlogAction } from '../../actions';
+import { Button, Modal, Confirm } from 'semantic-ui-react'
 import { CommentContainer } from '../comment';
 import { BlogMediaContents, BlogSummary } from '../blog';
 import ModalFooter from './ModalFooter';
@@ -19,8 +18,8 @@ class BlogModal extends Component {
    */
   handleDeleteConfirm = () => {
     const { handleDeleteBlog, handleClose, blog } = this.props;
-    // this.setState({ isDeleteConfimVisible: false });
-    // handleDeleteBlog(blog);
+    this.setState({ isDeleteConfimVisible: false });
+    handleDeleteBlog(blog);
     handleClose();
   };
 
@@ -41,7 +40,7 @@ class BlogModal extends Component {
 
   render() {
     const { isDeleteConfimVisible } = this.state;
-    const { isVisible, blog, handleClose, handleUpdateBlog, currentUser } = this.props;
+    const { isVisible, blog, handleClose, currentUser } = this.props;
     if (!isVisible) return null;
     return (
       <Modal open={ isVisible }>

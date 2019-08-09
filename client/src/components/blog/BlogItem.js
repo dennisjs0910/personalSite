@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, List, Container, Button } from 'semantic-ui-react'
+import { List, Container, Button } from 'semantic-ui-react'
 import MediaItem from './MediaItem';
 import ParagraphContainer from './ParagraphContainer';
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BlogAction } from '../../actions';
 import { TitleForm, SummaryForm, TagsForm, UploadMediaForm, MediaTextAreaList } from '../form';
-import { Button, TextArea, Input, Form, Modal, Dropdown, Label, Image, Confirm } from 'semantic-ui-react'
+import { Button, Form, Modal, Confirm } from 'semantic-ui-react'
 
 class BlogFormModal extends Component {
   constructor(props) {
@@ -30,9 +30,7 @@ class BlogFormModal extends Component {
    */
   handleTagAddition = (e, { value }) => {
     const { options } = this.state;
-    this.setState({
-      options: [ {text: value, value}, ... options ]
-    });
+    this.setState({ options: [ {text: value, value}, ...options ] });
   };
 
   /**
@@ -44,7 +42,7 @@ class BlogFormModal extends Component {
     const { tags, options } = this.state;
     if (tags.length > value.length) {
       const keySet = new Set(value);
-      const filteredOptions = this.state.options.filter(item => keySet.has(item.value));
+      const filteredOptions = options.filter(item => keySet.has(item.value));
       this.setState({
         tags: value,
         options: filteredOptions
@@ -157,7 +155,7 @@ class BlogFormModal extends Component {
 
   render() {
     const { title, summary, tags, options, mediaList, isConfirmOpen } = this.state;
-    const { isVisible, handleClose } = this.props;
+    const { isVisible } = this.props;
 
     return (
       <Modal open={ isVisible } >

@@ -62,7 +62,7 @@ class CommentContainer extends Component {
   };
 
   render() {
-    const { comments, blogId, currentUser } = this.props;
+    const { comments, currentUser } = this.props;
     const { value } = this.state;
     return (
       <Comment.Group>
