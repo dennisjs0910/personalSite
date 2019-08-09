@@ -204,7 +204,7 @@ let createBlog = async (title, summary, tags, user_id, mediaList) => {
     const data = await getBlogWithId(blogPostId);
     return data[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return null;
   }
 };

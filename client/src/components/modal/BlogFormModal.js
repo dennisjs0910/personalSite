@@ -163,8 +163,8 @@ class BlogFormModal extends Component {
       <Modal open={ isVisible } >
         <Modal.Content>
           <Form>
-            <TitleForm handleTextInputChange={ this.handleTextInputChange } />
-            <SummaryForm handleTextInputChange={ this.handleTextInputChange } />
+            <TitleForm handleTextInputChange={ this.handleTextInputChange } value={ title } />
+            <SummaryForm handleTextInputChange={ this.handleTextInputChange } value={ summary }/>
             <TagsForm
               options={ options }
               tags={ tags }

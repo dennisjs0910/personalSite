@@ -1,37 +1,40 @@
 import React, { Component } from 'react';
 import { isEqual } from 'lodash';
 import { BlogAction } from '../../actions';
+import { BlogUpdateConfirm } from '../confirm';
 import { TitleForm, SummaryForm, TagsForm, UploadMediaForm, MediaTextAreaList } from '../form';
-import { Button, TextArea, Input, Form, Modal, Dropdown, Label, Image, Confirm } from 'semantic-ui-react'
+import { Button, TextArea, Input, Form, Modal, Dropdown, Label, Image, Confirm } from 'semantic-ui-react';
 
-const INIT_STATE = {
-  title: "",
-  summary: "",
-  tags: [],
-  options: [], // used for tag dropdown options
-  mediaList: [],
-  isConfirmOpen: false,
+const CLOSE = "close";
+const SUBMIT = "submit";
+
+const CONFIRM_MESSAGE = {
+  close: "Are you sure you want to close? Blog will not be saved.",
+  submit: "Are you sure you want to update your blog?"
+};
+
+const ConfirmPrimaryButton = ({ confirmType, ...rest }) => {
+  if (confirmType === SUBMIT) {
+    return (<Button {...rest} positive icon='checkmark' labelPosition='right'content="Submit"/>);
+  } else if (confirmType === CLOSE) {
+    return (<Button {...rest} negative content="Yes"/>);
+  }
+  return null;
 }
 
 class BlogUpdateFormModal extends Component {
   constructor(props) {
     super(props);
-    this.state = INIT_STATE;
-  };
-
-  componentDidMount() {
-    const { blog } = this.props;
-    this.setState({
+    const { blog } = props;
+    this.state = {
       title: blog.title,
       summary: blog.summary,
       tags: blog.category,
       options: this.parseTagsToOptions(blog.category),
       mediaList: this.parseContentsToMediaList(blog.contents),
-    });
-  };
-
-  componentWillUnmount() {
-    this.setState(INIT_STATE);
+      isConfirmOpen: false,
+      confirmType: null,
+    };
   };
 
   /**
@@ -152,16 +155,36 @@ class BlogUpdateFormModal extends Component {
     this.setState({ mediaList });
   };
 
-
+  /**
+   * Deletes removed media from storage
+   * @param  {Media Object} item
+   */
   deleteRemovedMedia = async (item) => {
-    await BlogAction.deleteImage(item);
+    BlogAction.deleteImage(item);
   };
 
-  handleModalClose = (e) => {
+  /**
+   * if not submitted and closing, remove all media content from storage
+   * @param  {Boolean} isSubmitted [is modal closing beause it was submitted]
+   */
+  handleModalClose = () => {
+    this.setState({ isConfirmOpen: false });
     this.props.handleClose(null);
   };
 
-  handleFormSubmit = e => {
+  /**
+   * Opens and closes blog close confirm popup
+   */
+  handleConfirmVisibility = (confirmType) => {
+    this.setState({ isConfirmOpen : !this.state.isConfirmOpen, confirmType });
+  };
+
+  /**
+   * Gets all user input and send data through props.handleSubmit fn and close modal
+   * May throw error because of confirmAcceptHandler as event is not being passed.
+   * @param  {Event} e
+   */
+  handleFormSubmit = (e) => {
     const { title, summary, tags, mediaList } = this.state;
     const { currentUser, handleSubmit, blog } = this.props;
 
@@ -169,11 +192,23 @@ class BlogUpdateFormModal extends Component {
       title, summary, tags, mediaList, user_id: currentUser.id, blog
     }));
 
-    this.handleModalClose(e);
+    this.handleModalClose();
   };
 
+  /**
+   * Changes confirm's behavior depending on confirm type
+   * @param  {enum String} type [CLOSE || SUBMIT]
+   */
+  confirmAcceptHandler = (type) => {
+    if (type === CLOSE) {
+      this.handleModalClose();
+    } else if (type === SUBMIT) {
+      this.handleFormSubmit(); //becareful as event is not being passed.
+    }
+  }
+
   render() {
-    const { title, summary, tags, options, mediaList, isConfirmOpen } = this.state;
+    const { title, summary, tags, options, mediaList, isConfirmOpen, confirmType } = this.state;
     const { isVisible, handleClose } = this.props;
     return (
       <Modal open={ isVisible } >
@@ -197,23 +232,28 @@ class BlogUpdateFormModal extends Component {
         </Modal.Content>
 
         <Modal.Actions>
-          <Button negative onClick={ handleClose }>Close</Button>
+          <Button
+            negative
+            content="Close"
+            onClick={ this.handleConfirmVisibility.bind(this, CLOSE) }
+          />
           <Button
             disabled={ this.isSubmitDisabled(title, summary) }
             positive
             icon='checkmark'
             labelPosition='right'
             content='Submit'
-            onClick={ this.handleFormSubmit }
+            onClick={ this.handleConfirmVisibility.bind(this, SUBMIT) }
           />
         </Modal.Actions>
 
         <Confirm
-          content='Are you sure? Blog will not be saved'
+          content={ CONFIRM_MESSAGE[confirmType] }
           open={ isConfirmOpen }
-          confirmButton={<Button negative content="Clear"/>}
-          onCancel={ this.handleConfirmVisibility }
-          onConfirm={ this.handleModalClose }
+          confirmButton={<ConfirmPrimaryButton confirmType={ confirmType } />}
+          cancelButton={<Button content="No" />}
+          onCancel={ this.handleConfirmVisibility.bind(this, null) }
+          onConfirm={ this.confirmAcceptHandler.bind(this, confirmType) }
         />
       </Modal>
     );

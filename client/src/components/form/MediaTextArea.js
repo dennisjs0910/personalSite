@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextArea, Form, Image, Container, Button } from 'semantic-ui-react'
+import { TextArea, Form, Image, Container, Button, Confirm } from 'semantic-ui-react'
 import './MediaTextArea.css';
 
 const VIDEO = 'video';
@@ -17,8 +17,26 @@ const MediaContainer = ({ item }) => {
 }
 
 class MediaTextArea extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false,
+    };
+  };
+
+  handleConfirmVisibility = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  };
+
+  handleConfirm = () => {
+    const { idx, handleMediaRemove } = this.props;
+    this.setState({ isOpen: false });
+    handleMediaRemove(idx);
+  };
+
   render() {
     const { item, idx, handleMediaTextChange, handleMediaRemove } = this.props;
+    const { isOpen } = this.state;
     return(
       <Form.Field >
         <label>Media Summary</label>
@@ -29,8 +47,16 @@ class MediaTextArea extends Component {
             onChange={(e, data) => handleMediaTextChange(e, data, idx) }
             value={ item.summary }
           />
-          <Button negative onClick={ () => handleMediaRemove(idx) }>Remove</Button>
+          <Button negative onClick={ this.handleConfirmVisibility.bind(this) }>Remove</Button>
         </div>
+        <Confirm
+          content="Media and summary will be removed, are you sure?"
+          open={ isOpen }
+          confirmButton={<Button negative content="Yes" />}
+          cancelButton={<Button content="No" />}
+          onCancel={ this.handleConfirmVisibility.bind(this) }
+          onConfirm={ this.handleConfirm.bind(this) }
+        />
       </Form.Field>
     );
   };
