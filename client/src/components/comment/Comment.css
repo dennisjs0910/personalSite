@@ -1,0 +1,17 @@
+.ui.comments.comment-container {
+  max-width: unset;
+  width: 100%;
+}
+
+.ui.comments .comment .actions a.comment-delete {
+  color: #e24747;
+}
+
+.ui.comments .comment .actions a.comment-delete:hover {
+  color: red;
+}
+
+.ui.comments .comment .text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

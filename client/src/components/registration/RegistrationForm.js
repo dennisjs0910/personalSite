@@ -1,125 +1,167 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import { Form, Input, Button } from 'antd';
 import { withRouter } from "react-router-dom";
+import { Form, Button } from 'semantic-ui-react'
+import { EMAIL, FIRSTNAME, LASTNAME, PASSWORD, CONFIRM_PASSWORD } from './Constants';
 
-class RegistrationFormTemplate extends Component {
+class RegistrationForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      confirmDirty: false,
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+      confirmPass: "",
     };
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
-    const { validateFieldsAndScroll } = this.props.form;
-    const { history, registerUser } = this.props;
-
-    validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        registerUser(values, history);
-      }
+  /**
+   * Sets users info to state
+   * @param  {Event} e             [Javascript Event Object]
+   * @param  {String} options.value [User Input]
+   * @param  {String} key           [Type of user input]
+   * @return {[type]}               [description]
+   */
+  handleChange = (e, { value }, key) => {
+    if (key === CONFIRM_PASSWORD) this.compareTwoPasswords(value);
+    this.setState({
+      [key]: value //[key] syntax is "computed keys"
     });
   };
 
-  handleConfirmBlur = e => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  /**
+   * Validity check not required as button will only enable if state info is valid
+   * @param  {Event} e [Javascript Event Object]
+   */
+  handleSubmit = e => {
+    e.preventDefault();
+    if (!this.compareTwoPasswords(this.state[CONFIRM_PASSWORD])) {
+      const { history, registerUser } = this.props;
+      const { email, firstName, lastName, password } = this.state;
+      registerUser({ email, first_name: firstName, last_name: lastName, password }, history);
+    }
   };
 
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
+  /**
+   * Checks validity of email
+   * @return {Boolean|| Object} [returns false if valid email otherwise the error message and placement]
+   */
+  validateEmail = () => {
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!regex.test(this.state[EMAIL])) {
+      return {
+        content: "Please input a valid email address",
+        pointing: "above"
+      }
     } else {
-      callback();
+      return false;
     }
   };
 
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
+  /**
+   * Validates first name
+   * @return {Boolean || Object} [return false if first name is not empty string otherwise warning message]
+   */
+  validateFirstName = () => {
+    const { firstName } = this.state;
+    if (firstName !== "") return false;
+    return {
+      content: "Please input your first name",
+      pointing: "above"
     }
-    callback();
   };
+
+  /**
+   * Validates last name
+   * @return {Boolean || Object} [return false if last name is not empty string otherwise warning message]
+   */
+  validateLastName = () => {
+    const { lastName } = this.state;
+    if (lastName !== "") return false;
+    return {
+      content: "Please input your last name",
+      pointing: "above"
+    }
+  };
+
+  /**
+   * Validates the two passwords
+   * @param  {String} value [this.state[CONFIRM_PASSWORD] state's confirm password]
+   * @return {Boolean || Object} [return false if passwords are not matching warning message]
+   */
+  compareTwoPasswords = (value) => {
+    const { password } = this.state;
+    if (password === value && value !== "") return false;
+    return {
+      content: "Passwords must be filled and matching",
+      pointing: "above"
+    };
+  };
+
+  /**
+   * Validates that all required fields are filled in and confirm password matches original password
+   * @param  {Boolean} isEqualPassword   [this.state.password === this.state.confirmPass]
+   * @return {Boolean}                   [True if form not valid else false]
+   */
+  isSubmitDisabled = (isEqualPassword) => {
+    return !!(
+      this.validateEmail() ||
+      this.validateFirstName() ||
+      this.validateLastName() ||
+      isEqualPassword
+    );
+  }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <div className="signup-form-container">
-        <h2 className="form-header">Please provide your information</h2>
-        <Form onSubmit={this.handleSubmit} labelAlign='left'>
-          <h3 className="input-label required">E-mail</h3>
-          <Form.Item>
-            {getFieldDecorator('email', {
-              rules: [{
-                type: 'email',
-                message: 'The input is not valid E-mail!',
-              }, {
-                required: true,
-                message: 'Please input your E-mail!',
-              }],
-            })(<Input className="registration-input"/>)}
-          </Form.Item>
+    const { confirmPass } = this.state;
+    const isEqualPassword = this.compareTwoPasswords(confirmPass);
 
-          <h3 className="input-label required">First Name</h3>
-          <Form.Item>
-            {getFieldDecorator('first_name', {
-              rules: [{ required: true, message: 'Please input your first name!' }],
-            })(<Input className="registration-input"/>)}
-          </Form.Item>
-
-          <h3 className="input-label required">Last Name</h3>
-          <Form.Item>
-            {getFieldDecorator('last_name', {
-              rules: [{ required: true, message: 'Please input your last name!' }],
-            })(<Input className="registration-input"/>)}
-          </Form.Item>
-
-          <h3 className="input-label required">Password</h3>
-          <Form.Item hasFeedback
-          >
-            {getFieldDecorator('password', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please input your password!',
-                },
-                {
-                  validator: this.validateToNextPassword,
-                },
-              ],
-            })(<Input.Password className="registration-input"/>)}
-          </Form.Item>
-
-          <h3 className="input-label required">Confirm Password</h3>
-          <Form.Item hasFeedback>
-            {getFieldDecorator('confirm', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please confirm your password!',
-                },
-                {
-                  validator: this.compareToFirstPassword,
-                },
-              ],
-            })(<Input.Password className="registration-input"
-                  onBlur={this.handleConfirmBlur}
-                />)}
-          </Form.Item>
-
-          <Form.Item className="signup-submit-button">
-            <Button type="primary" htmlType="submit">
-              Register
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+    return(
+      <Form>
+        <Form.Input
+          required
+          label={"Email"}
+          onChange={(e, data) => this.handleChange(e, data, EMAIL)}
+          error={ this.validateEmail() }
+        />
+        <Form.Input
+          required
+          label={"First Name"}
+          onChange={(e, data) => this.handleChange(e, data, FIRSTNAME)}
+          error={ this.validateFirstName() }
+        />
+        <Form.Input
+          required
+          label={"Last Name"}
+          onChange={(e, data) => this.handleChange(e, data, LASTNAME)}
+          error={ this.validateLastName() }
+        />
+        <Form.Input
+          required
+          label={"Password"}
+          onChange={(e, data) => this.handleChange(e, data, PASSWORD)}
+          type="password"
+          error={ isEqualPassword }
+        />
+        <Form.Input
+          required
+          label={"Confirm Password"}
+          onChange={(e, data) => this.handleChange(e, data, CONFIRM_PASSWORD)}
+          type="password"
+          error={ isEqualPassword }
+        />
+        <Button
+          type="submit"
+          primary
+          onClick={ this.handleSubmit }
+          disabled={ this.isSubmitDisabled(isEqualPassword) }
+        >
+          Submit
+        </Button>
+      </Form>
     );
   }
 }
 
-const RegistrationForm = Form.create()(RegistrationFormTemplate);
 export default withRouter(RegistrationForm);

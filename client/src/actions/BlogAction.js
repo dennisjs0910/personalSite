@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BLOG_ACTION } from "./ActionTypes";
+import { BLOG_ACTION, CLEAR_ERROR } from "./ActionTypes";
 
 export default class BlogAction {
   /**
@@ -32,6 +32,11 @@ export default class BlogAction {
     }
   };
 
+  /**
+   * Creates and stores blogPost, and blogContents in database
+   * @param  {Object} data           [data of blog to store in database]
+   * @return { async function }      [fn for redux thunk]
+   */
   static createBlog = (data) => {
      return async (dispatch) => {
        try {
@@ -43,12 +48,17 @@ export default class BlogAction {
        } catch (err) {
          dispatch({
            type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-           error: { message: "Something went wrong creating your blog, please try again" }
+           payload: { error : err.response.data }
          });
        }
     }
   };
 
+  /**
+   * Todo: limit due to scalability and consider integrating redis
+   * Retrives all blogs from database
+   * @return { async function }      [fn for redux thunk]
+   */
   static getBlogs = () => {
     return async (dispatch) => {
       try{
@@ -60,7 +70,7 @@ export default class BlogAction {
       } catch (err) {
         dispatch({
           type: BLOG_ACTION.FETCH_BLOG_FAILURE,
-          error: { message: "An error occured, please try again and refresh the page" }
+          payload: { error : err.response.data }
         });
       }
     }
@@ -77,26 +87,42 @@ export default class BlogAction {
        } catch (err) {
          dispatch({
            type: BLOG_ACTION.UPDATE_BLOG_FAILURE,
-           error: { message: "Something went wrong updating your blog, please try again" }
+           payload: { error : err.response.data }
          });
        }
     }
   };
 
-  static deleteBlog = ({id}) => {
+  /**
+   * Deletes all media of blog from storage as well as delete them from database
+   * @param  {Blog Object} blog
+   * @return { async function }      [fn for redux thunk]
+   */
+  static deleteBlog = (blog) => {
+    blog.contents.forEach(content => this.deleteImage({
+      public_id: content.public_id,
+      resource_type: content.is_video ? 'video' : 'image'
+    }));
+
     return async (dispatch) => {
       try{
-        await axios.delete(`/api/blog/${id}`);
+        await axios.delete(`/api/blog/${blog.id}`);
         dispatch({
           type: BLOG_ACTION.DELETE_BLOG_SUCCESS,
-          payload: { id }
+          payload: { id: blog.id }
         });
       } catch (err) {
         dispatch({
           type: BLOG_ACTION.DELETE_BLOG_FAILURE,
-          error: null
+          payload: { error : err.response.data }
         });
       }
     }
   };
+
+  /**
+   * Sends signal to BlogReducer.js to set error state to null
+   * @return {Redux Action type}
+   */
+  static clearError = () => ({ type: CLEAR_ERROR });
 }

@@ -1,53 +1,67 @@
-div.blog-card {
-  margin: auto;
-  text-align: left;
-  border-radius: 10px;
-  height: 700px;
-  margin-bottom: 50px;
+/*
+<Grid blog-list-container-grid>
+  <Grid.Row blog-item-row>
+    <Grid.Column>
+      <BlogItem === List.Item blog-item-container>
+        <List.Content>
+          <Header blog-item-header>
+          <div blog-item-body>
+            <MediaItem blog-item-media>
+            <ParagraphContainer blog-item-summary>
+            <TagsContainer>
+ */
+/* Blog Item Container */
+.item.blog-item-container:hover {
+  background-color: rgba(34,36,38,.15);
 }
 
-.blog-list-header {
-  text-align: left;
-  font-size: 2rem;
-  padding-left: 30px;
-  margin: 40px 100px 40px;
+.blog-item-container {
+  margin-bottom: unset;
+  border: 1px solid rgba(34,36,38,.15);
+  padding: 0 1em;
 }
 
-.blog-list-container .blog-card-container {
+.ui.grid.blog-list-container-grid > .row.blog-item-row:last-child .item.blog-item-container {
+  padding-bottom: 0.5em;
+}
+
+/* Blog Item Body*/
+.blog-item-body {
+  margin-bottom: 1em;
+}
+
+/* Blog Item Header*/
+.header.blog-item-header {
+  font-size: 1.5em;
+  padding: 0.5em 0;
+  border-bottom: 1px solid rgba(34,36,38,.15);
+}
+
+/* Blog Item Summary*/
+.ui.container.blog-item-summary {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(34,36,38,.15);
+  margin-bottom: 1rem;
+}
+
+.ui.container.blog-item-summary p {
+  font-size: 1.1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Blog Media Item*/
+.blog-item-media {
   width: 100%;
-  padding: 1rem 0;
-  background-image: linear-gradient(90deg, rgba(227, 205, 200, 0.75), rgba(65, 153, 154, 0.25));
+  margin: 0.5rem auto 0.5rem 0;
+  /*border-bottom: 1px solid rgba(34,36,38,.15);*/
+  padding-bottom: 1rem;
+  display: block;
 }
 
-.blog-card-container .ant-card-head-wrapper {
-  height: 100px;
-}
-
-.blog-card-container .ant-card-head {
-  border-bottom: 1px solid #c4c4c4;
-}
-
-.ant-card.blog-card {
-  background-color: rgba(255,255,255,0.6);
-}
-
-div.blog-card-body {
-  height: 500px;
-  overflow-y: auto;
-}
-
-.ant-card-paragraph p.blog-card-paragraph {
-}
-
-.blog-card-container .ant-card-head-title {
-  font-size: 1.25rem;
-}
-
-.blog-tag.tagged {
-  height: 16px;
-}
-
-.blog-card-media-container .blog-card-media {
-  max-height: 500px;
-  width: 100%;
+/*Mobile layout of blog item media*/
+@media only screen and (max-width: 767px) {
+  .blog-item-media {
+    width: 100%;
+  }
 }

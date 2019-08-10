@@ -18,24 +18,52 @@ let _createBlogPostData = (title, summary, tags, user_id) => {
   };
 };
 
-let _createContentData = (blogPost_id, fileList=[], mediaText=[], contentIds=[]) => {
+
+
+/**
+ * This function creates Object to be fed into postgresql lib.
+ * @param  {Integer}         blogPost_id         [Blog Post row's id]
+ * @param  {Blog Content[]}  mediaList           [array of user input objects]
+ * @return {Blog Content[]}                      [array of Blog Content schema like objects]
+ */
+let _createContentData = (blogPost_id, mediaList) => {
   let res = [];
-  for (let idx = 0; idx < fileList.length; idx++) {
-    const fileItem = fileList[idx]
-    const media_url = fileItem.response[0].secure_url;
-    const public_id = fileItem.response[0].public_id;
-    const is_video = fileItem.response[0].resource_type && fileItem.response[0].resource_type.includes('video');
-    const summary = mediaText[idx];
+  for (let idx = 0; idx < mediaList.length; idx++) {
+    const { media_url, resource_type, summary, public_id } = mediaList[idx];
     res.push({
       blogPost_id,
-      is_video,
+      is_video : resource_type === 'video',
+      public_id,
+      media_url,
+      summary,
+      sequence: idx
+    });
+  }
+  return res;
+};
+
+/**
+ * This function creates Object to be fed into postgresql lib.
+ * It updates exisiting rows in the database and saves space by reusing exisiting rows.
+ * @param  {Integer}         blogPost_id         [Blog Post row's id]
+ * @param  {Blog Content[]}  mediaList           [array of user input objects]
+ * @param  {Integer[]}       contentIds          [Blog Content row ids that can be reused]
+ * @return {Blog Content[]}                      [array of Blog Content schema like objects]
+ */
+let _createUpdateContentData = (blogPost_id, mediaList, contentIds) => {
+  let res = [];
+  for (let idx = 0; idx < mediaList.length; idx++) {
+    const { media_url, resource_type, summary, public_id } = mediaList[idx];
+    res.push({
+      blogPost_id,
+      is_video : resource_type === 'video',
       public_id,
       media_url,
       summary,
       sequence: idx
     });
 
-    if (idx >= 0 && idx < contentIds.length) {
+    if (0 <= idx && idx < contentIds.length) {
       res[idx].id = contentIds[idx];
     }
   }
@@ -165,24 +193,25 @@ let = getBlogWithId = async (id) => {
   }
 };
 
-let createBlog = async (title, summary, tags, user_id, fileList, mediaText) => {
+let createBlog = async (title, summary, tags, user_id, mediaList) => {
   try {
     const [blogPostId] = await knex(BLOG_POST)
       .insert(_createBlogPostData(title, summary, tags, user_id))
       .returning('id');
     const blogContentIds = await knex(BLOG_CONTENT)
-      .insert(_createContentData(blogPostId, fileList, mediaText));
+      .insert(_createContentData(blogPostId, mediaList, []));
 
     const data = await getBlogWithId(blogPostId);
     return data[0];
   } catch (err) {
+    console.error(err);
     return null;
   }
 };
 
-let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blog}) => {
+let updateBlog = async (title, summary, tags, user_id, mediaList, blog) => {
   const {id, contentIds} = getBlogAndContentsIds(blog);
-  const contentDatas = _createContentData(id, fileList, mediaText, contentIds);
+  const contentDatas = _createUpdateContentData(id, mediaList, contentIds);
 
   try {
     const isUserAdmin = await userManager.isUserAdmin({ id: user_id });
@@ -195,8 +224,8 @@ let updateBlog = async ({title, summary, tags, user_id, fileList, mediaText, blo
         .update(_createBlogPostData(title, summary, tags, userId))
       );
 
-      if (mediaText.length < contentIds.length) {
-        const diff = contentIds.length - mediaText.length;
+      if (mediaList.length < contentIds.length) {
+        const diff = contentIds.length - mediaList.length;
         for (let i = 1; i <= diff; i++) {
           const sequence = contentIds.length - i;
           queries.push(knex(BLOG_CONTENT).where({blogPost_id: id, sequence }).del());

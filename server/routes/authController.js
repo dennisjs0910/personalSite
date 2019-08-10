@@ -4,6 +4,8 @@ const LocalStrategy = require("passport-local").Strategy;
 const { userManager } = require('@qm/index');
 const bcrypt = require("bcrypt");
 
+
+
 //TODO: maybe passport should not be initialized here and can be moved to services.
 passport.serializeUser(({ email }, done) => done(null, email));
 
@@ -20,14 +22,14 @@ passport.use(new LocalStrategy({
   async (email, password, done) => {
     const user = await userManager.getUser({ email }, true);
     if (!!!user) {
-      return done(null, false, { field: "email", message: "The email you’ve entered doesn’t match any account."})
+      return done(null, false, { field: "Email", message: "The email you’ve entered doesn’t match any account."})
     }
     try{
       const match = await bcrypt.compare(password, user.password);
       if (match) {
         return done(null, user);
       } else {
-        return done(null, false, { field: "password", message: "The password you’ve entered is incorrect."})
+        return done(null, false, { field: "Password", message: "The password you’ve entered is incorrect."})
       }
     } catch (err) {
       return done(null, false, { field: "Internal", message: "Something went wrong... please try again."})

@@ -1,16 +1,29 @@
 import React, { Component } from 'react';
-import { Alert, Layout, Button } from 'antd';
-import BlogList from './BlogList';
-import Header from './Header';
-import BlogSearch from './BlogSearch';
-import { BlogAction } from '../../actions';
-import { BlogFormModal, BlogModal } from '../modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { BlogAction } from '../../actions';
 import { isEmpty } from 'lodash';
-import "./BlogContainer.css";
+import { BlogSearch } from '../search';
+import { BlogFormModal, BlogUpdateFormModal, BlogModal } from '../modal';
+import BlogList from './BlogList';
+import { CreateBlogButton } from '../button';
 
-const { Content } = Layout;
+import { Grid, Message } from 'semantic-ui-react'
+
+const VIEW_OPTION_MAP = {
+  search: {
+    computer:  13,
+    mobile: 14,
+    tablet: 13,
+    widescreen: 13,
+  },
+  button: {
+    computer: 3,
+    mobile: 4,
+    tablet: 3,
+    widescreen: 3
+  }
+};
 
 class BlogContainer extends Component {
   constructor(props) {
@@ -18,14 +31,9 @@ class BlogContainer extends Component {
     this.state = {
       isFormVisible: false,
       isReadVisible: false,
-      isUpdate: false,
+      isUpdateVisible: false,
       selectedBlog: null,
     };
-
-    this.handleCreateModal = this.handleCreateModal.bind(this);
-    this.handleReadModal = this.handleReadModal.bind(this);
-    this.handleUpdateModal = this.handleUpdateModal.bind(this);
-    this.renderCreateBlogPostButton = this.renderCreateBlogPostButton.bind(this);
   };
 
   componentDidMount() {
@@ -39,7 +47,7 @@ class BlogContainer extends Component {
     this.setState({
       isReadVisible: false,
       isFormVisible: !this.state.isFormVisible,
-      isUpdate: false,
+      isUpdateVisible: false,
       selectedBlog: null,
     });
   };
@@ -53,7 +61,7 @@ class BlogContainer extends Component {
     this.setState({
       isReadVisible: !this.state.isReadVisible,
       isFormVisible: false,
-      isUpdate: false,
+      isUpdateVisible: false,
       selectedBlog: blog,
     });
   };
@@ -61,80 +69,109 @@ class BlogContainer extends Component {
   handleUpdateModal = (blog) => {
     this.setState({
       isReadVisible: false,
-      isFormVisible: !this.state.isFormVisible,
-      isUpdate: !this.state.isUpdate,
+      isFormVisible: false,
+      isUpdateVisible: !this.state.isUpdateVisible,
       selectedBlog: blog,
     });
   };
 
-  generateFormProps = () => {
-    const { isFormVisible, isUpdate, selectedBlog } = this.state;
-    const { currentUser, createBlog, updateBlog } = this.props;
-    let formProps = {
-      currentUser,
-      isUpdate,
-      isVisible: isFormVisible,
-      blog: selectedBlog,
-      handleClose: this.handleCreateModal,
-      handleSubmit: createBlog,
-    };
-    if (isUpdate) {
-      formProps.handleClose = this.handleUpdateModal;
-      formProps.handleSubmit = updateBlog;
+  /**
+   * Deletes blog from storage and database if blog arg exists
+   * @param  {Blog Object} blog
+   */
+  handleDeleteBlog = (blog) => {
+    if (!!blog) {
+      this.props.deleteBlog(blog);
     }
-    return formProps;
   };
 
-  renderCreateBlogPostButton() {
-    const { currentUser } = this.props;
-    if (!!currentUser) {
-      return(
-        <Button type="primary" onClick={ this.handleCreateModal }>CREATE +</Button>
-      )
-    } else {
-      return null;
-    }
+  /**
+   * When user clicks on close message it dispatches action to redux
+   */
+  handleMessageDismiss = () => {
+    this.props.clearError();
+  };
+
+  /**
+   * Genereates Blog Read properties
+   * @return {Properties Object} [React props object]
+   */
+  getBlogReadProps = () => {
+    const { isFormVisible, selectedBlog } = this.state;
+    const { currentUser, createBlog } = this.props;
+    return {
+      currentUser,
+      isVisible: isFormVisible,
+      blog: selectedBlog,
+      handleClose: this.handleCreateModal.bind(this),
+      handleSubmit: createBlog,
+    };
+  };
+
+  /**
+   * Genereates Blog Update properties
+   * @return {Properties Object} [React props object]
+   */
+  getBlogUpdateProps = () => {
+    const { isUpdateVisible, selectedBlog } = this.state;
+    const { currentUser, updateBlog } = this.props;
+    return {
+      currentUser,
+      isVisible: isUpdateVisible,
+      blog: selectedBlog,
+      handleClose: this.handleUpdateModal.bind(this),
+      handleSubmit: updateBlog,
+    };
   }
 
   render() {
-    const { isFormVisible, isReadVisible, selectedBlog } = this.state;
-    const { blogs, currentUser, deleteBlog, error } = this.props;
-    const formProps = this.generateFormProps();
-    return (
-      <Content className="fullscreen blog-container main-img">
-        <Header
-          currentUser={ currentUser }
-          handleCreateModal={ this.handleCreateModal }
+    const { isReadVisible, selectedBlog, isFormVisible, isUpdateVisible } = this.state;
+    const { blogs, currentUser, error } = this.props;
+
+    return(
+      <Grid>
+        { !isEmpty(error) &&
+          <Message
+            onDismiss={ this.handleMessageDismiss }
+            icon='warning sign'
+            warning
+            header={ error.field || "Warning" }
+            content={ error.message }
+          />
+        }
+        { isFormVisible && <BlogFormModal { ...this.getBlogReadProps() } /> }
+        { isUpdateVisible && <BlogUpdateFormModal { ...this.getBlogUpdateProps() } /> }
+        <Grid.Row>
+          <Grid.Column { ...VIEW_OPTION_MAP.search }>
+            <BlogSearch
+              data={ blogs }
+              handleReadModal={ this.handleReadModal.bind(this) }
+              handleSelect={ this.handleReadModal.bind(this) }
+            />
+          </Grid.Column>
+          <Grid.Column className="blog-grid-create-button-container" { ...VIEW_OPTION_MAP.button }>
+            <CreateBlogButton
+              currentUser={ currentUser }
+              handleCreateModal={ this.handleCreateModal.bind(this) }
+            />
+          </Grid.Column>
+        </Grid.Row>
+
+        <BlogList
+          blogs={ blogs }
+          handleReadModal={ this.handleReadModal.bind(this) }
         />
-        { !isEmpty(error) ?
-          <Alert
-            className="blog-alert"
-            message="Error"
-            description={ error.message }
-            type="error"
-            showIcon
-            closable
-          /> : null
-        }
-        <BlogSearch data={ blogs } handleReadModal={ this.handleReadModal } />
-        <BlogList blogs={ blogs } handleReadModal={ this.handleReadModal }/>
-        { isFormVisible ?
-          <BlogFormModal {...formProps} />
-          : null
-        }
-        {
-          isReadVisible && selectedBlog !== null ?
-          <BlogModal
-            isVisible={ isReadVisible }
-            handleClose={ this.handleReadModal }
-            currentUser={ currentUser }
-            blog={ selectedBlog }
-            deleteBlog={ deleteBlog }
-            handleUpdateModal={ this.handleUpdateModal }
-          /> :
-          null
-        }
-      </Content>
+
+        <BlogModal
+          isVisible={ isReadVisible }
+          handleClose={ this.handleReadModal.bind(this) }
+          handleUpdateBlog={ this.handleUpdateModal.bind(this) }
+          handleDeleteBlog={ this.handleDeleteBlog.bind(this) }
+          currentUser={ currentUser }
+          blog={ selectedBlog }
+          error={ error }
+        />
+      </Grid>
     );
   }
 }
@@ -146,6 +183,8 @@ const mapDispatchToProps = dispatch => {
       createBlog: BlogAction.createBlog,
       deleteBlog: BlogAction.deleteBlog,
       updateBlog: BlogAction.updateBlog,
+      deleteImage: BlogAction.deleteImage,
+      clearError: BlogAction.clearError,
     },
     dispatch
   );

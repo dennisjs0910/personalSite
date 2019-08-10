@@ -3,18 +3,16 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { connect } from 'react-redux';
 import { isEmpty } from "lodash";
 
-import * as Layouts from "./layouts";
+import { NavBar, Page404 } from "./layouts";
 import { BlogContainer } from "./blog";
 import { LoginContainer } from "./login";
 import { RegistrationContainer } from "./registration";
 import { ResumeContainer } from "./resume";
-
 import { AuthAction } from "../actions";
-// Styling Imports
-import 'antd/dist/antd.css'; // can move to babel
-import { Layout } from 'antd';
 
-import "./App.css";
+import { Container } from 'semantic-ui-react';
+
+// import "./App.css";
 
 // const PrivateRoute = ({ component: Component, hasLoggedIn, ...rest }) => {
 //   return (
@@ -44,17 +42,16 @@ class App extends Component {
     return (
       <Router>
         <div className="App" style={{ height: "100%" }}>
-        <Layouts.NavBar />
-          <Layout>
+          <NavBar />
+          <Container>
             <Switch>
               <Route key="blogs" exact path= "/" component={ BlogContainer } />
               <Route key="login" exact path= "/login" component={ LoginContainer } />
               <Route key="signup" exact path= "/signup" component={ RegistrationContainer } />
               <Route key="resume" exact path= "/resume" component={ ResumeContainer } />
-              <Route key="page404" path="/*" component={Layouts.Page404} />
+              <Route key="page404" path="/*" component={ Page404 } />
             </Switch>
-            {/** <Footer>footer</Footer> */}
-          </Layout>
+          </Container>
         </div>
       </Router>
     );

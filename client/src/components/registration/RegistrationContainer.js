@@ -3,26 +3,46 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import RegistrationForm from "./RegistrationForm";
 import { UserAction } from '../../actions';
-import "./registration.css";
-
-import { Layout } from 'antd';
-const { Content } = Layout;
+import { Message } from 'semantic-ui-react'
+import { isEmpty } from 'lodash';
 
 class RegistrationContainer extends Component {
+  /**
+   * When user clicks on close message it dispatches action to redux
+   */
+  handleMessageDismiss = () => {
+    this.props.clearError();
+  };
+
   render() {
-    const { registerUser } = this.props;
+    const { registerUser, error } = this.props;
     return (
-      <Content className="fullscreen registration-container main-img">
-        <div className="registration-container-body">
-          <RegistrationForm registerUser={registerUser}/>
-        </div>
-      </Content>
+      <div className="registration-container-body">
+        { !isEmpty(error) &&
+          <Message
+            onDismiss={ this.handleMessageDismiss }
+            icon='warning sign'
+            warning
+            header={ error.field || "Warning" }
+            content={ error.message }
+          />
+        }
+        <RegistrationForm registerUser={registerUser}/>
+      </div>
     );
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ registerUser: UserAction.registerUser }, dispatch);
-}
+  return bindActionCreators({
+    registerUser: UserAction.registerUser,
+    clearError: UserAction.clearError,
+  }, dispatch);
+};
 
-export default connect(null, mapDispatchToProps)(RegistrationContainer);
+const mapStateToProps = ({ user }) => {
+  const { error } = user;
+  return { error };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationContainer);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AUTH_ACTION } from "./ActionTypes";
+import { AUTH_ACTION, CLEAR_ERROR } from "./ActionTypes";
 
 export default class AuthAction {
   static checkUser = () => {
@@ -23,7 +23,7 @@ export default class AuthAction {
     };
   };
 
-  static loginUser = ({ email, password }, history) => {
+  static loginUser = (email, password, history) => {
     return async (dispatch) => {
       try {
         const res = await axios.post("/api/user/session", { email, password });
@@ -45,7 +45,7 @@ export default class AuthAction {
     };
   };
 
-  static logoutUser = (history) => {
+  static logoutUser = () => {
     return async (dispatch) => {
       try {
         await axios.delete("/api/user/session");
@@ -57,7 +57,6 @@ export default class AuthAction {
             error: null
           }
         });
-        history.push("/login");
       } catch (err) {
         dispatch({
           type: AUTH_ACTION.LOGOUT_FAILURE,
@@ -70,4 +69,10 @@ export default class AuthAction {
       }
     };
   };
+
+  /**
+   * Sends signal to BlogReducer.js to set error state to null
+   * @return {Redux Action type}
+   */
+  static clearError = () => ({ type: CLEAR_ERROR });
 }

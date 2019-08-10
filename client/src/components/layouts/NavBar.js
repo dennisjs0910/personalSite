@@ -1,114 +1,135 @@
 import React, { Component } from "react";
-import { Menu, Icon, Affix } from 'antd';
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AuthAction } from '../../actions';
-import { ReactComponent as Logo } from "../../assets/logo.svg";
+import { Menu, Icon } from 'semantic-ui-react';
+import { LOGOUT, LOGIN, HOME, SIGNUP, RESUME, URI_ITEM_MAP } from "./Constants.js"
+/**
+ * favicon logo, integrate in future if needed.
+ * import { ReactComponent as Logo } from "../../assets/logo.svg";
+ */
 
-const LOGOUT = "logout";
-
-const menuItems = {
-  "/login"  : "login",
-  "/logout" : LOGOUT,
-  "/"       : "blogs",
-  "/signup" : "signup",
-  "/resume" : "resume"
+const AuthMenuItem = ({ currentUser, hasLoggedIn, handleClick, activeMenu }) => {
+  if (!!!currentUser && !hasLoggedIn) {
+    return(
+      <Menu.Item name="login" onClick={ handleClick } active={activeMenu === LOGIN}>
+        <Icon name="sign-in"/>
+        Login
+      </Menu.Item>
+    )
+  } else {
+    return(
+      <Menu.Item name="logout" onClick={ handleClick } active={activeMenu === LOGOUT}>
+        <Icon name="sign-out"/>
+        Logout
+      </Menu.Item>
+    )
+  }
 };
+
+
+const SignUpGreetingMenuItem = ({ currentUser, hasLoggedIn, handleClick, activeMenu }) => {
+  if (!!!currentUser && !hasLoggedIn) {
+    return(
+      <Menu.Item name="signup" onClick={ handleClick } active={activeMenu === SIGNUP}>
+        <Icon name="user plus"/>
+        Sign Up
+      </Menu.Item>
+    )
+  } else {
+    return(
+      <Menu.Item name="greeting">
+        <Icon name="user"/>
+        {`${currentUser.first_name} ${currentUser.last_name}`}
+      </Menu.Item>
+    )
+  }
+};
+
+const ResumeMenuItem = ({ handleClick, activeMenu }) => (
+  <Menu.Item name="resume" onClick={ handleClick } active={activeMenu === RESUME}>
+    <Icon name="newspaper outline"/>
+    Resume
+  </Menu.Item>
+);
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeMenu: 'blogs',
+      activeMenu: 'home',
       top: 0
     }
-
-    this.renderAuthMenuItem = this.renderAuthMenuItem.bind(this);
-    this.renderSignUpGreetingMenutItem = this.renderSignUpGreetingMenutItem.bind(this);
-  }
+  };
 
   static getDerivedStateFromProps(props, state) {
     const { pathname } = props.location;
-    return { activeMenu: menuItems[pathname] || 'blogs' };
-  }
+    return { activeMenu: URI_ITEM_MAP[`${pathname}`] || 'home' };
+  };
 
-  handleClick = e => {
+  handleClick = (e, { name }) => {
     const { logoutUser, history } = this.props;
-    if (e.key === LOGOUT) {
+    this.handlePageSwitch(name, history);
+    if (name === LOGOUT) {
       logoutUser(history);
       this.setState({ activeMenu: 'login'});
       return;
     }
-    this.setState({ activeMenu: e.key });
-  }
+    this.setState({ activeMenu: name });
+  };
 
-  renderAuthMenuItem() {
-    const { currentUser, hasLoggedIn } = this.props;
-    if (!!!currentUser && !hasLoggedIn) {
-      return(
-        <Menu.Item key="login">
-          <Link to="/login">
-            <Icon type="login"/>
-            Login
-          </Link>
-        </Menu.Item>
-      )
-    } else {
-      return(
-        <Menu.Item key="logout">
-          <Icon type="logout"/>
-          Logout
-        </Menu.Item>
-      )
+  handlePageSwitch = (name, history) => {
+    switch (name) {
+      case LOGIN:
+        history.push("/login");
+        return;
+      case HOME:
+        history.push("/");
+        return;
+      case RESUME:
+        history.push("/resume");
+        return;
+      case SIGNUP:
+        history.push("/signup");
+        return;
+      default:
+        history.push("/login");
+        return;
     }
-  }
-
-  renderSignUpGreetingMenutItem() {
-    const { currentUser, hasLoggedIn } = this.props;
-    if (!!!currentUser && !hasLoggedIn) {
-      return(
-        <Menu.Item key="signup">
-          <Link to="/signup">
-            <Icon type="user-add"/>
-            Sign Up
-          </Link>
-        </Menu.Item>
-      )
-    } else {
-      return(
-        <Menu.Item key="greeting">
-          <Icon type="user"/>
-          {`${currentUser.first_name} ${currentUser.last_name}`}
-        </Menu.Item>
-      )
-    }
-  }
+  };
 
   render() {
-    return (
-      <Affix offsetTop={this.state.top}>
-        <Menu //theme="dark"
-          onClick={this.handleClick}
-          selectedKeys={[this.state.activeMenu]}
-          mode="horizontal"
-        >
-          <Menu.Item key="blogs">
-            <Link to="/">
-              <Icon component={Logo} />
-            </Link>
-          </Menu.Item>
+    const { activeMenu } = this.state;
 
-          <Menu.Item key="resume">
-            <Link to="/resume">
-              <Icon type="file-pdf" />
-              Resume
-            </Link>
-          </Menu.Item>
-          { this.renderAuthMenuItem() }
-          { this.renderSignUpGreetingMenutItem() }
-        </Menu>
-      </Affix>
+    return(
+      <Menu>
+        <Menu.Item
+          name="home"
+          onClick={ this.handleClick }
+          active={ activeMenu === 'home' }
+        >
+          <Icon name="home"/>
+          Home
+        </Menu.Item>
+
+        <AuthMenuItem
+          currentUser={ this.props.currentUser }
+          hasLoggedIn={ this.props.hasLoggedIn }
+          handleClick={ this.handleClick.bind(this) }
+          activeMenu={ activeMenu }
+        />
+        <SignUpGreetingMenuItem
+          currentUser={ this.props.currentUser }
+          hasLoggedIn={ this.props.hasLoggedIn }
+          handleClick={ this.handleClick.bind(this) }
+          activeMenu={ activeMenu }
+        />
+        <ResumeMenuItem
+          handleClick={ this.handleClick.bind(this) }
+          activeMenu={ activeMenu }
+        />
+      </Menu>
     );
   }
 }
