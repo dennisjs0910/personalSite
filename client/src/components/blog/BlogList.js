@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Grid } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 import BlogItem from './BlogItem';
 import "./BlogList.css";
 

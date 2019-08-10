@@ -47,6 +47,13 @@ const SignUpGreetingMenuItem = ({ currentUser, hasLoggedIn, handleClick, activeM
   }
 };
 
+const ResumeMenuItem = ({ handleClick, activeMenu }) => (
+  <Menu.Item name="resume" onClick={ handleClick } active={activeMenu === RESUME}>
+    <Icon name="newspaper outline"/>
+    Resume
+  </Menu.Item>
+);
+
 class NavBar extends Component {
   constructor(props) {
     super(props);
@@ -115,6 +122,10 @@ class NavBar extends Component {
         <SignUpGreetingMenuItem
           currentUser={ this.props.currentUser }
           hasLoggedIn={ this.props.hasLoggedIn }
+          handleClick={ this.handleClick.bind(this) }
+          activeMenu={ activeMenu }
+        />
+        <ResumeMenuItem
           handleClick={ this.handleClick.bind(this) }
           activeMenu={ activeMenu }
         />

@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   padding-top: 2rem;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .resume-container-body canvas.react-pdf__Page__canvas {
