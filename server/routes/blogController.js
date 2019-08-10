@@ -39,10 +39,13 @@ routes.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const data = await blogManager.deleteBlog(id);
   if (!!!data) {
-    res.sendStatus(404);
+    res.status(500);
+    res.json({
+      field: "Server",
+      message: "The request was not completed due to an internal error on the server side."
+    });
     return;
   }
-
   res.sendStatus(204);
 });
 

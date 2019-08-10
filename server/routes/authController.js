@@ -4,6 +4,15 @@ const LocalStrategy = require("passport-local").Strategy;
 const { userManager } = require('@qm/index');
 const bcrypt = require("bcrypt");
 
+/**
+ * Capitalizes first letter of field
+ * @param  {String} options.field
+ * @return {String}               [first letter capital field + rest of field]
+ */
+const getInfoField = ({ field }) => {
+  return !!field ? field.charAt(0).toUpperCase() + field.slice(1) : "";
+}
+
 //TODO: maybe passport should not be initialized here and can be moved to services.
 passport.serializeUser(({ email }, done) => done(null, email));
 
@@ -47,7 +56,7 @@ routes.get('/', async (req, res) => {
 routes.post('/', async (req, res, next) => {
   passport.authenticate('local', { session: true } , (err, user, info) => {
     if (err) return res.status(500).json(err);
-    if (!user) return res.status(401).json({ field: info.field, message: info.message });
+    if (!user) return res.status(401).json({ field: getInfoField(info), message: info.message });
     req.login(user, err => {
       if (err) return res.status(500).json(err);
       res.status(200);

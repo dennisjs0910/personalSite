@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { BlogAction } from '../../actions';
-
+import { isEmpty } from 'lodash';
 import { BlogSearch } from '../search';
 import { BlogFormModal, BlogUpdateFormModal, BlogModal } from '../modal';
 import BlogList from './BlogList';
 import { CreateBlogButton } from '../button';
 // import Header from './Header';
 
-import { Grid } from 'semantic-ui-react'
+import { Grid, Message } from 'semantic-ui-react'
 
 const VIEW_OPTION_MAP = {
   search: {
@@ -121,15 +121,22 @@ class BlogContainer extends Component {
   //TODO: Error handling
   render() {
     const { isReadVisible, selectedBlog, isFormVisible, isUpdateVisible } = this.state;
-    const { blogs, currentUser } = this.props;
+    const { blogs, currentUser, error } = this.props;
 
     return(
       <Grid>
+        { !isEmpty(error) &&
+          <Message
+            icon='warning sign'
+            warning
+            header={ error.field || "Warning" }
+            content={ error.message }
+          />
+        }
         { isFormVisible && <BlogFormModal { ...this.getBlogReadProps() } /> }
         { isUpdateVisible && <BlogUpdateFormModal { ...this.getBlogUpdateProps() } /> }
         <Grid.Row>
-          <Grid.Column { ...VIEW_OPTION_MAP.search }
-          >
+          <Grid.Column { ...VIEW_OPTION_MAP.search }>
             <BlogSearch
               data={ blogs }
               handleReadModal={ this.handleReadModal.bind(this) }

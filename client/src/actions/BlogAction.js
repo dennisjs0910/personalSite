@@ -114,7 +114,7 @@ export default class BlogAction {
       } catch (err) {
         dispatch({
           type: BLOG_ACTION.DELETE_BLOG_FAILURE,
-          error: null
+          payload: { error : err.response.data }
         });
       }
     }

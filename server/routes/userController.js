@@ -12,6 +12,7 @@ routes.post('/', async (req, res) => {
     if (!!!result) {
       res.status(400);
       res.json({
+        field: "Email",
         message: "Email is already taken. Please choose a different email."
       });
       return;
@@ -20,6 +21,7 @@ routes.post('/', async (req, res) => {
   } catch(err) {
     res.status(500);
     res.json({
+      field: "Server",
       message: "The request was not completed due to an internal error on the server side."
     });
   }

@@ -15,7 +15,7 @@ class RegistrationContainer extends Component {
           <Message
             icon='warning sign'
             warning
-            header="Something"
+            header={ error.field || "Warning" }
             content={ error.message }
           />
         }

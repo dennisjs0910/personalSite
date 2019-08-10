@@ -18,7 +18,6 @@ export default (state = initialState, action) => {
       return Object.assign({...state}, { items, error: null });
     }
     case BLOG_ACTION.DELETE_BLOG_SUCCESS: {
-      console.log("action.payload.id", action.payload.id);
       const items = state.items.filter(item => {
         return item.id !== action.payload.id
       });
@@ -27,7 +26,7 @@ export default (state = initialState, action) => {
     case BLOG_ACTION.CREATE_BLOG_FAILURE:
     case BLOG_ACTION.FETCH_BLOG_FAILURE:
     case BLOG_ACTION.DELETE_BLOG_FAILURE: {
-      return Object.assign({...state}, { error: action.error });
+      return Object.assign({...state}, { error: action.payload.error });
     }
     default:
       return state;

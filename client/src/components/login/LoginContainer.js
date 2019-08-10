@@ -15,7 +15,7 @@ class LoginContainer extends Component {
           <Message
             icon='warning sign'
             warning
-            header={ error.field.toUpperCase() }
+            header={ error.field }
             content={ error.message }
           />
         }
