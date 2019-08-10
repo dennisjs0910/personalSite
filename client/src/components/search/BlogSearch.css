@@ -35,6 +35,7 @@
 @media only screen and (max-width: 767px) {
   .blog-search-container .ui.fluid.search.blog-search-input-container > .ui.icon.input {
     max-width: 70%;
+    top: 2px;
   }
 
   .ui.grid > .row > .column.blog-grid-create-button-container {

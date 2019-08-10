@@ -57,9 +57,9 @@ export default class BlogSearch extends Component {
    */
   filterResults = (query) => {
     return this.state.searchField === DEFAULT_SEARCH ?
-      this.props.data.filter((item) => item.title.toLowerCase().includes(query)):
+      this.props.data.filter((item) => item.title.toLowerCase().includes(query.toLowerCase())):
       this.props.data.filter(
-        (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query))
+        (item) => (item.category || []).some(tag => tag.toLowerCase().includes(query.toLowerCase()))
       );
   };
 

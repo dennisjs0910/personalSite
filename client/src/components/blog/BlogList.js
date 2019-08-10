@@ -12,10 +12,9 @@ const GRID_WIDTH_PROPS = {
 
 const BlogItemList = ({ blogs, handleReadModal }) => {
   return blogs.map((item) =>
-    <Grid.Row className="blog-item-row">
+    <Grid.Row className="blog-item-row" key={ item.id }>
       <Grid.Column {...GRID_WIDTH_PROPS} >
         <BlogItem
-          key={ item.id }
           item={item}
           handleReadModal={handleReadModal}
         />
