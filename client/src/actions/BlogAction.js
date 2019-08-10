@@ -48,7 +48,7 @@ export default class BlogAction {
        } catch (err) {
          dispatch({
            type: BLOG_ACTION.CREATE_BLOG_FAILURE,
-           error: { message: "Something went wrong creating your blog, please try again" }
+           payload: { error : err.response.data }
          });
        }
     }
@@ -70,7 +70,7 @@ export default class BlogAction {
       } catch (err) {
         dispatch({
           type: BLOG_ACTION.FETCH_BLOG_FAILURE,
-          error: { message: "An error occured, please try again and refresh the page" }
+          payload: { error : err.response.data }
         });
       }
     }
@@ -87,7 +87,7 @@ export default class BlogAction {
        } catch (err) {
          dispatch({
            type: BLOG_ACTION.UPDATE_BLOG_FAILURE,
-           error: { message: "Something went wrong updating your blog, please try again" }
+           payload: { error : err.response.data }
          });
        }
     }
@@ -119,4 +119,10 @@ export default class BlogAction {
       }
     }
   };
+
+  /**
+   * Sends signal to BlogReducer.js to set error state to null
+   * @return {Redux Action type}
+   */
+  static clearError = () => ({ type: BLOG_ACTION.CLEAR_ERROR });
 }

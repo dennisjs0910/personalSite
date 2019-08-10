@@ -5,7 +5,6 @@ import { BlogMediaContents, BlogSummary } from '../blog';
 import { TagsContainer } from '../tag';
 import ModalFooter from './ModalFooter';
 
-// TODO: <Tag>
 class BlogModal extends Component {
   constructor(props) {
     super(props);

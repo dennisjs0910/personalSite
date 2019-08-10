@@ -7,7 +7,6 @@ import { BlogSearch } from '../search';
 import { BlogFormModal, BlogUpdateFormModal, BlogModal } from '../modal';
 import BlogList from './BlogList';
 import { CreateBlogButton } from '../button';
-// import Header from './Header';
 
 import { Grid, Message } from 'semantic-ui-react'
 
@@ -87,6 +86,13 @@ class BlogContainer extends Component {
   };
 
   /**
+   * When user clicks on close message it dispatches action to redux
+   */
+  handleMessageDismiss = () => {
+    this.props.clearError();
+  };
+
+  /**
    * Genereates Blog Read properties
    * @return {Properties Object} [React props object]
    */
@@ -127,6 +133,7 @@ class BlogContainer extends Component {
       <Grid>
         { !isEmpty(error) &&
           <Message
+            onDismiss={ this.handleMessageDismiss }
             icon='warning sign'
             warning
             header={ error.field || "Warning" }
@@ -163,6 +170,7 @@ class BlogContainer extends Component {
           handleDeleteBlog={ this.handleDeleteBlog.bind(this) }
           currentUser={ currentUser }
           blog={ selectedBlog }
+          error={ error }
         />
       </Grid>
     );
@@ -177,6 +185,7 @@ const mapDispatchToProps = dispatch => {
       deleteBlog: BlogAction.deleteBlog,
       updateBlog: BlogAction.updateBlog,
       deleteImage: BlogAction.deleteImage,
+      clearError: BlogAction.clearError,
     },
     dispatch
   );
