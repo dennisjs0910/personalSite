@@ -1,20 +1,12 @@
-div.ant-row.page404-container {
-  height:60rem;
+.page404-container .page404-header {
+  display: inline-block;
+  font-size: 6em;
 }
 
-.icon-text-algin {
-  margin-top: 10rem;
-  text-align: center;
-  font-size: 3rem;
+.page404-container .page404-sub-header {
+  font-size: 3em;
 }
 
-.page404-header {
-  display: inline;
-  margin-left: 50px;
-}
-
-.sub-text-container {
-  text-align: center;
-  margin-top: 2rem;
-  font-size: 2rem;
+.page404-container .page404-top-row i.icon.page404-icon {
+  vertical-align: unset;
 }

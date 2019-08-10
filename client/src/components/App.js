@@ -3,15 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { connect } from 'react-redux';
 import { isEmpty } from "lodash";
 
-// import * as Layouts from "./layouts";
-import NavBar from './layouts/NavBar';
+import { NavBar, Page404 } from "./layouts";
 import { BlogContainer } from "./blog";
 import { LoginContainer } from "./login";
 import { RegistrationContainer } from "./registration";
 import { ResumeContainer } from "./resume";
-
 import { AuthAction } from "../actions";
-// Styling Imports
+
 import { Container } from 'semantic-ui-react';
 
 // import "./App.css";
@@ -51,12 +49,8 @@ class App extends Component {
               <Route key="login" exact path= "/login" component={ LoginContainer } />
               <Route key="signup" exact path= "/signup" component={ RegistrationContainer } />
               <Route key="resume" exact path= "/resume" component={ ResumeContainer } />
-              {/**
-                <Route key="resume" exact path= "/resume" component={ ResumeContainer } />
-                <Route key="page404" path="/*" component={Layouts.Page404} />
-              */ }
+              <Route key="page404" path="/*" component={ Page404 } />
             </Switch>
-            {/** <Footer>footer</Footer> */}
           </Container>
         </div>
       </Router>
