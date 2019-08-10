@@ -1,10 +1,61 @@
-.ui.list > .item > .content > .header.blog-item-header {
-  margin: 0.75rem auto;
+/*
+<Grid blog-list-container-grid>
+  <Grid.Row blog-item-row>
+    <Grid.Column>
+      <BlogItem === List.Item blog-item-container>
+        <List.Content>
+          <Header blog-item-header>
+          <div blog-item-body>
+            <MediaItem blog-item-media>
+            <ParagraphContainer blog-item-summary>
+            <TagsContainer>
+ */
+/* Blog Item Container */
+.item.blog-item-container:hover {
+  background-color: rgba(34,36,38,.15);
 }
 
+.blog-item-container {
+  margin-bottom: unset;
+  border: 1px solid rgba(34,36,38,.15);
+  padding: 0 1em;
+}
+
+.ui.grid.blog-list-container-grid > .row.blog-item-row:last-child .item.blog-item-container {
+  padding-bottom: 0.5em;
+}
+
+/* Blog Item Body*/
+.blog-item-body {
+  margin-bottom: 1em;
+}
+
+/* Blog Item Header*/
+.header.blog-item-header {
+  font-size: 1.5em;
+  padding: 0.5em 0;
+  border-bottom: 1px solid rgba(34,36,38,.15);
+}
+
+/* Blog Item Summary*/
+.ui.container.blog-item-summary {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(34,36,38,.15);
+  margin-bottom: 1rem;
+}
+
+.ui.container.blog-item-summary p {
+  font-size: 1.1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Blog Media Item*/
 .blog-item-media {
-  width: 70%;
-  margin: 0.5rem auto;
+  width: 100%;
+  margin: 0.5rem auto 0.5rem 0;
+  /*border-bottom: 1px solid rgba(34,36,38,.15);*/
+  padding-bottom: 1rem;
   display: block;
 }
 

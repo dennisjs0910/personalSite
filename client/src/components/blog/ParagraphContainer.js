@@ -6,12 +6,11 @@ export default class ParagraphContainer extends Component {
     const { summary, limit } = this.props;
     let paragraphs = summary.split("\n");
     if (!!limit) {
-      paragraphs = summary.substring(0, Math.min(1000, summary.length)).split("\n");
+      paragraphs = summary.substring(0, Math.min(limit, summary.length)).split("\n");
     }
-
     return (
-      <Container>
-       { paragraphs.map((paragraph, idx) => <p key={ idx }>{ paragraph }</p>) }
+      <Container className="blog-item-summary">
+        { paragraphs.map((paragraph, idx) => <p key={ idx }>{ paragraph }</p>) }
       </Container>
     );
   }
