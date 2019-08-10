@@ -8,6 +8,7 @@ import CommentList from './CommentList';
 import CommentEditor from './CommentEditor';
 
 import { Comment, Header } from 'semantic-ui-react';
+import './Comment.css';
 
 class CommentContainer extends Component {
   constructor(props) {
@@ -65,7 +66,7 @@ class CommentContainer extends Component {
     const { comments, currentUser } = this.props;
     const { value } = this.state;
     return (
-      <Comment.Group>
+      <Comment.Group className="comment-container">
         <Header as='h3' dividing>
           Comments
         </Header>

@@ -3,7 +3,7 @@ import { Button, Comment, Confirm } from 'semantic-ui-react'
 
 const CommentDelete = ({ currentUser, comment, handleConfirmVisibility }) => (
   !!currentUser && currentUser.id === comment.user_id &&
-  <Comment.Action onClick={ handleConfirmVisibility }>
+  <Comment.Action className="comment-delete" onClick={ handleConfirmVisibility }>
     Delete
   </Comment.Action>
 );
