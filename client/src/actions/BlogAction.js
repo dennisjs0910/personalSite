@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BLOG_ACTION } from "./ActionTypes";
+import { BLOG_ACTION, CLEAR_ERROR } from "./ActionTypes";
 
 export default class BlogAction {
   /**
@@ -124,5 +124,5 @@ export default class BlogAction {
    * Sends signal to BlogReducer.js to set error state to null
    * @return {Redux Action type}
    */
-  static clearError = () => ({ type: BLOG_ACTION.CLEAR_ERROR });
+  static clearError = () => ({ type: CLEAR_ERROR });
 }

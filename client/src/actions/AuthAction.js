@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AUTH_ACTION } from "./ActionTypes";
+import { AUTH_ACTION, CLEAR_ERROR } from "./ActionTypes";
 
 export default class AuthAction {
   static checkUser = () => {
@@ -69,4 +69,10 @@ export default class AuthAction {
       }
     };
   };
+
+  /**
+   * Sends signal to BlogReducer.js to set error state to null
+   * @return {Redux Action type}
+   */
+  static clearError = () => ({ type: CLEAR_ERROR });
 }

@@ -1,4 +1,4 @@
-import { AUTH_ACTION } from "../actions/ActionTypes";
+import { AUTH_ACTION, CLEAR_ERROR } from "../actions/ActionTypes";
 
 const initialState = {
   currentUser: null,
@@ -13,6 +13,8 @@ export default (state = initialState, action) => {
     case AUTH_ACTION.LOGOUT_SUCCESS:
     case AUTH_ACTION.LOGOUT_FAILURE:
       return Object.assign({...state}, {...action.payload});
+    case CLEAR_ERROR:
+      return Object.assign({...state}, { error: null });
     default:
       return state;
   }

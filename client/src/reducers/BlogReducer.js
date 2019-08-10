@@ -1,4 +1,4 @@
-import { BLOG_ACTION } from "../actions/ActionTypes";
+import { BLOG_ACTION, CLEAR_ERROR } from "../actions/ActionTypes";
 
 const initialState = {
   items: [],
@@ -27,9 +27,9 @@ export default (state = initialState, action) => {
     case BLOG_ACTION.FETCH_BLOG_FAILURE:
     case BLOG_ACTION.UPDATE_BLOG_FAILURE:
     case BLOG_ACTION.DELETE_BLOG_FAILURE: {
-      return Object.assign({...state}, { error: action.payload.error });
+      return Object.assign({...state}, { ...action.payload });
     }
-    case BLOG_ACTION.CLEAR_ERROR:
+    case CLEAR_ERROR:
       return Object.assign({...state}, { error: null });
     default:
       return state;

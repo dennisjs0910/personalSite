@@ -4,14 +4,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const { userManager } = require('@qm/index');
 const bcrypt = require("bcrypt");
 
-/**
- * Capitalizes first letter of field
- * @param  {String} options.field
- * @return {String}               [first letter capital field + rest of field]
- */
-const getInfoField = ({ field }) => {
-  return !!field ? field.charAt(0).toUpperCase() + field.slice(1) : "";
-}
+
 
 //TODO: maybe passport should not be initialized here and can be moved to services.
 passport.serializeUser(({ email }, done) => done(null, email));
@@ -29,14 +22,14 @@ passport.use(new LocalStrategy({
   async (email, password, done) => {
     const user = await userManager.getUser({ email }, true);
     if (!!!user) {
-      return done(null, false, { field: "email", message: "The email you’ve entered doesn’t match any account."})
+      return done(null, false, { field: "Email", message: "The email you’ve entered doesn’t match any account."})
     }
     try{
       const match = await bcrypt.compare(password, user.password);
       if (match) {
         return done(null, user);
       } else {
-        return done(null, false, { field: "password", message: "The password you’ve entered is incorrect."})
+        return done(null, false, { field: "Password", message: "The password you’ve entered is incorrect."})
       }
     } catch (err) {
       return done(null, false, { field: "Internal", message: "Something went wrong... please try again."})
@@ -56,7 +49,7 @@ routes.get('/', async (req, res) => {
 routes.post('/', async (req, res, next) => {
   passport.authenticate('local', { session: true } , (err, user, info) => {
     if (err) return res.status(500).json(err);
-    if (!user) return res.status(401).json({ field: getInfoField(info), message: info.message });
+    if (!user) return res.status(401).json({ field: info.field, message: info.message });
     req.login(user, err => {
       if (err) return res.status(500).json(err);
       res.status(200);

@@ -124,7 +124,6 @@ class BlogContainer extends Component {
     };
   }
 
-  //TODO: Error handling
   render() {
     const { isReadVisible, selectedBlog, isFormVisible, isUpdateVisible } = this.state;
     const { blogs, currentUser, error } = this.props;

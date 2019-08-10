@@ -4,7 +4,6 @@ const { userManager } = require('@qm/index');
 /**
  * Creates a new user
  */
-// routes.post('/', async (req, res) => {
 routes.post('/', async (req, res) => {
   const { first_name, last_name, email, password } = req.body;
   try {
@@ -22,7 +21,7 @@ routes.post('/', async (req, res) => {
     res.status(500);
     res.json({
       field: "Server",
-      message: "The request was not completed due to an internal error on the server side."
+      message: "The request was not completed due to an internal error on the server side. Please try again."
     });
   }
 });
