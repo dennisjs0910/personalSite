@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AuthAction } from '../../actions';
+import SocialMediaDropdown from './SocialMediaDropdown';
 import { Menu, Icon } from 'semantic-ui-react';
 import { LOGOUT, LOGIN, HOME, SIGNUP, RESUME, URI_ITEM_MAP } from "./Constants.js"
 /**
@@ -103,16 +104,18 @@ class NavBar extends Component {
     const { activeMenu } = this.state;
 
     return(
-      <Menu>
+      <Menu stackable>
         <Menu.Item
           name="home"
           onClick={ this.handleClick }
           active={ activeMenu === 'home' }
         >
-          <Icon name="home"/>
-          Home
+          <Icon name="home"/>Home
         </Menu.Item>
-
+        <ResumeMenuItem
+          handleClick={ this.handleClick.bind(this) }
+          activeMenu={ activeMenu }
+        />
         <AuthMenuItem
           currentUser={ this.props.currentUser }
           hasLoggedIn={ this.props.hasLoggedIn }
@@ -125,10 +128,7 @@ class NavBar extends Component {
           handleClick={ this.handleClick.bind(this) }
           activeMenu={ activeMenu }
         />
-        <ResumeMenuItem
-          handleClick={ this.handleClick.bind(this) }
-          activeMenu={ activeMenu }
-        />
+        <SocialMediaDropdown />
       </Menu>
     );
   }

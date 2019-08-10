@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { connect } from 'react-redux';
 import { isEmpty } from "lodash";
 
-import { NavBar, Page404 } from "./layouts";
+import { Page404 } from "./layouts";
+import { NavBar }  from "./navbar";
 import { BlogContainer } from "./blog";
 import { LoginContainer } from "./login";
 import { RegistrationContainer } from "./registration";
