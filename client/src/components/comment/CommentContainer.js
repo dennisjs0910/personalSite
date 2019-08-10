@@ -70,12 +70,13 @@ class CommentContainer extends Component {
         <Header as='h3' dividing>
           Comments
         </Header>
-        <CommentList comments={ comments } currentUser={ currentUser } handleDelete={ this.handleDelete.bind(this) }/>
         <CommentEditor
+          currentUser={ currentUser }
           onChange={ this.handleChange }
           onSubmit={ this.handleSubmit }
           value={ value }
         />
+        <CommentList comments={ comments } currentUser={ currentUser } handleDelete={ this.handleDelete.bind(this) }/>
       </Comment.Group>
     );
   }
