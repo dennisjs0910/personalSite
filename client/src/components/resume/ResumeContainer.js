@@ -3,7 +3,7 @@ import { Document, Page } from "react-pdf";
 import { Container, Grid } from 'semantic-ui-react'
 import "./Resume.css";
 
-const fileUrl = "https://res.cloudinary.com/dsospjk5r/image/upload/v1562879219/dennisResume_ojtxi9.pdf";
+const fileUrl = "https://res.cloudinary.com/dsospjk5r/image/upload/v1566948341/dennisResume_ddud4v.pdf";
 const DocumentContainer = ({ pageNumber, ...rest }) => (
   <Container { ...rest } className="fullscreen resume-container main-img">
     <div className="resume-container-body">
